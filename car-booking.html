@@ -6,6 +6,8 @@
     <title>مركز تقني المحركات - حجوزات الصيانة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- إضافة EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         :root {
             --primary: #2c5aa0;
@@ -29,45 +31,6 @@
             background-color: #f5f5f5;
             color: var(--dark);
             line-height: 1.6;
-        }
-        
-        body.english {
-            direction: ltr;
-            text-align: left;
-        }
-        
-        body.english .section-title::after {
-            left: 0;
-            transform: none;
-        }
-        
-        body.english .footer-section h3::after {
-            right: auto;
-            left: 0;
-        }
-        
-        body.english .constraint-item {
-            border-right: none;
-            border-left: 4px solid var(--primary);
-        }
-        
-        body.english .constraint-item.warning {
-            border-left-color: var(--danger);
-        }
-        
-        body.english .lang-switch i {
-            margin-left: 0;
-            margin-right: 8px;
-        }
-        
-        body.english .map-link i {
-            margin-left: 0;
-            margin-right: 8px;
-        }
-        
-        body.english .contact-info i {
-            margin-left: 0;
-            margin-right: 10px;
         }
         
         .container {
@@ -99,33 +62,8 @@
             margin-right: 15px;
         }
         
-        body.english .logo h1 {
-            margin-right: 0;
-            margin-left: 15px;
-        }
-        
         .logo img {
             height: 60px;
-        }
-        
-        .lang-switch {
-            display: flex;
-            align-items: center;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        
-        .lang-switch:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .lang-switch i {
-            margin-left: 8px;
-            font-size: 1.2rem;
         }
         
         .hero {
@@ -240,6 +178,14 @@
         
         .btn-secondary:hover {
             background: #e69500;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #218838;
         }
         
         .services-grid {
@@ -436,46 +382,6 @@
             text-align: center;
         }
         
-        .lang-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .lang-modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-        }
-        
-        .lang-option {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .lang-option:hover {
-            background: #1e3a8a;
-        }
-
         /* أنماط لوحة التحكم */
         .admin-access-btn {
             position: fixed;
@@ -740,6 +646,23 @@
             gap: 10px;
         }
         
+        .email-status {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        .email-sent {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .email-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -770,51 +693,47 @@
     <header>
         <div class="container header-content">
             <div class="logo">
-                <h1 id="headerTitle">مركز تقني المحركات</h1>
+                <h1>مركز تقني المحركات</h1>
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAxNWw1LjUtNS41YTQuOTUgNC45NSAwIDAgMC03LjA3LTcuMDcgNC45NSA0Ljk1IDAgMCAwLTcuMDcgNy4wN0wxMiAxNXoiPjwvcGF0aD48cGF0aCBkPSJNMTIgMTVsLTUuNSA1LjVhNC45NSA0Ljk1IDAgMCAwIDcuMDcgNy4wNyA0Ljk1IDQuOTUgMCAwIDAgNy4wNy03LjA3TDEyIDE1eiI+PC9wYXRoPjwvc3ZnPg==" alt="شعار المركز">
-            </div>
-            <div class="lang-switch" id="langSwitch">
-                <i class="fas fa-globe"></i>
-                <span id="langText">EN</span>
             </div>
         </div>
     </header>
 
     <section class="hero">
         <div class="hero-content">
-            <h2 id="heroTitle">حجوزات صيانة السيارات</h2>
-            <p id="heroSubtitle">أحجز موعدك بسهولة لصيانة سيارتك في مركز تقني المحركات بصناعية أبها الجديدة</p>
+            <h2>حجوزات صيانة السيارات</h2>
+            <p>أحجز موعدك بسهولة لصيانة سيارتك في مركز تقني المحركات بصناعية أبها الجديدة</p>
         </div>
     </section>
 
     <div class="container">
         <section class="booking-section">
-            <h2 class="section-title" id="bookingTitle">أحجز موعدك الآن</h2>
+            <h2 class="section-title">أحجز موعدك الآن</h2>
             
             <div class="work-hours">
-                <h3><i class="fas fa-clock"></i> <span id="workHoursTitle">أوقات العمل</span></h3>
-                <p id="workHoursText">من الساعة 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً</p>
+                <h3><i class="fas fa-clock"></i> أوقات العمل</h3>
+                <p>من الساعة 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً</p>
             </div>
             
             <form id="bookingForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="name" id="nameLabel">الاسم الكامل</label>
+                        <label for="name">الاسم الكامل</label>
                         <input type="text" id="name" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone" id="phoneLabel">رقم الجوال</label>
+                        <label for="phone">رقم الجوال</label>
                         <input type="tel" id="phone" required>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="email" id="emailLabel">البريد الإلكتروني</label>
+                        <label for="email">البريد الإلكتروني</label>
                         <input type="email" id="email" required placeholder="example@domain.com">
                     </div>
                     <div class="form-group">
-                        <label for="carType" id="carTypeLabel">نوع السيارة</label>
+                        <label for="carType">نوع السيارة</label>
                         <select id="carType" required>
                             <option value="">اختر نوع السيارة</option>
                             <option value="sedan">سيدان</option>
@@ -827,11 +746,11 @@
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="carModel" id="carModelLabel">موديل السيارة</label>
+                        <label for="carModel">موديل السيارة</label>
                         <input type="text" id="carModel" required>
                     </div>
                     <div class="form-group">
-                        <label for="serviceType" id="serviceTypeLabel">نوع الخدمة</label>
+                        <label for="serviceType">نوع الخدمة</label>
                         <select id="serviceType" required>
                             <option value="">اختر نوع الخدمة</option>
                             <option value="oil">زيت وسيفون</option>
@@ -852,11 +771,11 @@
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="date" id="dateLabel">التاريخ المفضل</label>
+                        <label for="date">التاريخ المفضل</label>
                         <input type="date" id="date" required>
                     </div>
                     <div class="form-group">
-                        <label for="time" id="timeLabel">الوقت المفضل</label>
+                        <label for="time">الوقت المفضل</label>
                         <select id="time" required>
                             <option value="">اختر الوقت</option>
                             <option value="08:00">8:00 صباحاً</option>
@@ -873,117 +792,117 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="notes" id="notesLabel">ملاحظات إضافية</label>
+                    <label for="notes">ملاحظات إضافية</label>
                     <textarea id="notes" rows="4"></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <button type="submit" class="btn" id="submitBtn">إرسال طلب الحجز</button>
-                    <button type="reset" class="btn btn-secondary" id="resetBtn">إعادة تعيين</button>
+                    <button type="submit" class="btn">إرسال طلب الحجز</button>
+                    <button type="reset" class="btn btn-secondary">إعادة تعيين</button>
                 </div>
             </form>
         </section>
 
         <section class="services-section">
-            <h2 class="section-title" id="servicesTitle">خدماتنا</h2>
+            <h2 class="section-title">خدماتنا</h2>
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-icon">🛢️</div>
                     <div class="service-content">
-                        <h3 id="service1Title">زيت وسيفون</h3>
-                        <p id="service1Desc">تغيير الزيت والفلتر بمنتجات عالية الجودة مع تنظيف نظام التزييت بالكامل.</p>
+                        <h3>زيت وسيفون</h3>
+                        <p>تغيير الزيت والفلتر بمنتجات عالية الجودة مع تنظيف نظام التزييت بالكامل.</p>
                     </div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">🔧</div>
                     <div class="service-content">
-                        <h3 id="service2Title">صيانة المحرك</h3>
-                        <p id="service2Desc">فحص شامل للمحرك وإصلاح الأعطال لضمان كفاءة وأمان السيارة.</p>
+                        <h3>صيانة المحرك</h3>
+                        <p>فحص شامل للمحرك وإصلاح الأعطال لضمان كفاءة وأمان السيارة.</p>
                     </div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">🔄</div>
                     <div class="service-content">
-                        <h3 id="service3Title">فحص الفرامل</h3>
-                        <p id="service3Desc">فحص شامل لنظام الفرامل واستبدال القطع التالفة لضمان سلامتك على الطريق.</p>
+                        <h3>فحص الفرامل</h3>
+                        <p>فحص شامل لنظام الفرامل واستبدال القطع التالفة لضمان سلامتك على الطريق.</p>
                     </div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">🔋</div>
                     <div class="service-content">
-                        <h3 id="service4Title">فحص كهرباء</h3>
-                        <p id="service4Desc">فحص شامل للبطارية والنظام الكهربائي للسيارة واستبدالها إذا لزم الأمر.</p>
+                        <h3>فحص كهرباء</h3>
+                        <p>فحص شامل للبطارية والنظام الكهربائي للسيارة واستبدالها إذا لزم الأمر.</p>
                     </div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">💻</div>
                     <div class="service-content">
-                        <h3 id="service5Title">فحص الكمبيوتر</h3>
-                        <p id="service5Desc">تشخيص أعطال السيارات باستخدام أحدث أجهزة الفحص الإلكتروني.</p>
+                        <h3>فحص الكمبيوتر</h3>
+                        <p>تشخيص أعطال السيارات باستخدام أحدث أجهزة الفحص الإلكتروني.</p>
                     </div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">🔊</div>
                     <div class="service-content">
-                        <h3 id="service6Title">فحص الأصوات</h3>
-                        <p id="service6Desc">فحص وتشخيص الأصوات غير الطبيعية أسفل السيارة وإصلاحها.</p>
+                        <h3>فحص الأصوات</h3>
+                        <p>فحص وتشخيص الأصوات غير الطبيعية أسفل السيارة وإصلاحها.</p>
                     </div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">⚙️</div>
                     <div class="service-content">
-                        <h3 id="service7Title">أنظمة الهيدروليك</h3>
-                        <p id="service7Desc">مراجعة برمجة ووزن وإصلاحات أنظمة الهيدروليك باحترافية عالية.</p>
+                        <h3>أنظمة الهيدروليك</h3>
+                        <p>مراجعة برمجة ووزن وإصلاحات أنظمة الهيدروليك باحترافية عالية.</p>
                     </div>
                 </div>
                 
                 <div class="service-card">
                     <div class="service-icon">🎨</div>
                     <div class="service-content">
-                        <h3 id="service8Title">سمكرة ودهان</h3>
-                        <p id="service8Desc">خدمات سمكرة متكاملة وإصلاحات البودي على البارد.</p>
-                        <div class="warranty-badge" id="warrantyBadge">ضمان 10 سنوات على الدهان</div>
+                        <h3>سمكرة ودهان</h3>
+                        <p>خدمات سمكرة متكاملة وإصلاحات البودي على البارد.</p>
+                        <div class="warranty-badge">ضمان 10 سنوات على الدهان</div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="constraints-section">
-            <h2 class="section-title" id="constraintsTitle">شروط وقيود الحجز</h2>
+            <h2 class="section-title">شروط وقيود الحجز</h2>
             <div class="constraint-item warning">
-                <h3><i class="fas fa-exclamation-triangle"></i> <span id="constraint1Title">تأكيد الحجز النهائي</span></h3>
-                <p id="constraint1Desc">الحجز يعتبر مبدئي وسيتم تأكيده نهائياً بعد مراجعته من قبل مدير المركز وإرسال رسالة تأكيد إلى بريدك الإلكتروني.</p>
+                <h3><i class="fas fa-exclamation-triangle"></i> تأكيد الحجز النهائي</h3>
+                <p>الحجز يعتبر مبدئي وسيتم تأكيده نهائياً بعد مراجعته من قبل مدير المركز وإرسال رسالة تأكيد إلى بريدك الإلكتروني.</p>
             </div>
             
             <div class="constraint-item">
-                <h3><i class="fas fa-calendar-times"></i> <span id="constraint2Title">أيام العطل</span></h3>
-                <p id="constraint2Desc">لا توجد حجوزات أيام الجمعة أو العطلات الرسمية.</p>
+                <h3><i class="fas fa-calendar-times"></i> أيام العطل</h3>
+                <p>لا توجد حجوزات أيام الجمعة أو العطلات الرسمية.</p>
             </div>
             
             <div class="constraint-item">
-                <h3><i class="fas fa-clock"></i> <span id="constraint3Title">مواعيد العمل</span></h3>
-                <p id="constraint3Desc">مواعيد الدوام من 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً.</p>
+                <h3><i class="fas fa-clock"></i> مواعيد العمل</h3>
+                <p>مواعيد الدوام من 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً.</p>
             </div>
             
             <div class="constraint-item">
-                <h3><i class="fas fa-calendar-day"></i> <span id="constraint4Title">الحجز في نفس اليوم</span></h3>
-                <p id="constraint4Desc">لا يمكن الحجز في نفس اليوم أو تاريخ سابق لليوم الحالي.</p>
+                <h3><i class="fas fa-calendar-day"></i> الحجز في نفس اليوم</h3>
+                <p>لا يمكن الحجز في نفس اليوم أو تاريخ سابق لليوم الحالي.</p>
             </div>
             
             <div class="constraint-item">
-                <h3><i class="fas fa-envelope"></i> <span id="constraint5Title">تأكيد الحجز</span></h3>
-                <p id="constraint5Desc">سيتم تأكيد الحجز النهائي بعد تلقي رسالة على الإيميل من مدير التطبيق.</p>
+                <h3><i class="fas fa-envelope"></i> تأكيد الحجز</h3>
+                <p>سيتم تأكيد الحجز النهائي بعد تلقي رسالة على الإيميل من مدير التطبيق.</p>
             </div>
             
             <div class="constraint-item">
-                <h3><i class="fas fa-ban"></i> <span id="constraint6Title">الإلغاء والتعديل</span></h3>
-                <p id="constraint6Desc">يمكن إلغاء أو تعديل الحجز قبل 24 ساعة على الأقل من الموعد المحدد.</p>
+                <h3><i class="fas fa-ban"></i> الإلغاء والتعديل</h3>
+                <p>يمكن إلغاء أو تعديل الحجز قبل 24 ساعة على الأقل من الموعد المحدد.</p>
             </div>
         </section>
     </div>
@@ -992,15 +911,15 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3 id="aboutTitle">عن المركز</h3>
-                    <p id="aboutDesc">مركز تقني المحركات في صناعية أبها الجديدة، نقدم خدمات صيانة السيارات بأعلى معايير الجودة والكفاءة. نحن متخصصون في صيانة جميع أنواع السيارات باستخدام أحدث التقنيات.</p>
+                    <h3>عن المركز</h3>
+                    <p>مركز تقني المحركات في صناعية أبها الجديدة، نقدم خدمات صيانة السيارات بأعلى معايير الجودة والكفاءة. نحن متخصصون في صيانة جميع أنواع السيارات باستخدام أحدث التقنيات.</p>
                     <a href="https://maps.app.goo.gl/NswtkuwYebBAW2Cc6" target="_blank" class="map-link">
-                        <i class="fas fa-map-marker-alt"></i> <span id="mapLinkText">انقر هنا للوصول إلى موقع المركز على الخريطة</span>
+                        <i class="fas fa-map-marker-alt"></i> انقر هنا للوصول إلى موقع المركز على الخريطة
                     </a>
                 </div>
                 
                 <div class="footer-section">
-                    <h3 id="contactTitle">اتصل بنا</h3>
+                    <h3>اتصل بنا</h3>
                     <div class="contact-info">
                         <i class="fas fa-phone"></i>
                         <span>0530694999</span>
@@ -1015,20 +934,20 @@
                     </div>
                     <div class="contact-info">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span id="addressText">صناعية أبها الجديدة، أبها</span>
+                        <span>صناعية أبها الجديدة، أبها</span>
                     </div>
                 </div>
                 
                 <div class="footer-section">
-                    <h3 id="hoursTitle">ساعات العمل</h3>
-                    <p id="hoursText1">السبت - الخميس: 8 ص - 1 م | 3 م - 7 م</p>
-                    <p id="hoursText2">الجمعة: مغلق</p>
-                    <p id="hoursText3">العطلات الرسمية: مغلق</p>
+                    <h3>ساعات العمل</h3>
+                    <p>السبت - الخميس: 8 ص - 1 م | 3 م - 7 م</p>
+                    <p>الجمعة: مغلق</p>
+                    <p>العطلات الرسمية: مغلق</p>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p id="copyrightText">جميع الحقوق محفوظة &copy; 2026 مركز تقني المحركات | <a href="http://www.enginetechnician.net" class="website-link">www.enginetechnician.net</a></p>
+                <p>جميع الحقوق محفوظة &copy; 2026 مركز تقني المحركات | <a href="http://www.enginetechnician.net" class="website-link">www.enginetechnician.net</a></p>
             </div>
         </div>
     </footer>
@@ -1036,44 +955,30 @@
     <!-- نافذة التأكيد -->
     <div class="modal" id="confirmationModal">
         <div class="modal-content">
-            <h3 id="modalTitle">تم إرسال طلب الحجز بنجاح!</h3>
-            <p id="modalText1">شكراً لك <span id="customerName"></span>، لقد تم استلام طلب حجزك بنجاح.</p>
-            <p id="modalText2">طلبك الآن قيد المراجعة من قبل مدير المركز.</p>
-            <p id="modalText3">سيتم التواصل معك على البريد الإلكتروني (<span id="customerEmail"></span>) لتأكيد الحجز النهائي خلال 24 ساعة.</p>
+            <h3>تم إرسال طلب الحجز بنجاح!</h3>
+            <p>شكراً لك <span id="customerName"></span>، لقد تم استلام طلب حجزك بنجاح.</p>
+            <p>طلبك الآن قيد المراجعة من قبل مدير المركز.</p>
+            <p>سيتم التواصل معك على البريد الإلكتروني (<span id="customerEmail"></span>) لتأكيد الحجز النهائي خلال 24 ساعة.</p>
             <button class="close-modal" id="modalCloseBtn">موافق</button>
-        </div>
-    </div>
-
-    <!-- نافذة اختيار اللغة -->
-    <div class="lang-modal" id="langModal">
-        <div class="lang-modal-content">
-            <h3 id="langModalTitle">اختر اللغة / Choose Language</h3>
-            <button class="lang-option" onclick="selectLanguage('ar')">
-                <i class="fas fa-language"></i> العربية
-            </button>
-            <button class="lang-option" onclick="selectLanguage('en')">
-                <i class="fas fa-language"></i> English
-            </button>
-            <button class="close-modal" onclick="closeLangModal()" style="margin-top: 15px; background: #6c757d;" id="langModalCloseBtn">إلغاء</button>
         </div>
     </div>
 
     <!-- زر الدخول لوحة التحكم -->
     <button class="admin-access-btn" id="adminAccessBtn">
         <i class="fas fa-cog"></i>
-        <span id="adminBtnText">لوحة التحكم</span>
+        <span>لوحة التحكم</span>
     </button>
 
     <!-- نافذة تسجيل الدخول للمدير -->
     <div class="admin-login-modal" id="adminLoginModal">
         <div class="admin-login-content">
-            <h3 id="adminLoginTitle">تسجيل دخول المدير</h3>
+            <h3>تسجيل دخول المدير</h3>
             <div class="form-group">
-                <label for="adminUsername" id="adminUsernameLabel">اسم المستخدم</label>
+                <label for="adminUsername">اسم المستخدم</label>
                 <input type="text" id="adminUsername" required>
             </div>
             <div class="form-group">
-                <label for="adminPassword" id="adminPasswordLabel">كلمة المرور</label>
+                <label for="adminPassword">كلمة المرور</label>
                 <input type="password" id="adminPassword" required>
             </div>
             <div class="form-group">
@@ -1087,39 +992,39 @@
     <!-- لوحة تحكم المدير -->
     <div class="admin-dashboard" id="adminDashboard">
         <div class="admin-header">
-            <h2 id="adminDashboardTitle">لوحة تحكم المدير - مركز تقني المحركات</h2>
+            <h2>لوحة تحكم المدير - مركز تقني المحركات</h2>
             <button class="btn btn-secondary" onclick="logoutAdmin()">
-                <i class="fas fa-sign-out-alt"></i> <span id="logoutBtnText">تسجيل خروج</span>
+                <i class="fas fa-sign-out-alt"></i> تسجيل خروج
             </button>
         </div>
         
         <div class="stats-cards">
             <div class="stat-card">
-                <h4 id="totalBookingsTitle">إجمالي الحجوزات</h4>
+                <h4>إجمالي الحجوزات</h4>
                 <div class="stat-number" id="totalBookingsCount">0</div>
             </div>
             <div class="stat-card">
-                <h4 id="pendingBookingsTitle">الحجوزات المعلقة</h4>
+                <h4>الحجوزات المعلقة</h4>
                 <div class="stat-number" id="pendingBookingsCount">0</div>
             </div>
             <div class="stat-card">
-                <h4 id="confirmedBookingsTitle">الحجوزات المؤكدة</h4>
+                <h4>الحجوزات المؤكدة</h4>
                 <div class="stat-number" id="confirmedBookingsCount">0</div>
             </div>
             <div class="stat-card">
-                <h4 id="closedDatesTitle">الأيام المغلقة</h4>
+                <h4>الأيام المغلقة</h4>
                 <div class="stat-number" id="closedDatesCount">0</div>
             </div>
         </div>
         
         <div class="admin-tabs">
-            <div class="admin-tab active" data-tab="bookings" id="bookingsTab">إدارة الحجوزات</div>
-            <div class="admin-tab" data-tab="closedDates" id="closedDatesTab">إدارة الأيام المغلقة</div>
+            <div class="admin-tab active" data-tab="bookings">إدارة الحجوزات</div>
+            <div class="admin-tab" data-tab="closedDates">إدارة الأيام المغلقة</div>
         </div>
         
         <div class="tab-content active" id="bookingsTabContent">
             <div class="admin-section">
-                <h3 id="bookingsManagementTitle">إدارة الحجوزات</h3>
+                <h3>إدارة الحجوزات</h3>
                 
                 <div class="admin-controls">
                     <input type="text" class="search-box" id="bookingSearch" placeholder="بحث في الحجوزات...">
@@ -1136,14 +1041,14 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th id="thCustomerName">اسم العميل</th>
-                                <th id="thPhone">رقم الجوال</th>
-                                <th id="thEmail">البريد الإلكتروني</th>
-                                <th id="thService">نوع الخدمة</th>
-                                <th id="thDate">التاريخ</th>
-                                <th id="thTime">الوقت</th>
-                                <th id="thStatus">الحالة</th>
-                                <th id="thActions">الإجراءات</th>
+                                <th>اسم العميل</th>
+                                <th>رقم الجوال</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>نوع الخدمة</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="bookingsTableBody">
@@ -1156,12 +1061,12 @@
         
         <div class="tab-content" id="closedDatesTabContent">
             <div class="admin-section">
-                <h3 id="closedDatesManagementTitle">إدارة الأيام المغلقة</h3>
+                <h3>إدارة الأيام المغلقة</h3>
                 
                 <div class="date-picker-container">
                     <input type="date" id="closeDateInput">
                     <button class="btn btn-close-date" id="addClosedDateBtn">
-                        <i class="fas fa-ban"></i> <span id="closeDateBtnText">إغلاق التاريخ</span>
+                        <i class="fas fa-ban"></i> إغلاق التاريخ
                     </button>
                 </div>
                 
@@ -1173,6 +1078,12 @@
     </div>
 
     <script>
+        // تهيئة EmailJS
+        (function() {
+            // قم بتغيير هذه المعطيات بعد إنشاء حسابك في EmailJS
+            emailjs.init("YOUR_PUBLIC_KEY"); // استبدل YOUR_PUBLIC_KEY بمفتاحك العام
+        })();
+
         // بيانات المدير
         const ADMIN_CREDENTIALS = {
             username: "Hegazi",
@@ -1183,317 +1094,74 @@
         let bookings = JSON.parse(localStorage.getItem('carBookings')) || [];
         let closedDates = JSON.parse(localStorage.getItem('closedDates')) || [];
 
-        // نصوص الترجمة
-        const translations = {
-            ar: {
-                // Header
-                headerTitle: "مركز تقني المحركات",
-                langText: "EN",
-                
-                // Hero Section
-                heroTitle: "حجوزات صيانة السيارات",
-                heroSubtitle: "أحجز موعدك بسهولة لصيانة سيارتك في مركز تقني المحركات بصناعية أبها الجديدة",
-                
-                // Booking Form
-                bookingTitle: "أحجز موعدك الآن",
-                workHoursTitle: "أوقات العمل",
-                workHoursText: "من الساعة 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً",
-                nameLabel: "الاسم الكامل",
-                phoneLabel: "رقم الجوال",
-                emailLabel: "البريد الإلكتروني",
-                carTypeLabel: "نوع السيارة",
-                carModelLabel: "موديل السيارة",
-                serviceTypeLabel: "نوع الخدمة",
-                dateLabel: "التاريخ المفضل",
-                timeLabel: "الوقت المفضل",
-                notesLabel: "ملاحظات إضافية",
-                submitBtn: "إرسال طلب الحجز",
-                resetBtn: "إعادة تعيين",
-                
-                // Services
-                servicesTitle: "خدماتنا",
-                service1Title: "زيت وسيفون",
-                service1Desc: "تغيير الزيت والفلتر بمنتجات عالية الجودة مع تنظيف نظام التزييت بالكامل.",
-                service2Title: "صيانة المحرك",
-                service2Desc: "فحص شامل للمحرك وإصلاح الأعطال لضمان كفاءة وأمان السيارة.",
-                service3Title: "فحص الفرامل",
-                service3Desc: "فحص شامل لنظام الفرامل واستبدال القطع التالفة لضمان سلامتك على الطريق.",
-                service4Title: "فحص كهرباء",
-                service4Desc: "فحص شامل للبطارية والنظام الكهربائي للسيارة واستبدالها إذا لزم الأمر.",
-                service5Title: "فحص الكمبيوتر",
-                service5Desc: "تشخيص أعطال السيارات باستخدام أحدث أجهزة الفحص الإلكتروني.",
-                service6Title: "فحص الأصوات",
-                service6Desc: "فحص وتشخيص الأصوات غير الطبيعية أسفل السيارة وإصلاحها.",
-                service7Title: "أنظمة الهيدروليك",
-                service7Desc: "مراجعة برمجة ووزن وإصلاحات أنظمة الهيدروليك باحترافية عالية.",
-                service8Title: "سمكرة ودهان",
-                service8Desc: "خدمات سمكرة متكاملة وإصلاحات البودي على البارد.",
-                warrantyBadge: "ضمان 10 سنوات على الدهان",
-                
-                // Constraints
-                constraintsTitle: "شروط وقيود الحجز",
-                constraint1Title: "تأكيد الحجز النهائي",
-                constraint1Desc: "الحجز يعتبر مبدئي وسيتم تأكيده نهائياً بعد مراجعته من قبل مدير المركز وإرسال رسالة تأكيد إلى بريدك الإلكتروني.",
-                constraint2Title: "أيام العطل",
-                constraint2Desc: "لا توجد حجوزات أيام الجمعة أو العطلات الرسمية.",
-                constraint3Title: "مواعيد العمل",
-                constraint3Desc: "مواعيد الدوام من 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً.",
-                constraint4Title: "الحجز في نفس اليوم",
-                constraint4Desc: "لا يمكن الحجز في نفس اليوم أو تاريخ سابق لليوم الحالي.",
-                constraint5Title: "تأكيد الحجز",
-                constraint5Desc: "سيتم تأكيد الحجز النهائي بعد تلقي رسالة على الإيميل من مدير التطبيق.",
-                constraint6Title: "الإلغاء والتعديل",
-                constraint6Desc: "يمكن إلغاء أو تعديل الحجز قبل 24 ساعة على الأقل من الموعد المحدد.",
-                
-                // Footer
-                aboutTitle: "عن المركز",
-                aboutDesc: "مركز تقني المحركات في صناعية أبها الجديدة، نقدم خدمات صيانة السيارات بأعلى معايير الجودة والكفاءة. نحن متخصصون في صيانة جميع أنواع السيارات باستخدام أحدث التقنيات.",
-                mapLinkText: "انقر هنا للوصول إلى موقع المركز على الخريطة",
-                contactTitle: "اتصل بنا",
-                addressText: "صناعية أبها الجديدة، أبها",
-                hoursTitle: "ساعات العمل",
-                hoursText1: "السبت - الخميس: 8 ص - 1 م | 3 م - 7 م",
-                hoursText2: "الجمعة: مغلق",
-                hoursText3: "العطلات الرسمية: مغلق",
-                copyrightText: "جميع الحقوق محفوظة &copy; 2026 مركز تقني المحركات | ",
-                
-                // Modal
-                modalTitle: "تم إرسال طلب الحجز بنجاح!",
-                modalText1: "شكراً لك",
-                modalText2: "طلبك الآن قيد المراجعة من قبل مدير المركز.",
-                modalText3: "سيتم التواصل معك على البريد الإلكتروني",
-                modalCloseBtn: "موافق",
-                
-                // Language Modal
-                langModalTitle: "اختر اللغة",
-                langModalCloseBtn: "إلغاء",
-                
-                // Admin Panel
-                adminBtnText: "لوحة التحكم",
-                adminLoginTitle: "تسجيل دخول المدير",
-                adminUsernameLabel: "اسم المستخدم",
-                adminPasswordLabel: "كلمة المرور",
-                adminDashboardTitle: "لوحة تحكم المدير - مركز تقني المحركات",
-                logoutBtnText: "تسجيل خروج",
-                totalBookingsTitle: "إجمالي الحجوزات",
-                pendingBookingsTitle: "الحجوزات المعلقة",
-                confirmedBookingsTitle: "الحجوزات المؤكدة",
-                closedDatesTitle: "الأيام المغلقة",
-                bookingsManagementTitle: "إدارة الحجوزات",
-                closedDatesManagementTitle: "إدارة الأيام المغلقة",
-                thCustomerName: "اسم العميل",
-                thPhone: "رقم الجوال",
-                thEmail: "البريد الإلكتروني",
-                thService: "نوع الخدمة",
-                thDate: "التاريخ",
-                thTime: "الوقت",
-                thStatus: "الحالة",
-                thActions: "الإجراءات",
-                closeDateBtnText: "إغلاق التاريخ",
-                statusPending: "معلقة",
-                statusConfirmed: "مؤكدة",
-                statusCancelled: "ملغية",
-                btnConfirm: "تأكيد",
-                btnCancel: "إلغاء",
-                btnDelete: "حذف",
-                noBookings: "لا توجد حجوزات",
-                noClosedDates: "لا توجد أيام مغلقة",
-                bookingsTab: "إدارة الحجوزات",
-                closedDatesTab: "إدارة الأيام المغلقة"
-            },
-            en: {
-                // Header
-                headerTitle: "Engine Technician Center",
-                langText: "AR",
-                
-                // Hero Section
-                heroTitle: "Car Maintenance Bookings",
-                heroSubtitle: "Book your appointment easily for your car maintenance at Engine Technician Center in New Abha Industrial Area",
-                
-                // Booking Form
-                bookingTitle: "Book Your Appointment Now",
-                workHoursTitle: "Working Hours",
-                workHoursText: "From 8:00 AM to 1:00 PM, and from 3:00 PM to 7:00 PM",
-                nameLabel: "Full Name",
-                phoneLabel: "Phone Number",
-                emailLabel: "Email Address",
-                carTypeLabel: "Car Type",
-                carModelLabel: "Car Model",
-                serviceTypeLabel: "Service Type",
-                dateLabel: "Preferred Date",
-                timeLabel: "Preferred Time",
-                notesLabel: "Additional Notes",
-                submitBtn: "Submit Booking Request",
-                resetBtn: "Reset",
-                
-                // Services
-                servicesTitle: "Our Services",
-                service1Title: "Oil and Siphon",
-                service1Desc: "Oil and filter change with high-quality products and complete lubrication system cleaning.",
-                service2Title: "Engine Maintenance",
-                service2Desc: "Comprehensive engine inspection and repair to ensure vehicle efficiency and safety.",
-                service3Title: "Brake Inspection",
-                service3Desc: "Complete brake system inspection and replacement of damaged parts to ensure your safety on the road.",
-                service4Title: "Electrical Inspection",
-                service4Desc: "Comprehensive battery and electrical system inspection and replacement if necessary.",
-                service5Title: "Computer Diagnostics",
-                service5Desc: "Car fault diagnosis using the latest electronic diagnostic devices.",
-                service6Title: "Sound Inspection",
-                service6Desc: "Inspection and diagnosis of abnormal sounds under the vehicle and repair.",
-                service7Title: "Hydraulic Systems",
-                service7Desc: "Programming, calibration and repair of hydraulic systems with high professionalism.",
-                service8Title: "Bodywork and Painting",
-                service8Desc: "Comprehensive bodywork services and cold body repairs.",
-                warrantyBadge: "10 Years Paint Warranty",
-                
-                // Constraints
-                constraintsTitle: "Booking Terms and Conditions",
-                constraint1Title: "Final Booking Confirmation",
-                constraint1Desc: "The booking is considered preliminary and will be finally confirmed after review by the center manager and sending a confirmation message to your email.",
-                constraint2Title: "Holidays",
-                constraint2Desc: "No bookings on Fridays or official holidays.",
-                constraint3Title: "Working Hours",
-                constraint3Desc: "Working hours from 8:00 AM to 1:00 PM, and from 3:00 PM to 7:00 PM.",
-                constraint4Title: "Same Day Booking",
-                constraint4Desc: "Cannot book on the same day or a date prior to the current day.",
-                constraint5Title: "Booking Confirmation",
-                constraint5Desc: "Final booking confirmation will be after receiving an email from the application manager.",
-                constraint6Title: "Cancellation and Modification",
-                constraint6Desc: "Can cancel or modify the booking at least 24 hours before the scheduled appointment.",
-                
-                // Footer
-                aboutTitle: "About the Center",
-                aboutDesc: "Engine Technician Center in New Abha Industrial Area, we provide car maintenance services with the highest standards of quality and efficiency. We specialize in maintaining all types of cars using the latest technologies.",
-                mapLinkText: "Click here to access the center location on the map",
-                contactTitle: "Contact Us",
-                addressText: "New Abha Industrial Area, Abha",
-                hoursTitle: "Working Hours",
-                hoursText1: "Saturday - Thursday: 8 AM - 1 PM | 3 PM - 7 PM",
-                hoursText2: "Friday: Closed",
-                hoursText3: "Official Holidays: Closed",
-                copyrightText: "All Rights Reserved &copy; 2026 Engine Technician Center | ",
-                
-                // Modal
-                modalTitle: "Booking Request Sent Successfully!",
-                modalText1: "Thank you",
-                modalText2: "Your request is now under review by the center manager.",
-                modalText3: "We will contact you via email",
-                modalCloseBtn: "OK",
-                
-                // Language Modal
-                langModalTitle: "Choose Language",
-                langModalCloseBtn: "Cancel",
-                
-                // Admin Panel
-                adminBtnText: "Control Panel",
-                adminLoginTitle: "Admin Login",
-                adminUsernameLabel: "Username",
-                adminPasswordLabel: "Password",
-                adminDashboardTitle: "Admin Dashboard - Engine Technician Center",
-                logoutBtnText: "Logout",
-                totalBookingsTitle: "Total Bookings",
-                pendingBookingsTitle: "Pending Bookings",
-                confirmedBookingsTitle: "Confirmed Bookings",
-                closedDatesTitle: "Closed Dates",
-                bookingsManagementTitle: "Bookings Management",
-                closedDatesManagementTitle: "Closed Dates Management",
-                thCustomerName: "Customer Name",
-                thPhone: "Phone",
-                thEmail: "Email",
-                thService: "Service Type",
-                thDate: "Date",
-                thTime: "Time",
-                thStatus: "Status",
-                thActions: "Actions",
-                closeDateBtnText: "Close Date",
-                statusPending: "Pending",
-                statusConfirmed: "Confirmed",
-                statusCancelled: "Cancelled",
-                btnConfirm: "Confirm",
-                btnCancel: "Cancel",
-                btnDelete: "Delete",
-                noBookings: "No bookings found",
-                noClosedDates: "No closed dates",
-                bookingsTab: "Bookings Management",
-                closedDatesTab: "Closed Dates Management"
-            }
-        };
+        // دالة لإرسال إيميل تأكيد الحجز
+        async function sendConfirmationEmail(bookingData) {
+            try {
+                const templateParams = {
+                    customer_name: bookingData.name,
+                    customer_email: bookingData.email,
+                    service_type: getServiceName(bookingData.serviceType),
+                    appointment_date: bookingData.date,
+                    appointment_time: bookingData.time,
+                    car_type: getCarTypeName(bookingData.carType),
+                    car_model: bookingData.carModel,
+                    notes: bookingData.notes || 'لا توجد ملاحظات',
+                    center_name: 'مركز تقني المحركات',
+                    center_phone: '0530694999',
+                    center_address: 'صناعية أبها الجديدة، أبها'
+                };
 
-        // دالة تغيير اللغة
-        function changeLanguage(lang) {
-            // تغيير اتجاه الصفحة
-            if (lang === 'en') {
-                document.body.classList.add('english');
-                document.dir = 'ltr';
-            } else {
-                document.body.classList.remove('english');
-                document.dir = 'rtl';
-            }
-            
-            // تحديث جميع النصوص
-            Object.keys(translations[lang]).forEach(key => {
-                const element = document.getElementById(key);
-                if (element) {
-                    element.textContent = translations[lang][key];
-                }
-            });
-            
-            // تحديث النصوص في العناصر التي ليست لها id
-            if (lang === 'en') {
-                // تحديث خيارات القوائم المنسدلة
-                document.querySelector('#carType option[value=""]').textContent = 'Select Car Type';
-                document.querySelector('#serviceType option[value=""]').textContent = 'Select Service Type';
-                document.querySelector('#time option[value=""]').textContent = 'Select Time';
+                // استبدل 'YOUR_SERVICE_ID' و 'YOUR_TEMPLATE_ID' بمعرفاتك من EmailJS
+                const response = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
                 
-                // تحديث العناصر الأخرى
-                document.querySelector('#email').placeholder = 'example@domain.com';
-                document.querySelector('#bookingSearch').placeholder = 'Search bookings...';
-            } else {
-                // إعادة النصوص العربية
-                document.querySelector('#carType option[value=""]').textContent = 'اختر نوع السيارة';
-                document.querySelector('#serviceType option[value=""]').textContent = 'اختر نوع الخدمة';
-                document.querySelector('#time option[value=""]').textContent = 'اختر الوقت';
-                document.querySelector('#email').placeholder = 'example@domain.com';
-                document.querySelector('#bookingSearch').placeholder = 'بحث في الحجوزات...';
+                console.log('تم إرسال الإيميل بنجاح:', response);
+                return { success: true, message: 'تم إرسال إيميل التأكيد بنجاح' };
+            } catch (error) {
+                console.error('فشل إرسال الإيميل:', error);
+                return { success: false, message: 'فشل إرسال إيميل التأكيد' };
             }
-            
-            // حفظ اللغة المفضلة
-            localStorage.setItem('preferredLanguage', lang);
         }
 
-        // إضافة وظيفة النقر على أيقونة اللغة
-        document.getElementById('langSwitch').addEventListener('click', function() {
-            document.getElementById('langModal').style.display = 'flex';
-        });
-        
-        // دالة اختيار اللغة
-        function selectLanguage(lang) {
-            changeLanguage(lang);
-            closeLangModal();
-        }
-        
-        // دالة إغلاق نافذة اللغة
-        function closeLangModal() {
-            document.getElementById('langModal').style.display = 'none';
-        }
-        
-        // إغلاق نافذة اللغة عند النقر خارجها
-        window.addEventListener('click', function(event) {
-            const langModal = document.getElementById('langModal');
-            if (event.target === langModal) {
-                closeLangModal();
-            }
-        });
+        // دالة لإرسال إيميل عند تأكيد الحجز من المدير
+        async function sendBookingConfirmedEmail(bookingData) {
+            try {
+                const templateParams = {
+                    customer_name: bookingData.name,
+                    customer_email: bookingData.email,
+                    service_type: getServiceName(bookingData.serviceType),
+                    appointment_date: bookingData.date,
+                    appointment_time: bookingData.time,
+                    car_type: getCarTypeName(bookingData.carType),
+                    car_model: bookingData.carModel,
+                    center_name: 'مركز تقني المحركات',
+                    center_phone: '0530694999',
+                    center_address: 'صناعية أبها الجديدة، أبها',
+                    confirmation_number: bookingData.id
+                };
 
-        // تحميل اللغة المفضلة عند فتح الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'ar';
-            changeLanguage(preferredLanguage);
-            setMinDate();
-        });
+                // استبدل 'YOUR_SERVICE_ID' و 'YOUR_CONFIRMATION_TEMPLATE_ID' بمعرفاتك
+                const response = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_CONFIRMATION_TEMPLATE_ID', templateParams);
+                
+                console.log('تم إرسال إيميل التأكيد النهائي:', response);
+                return { success: true, message: 'تم إرسال إيميل التأكيد النهائي' };
+            } catch (error) {
+                console.error('فشل إرسال إيميل التأكيد النهائي:', error);
+                return { success: false, message: 'فشل إرسال إيميل التأكيد النهائي' };
+            }
+        }
+
+        function getCarTypeName(carType) {
+            const carTypes = {
+                sedan: "سيدان",
+                suv: "دفع رباعي",
+                truck: "شاحنة",
+                other: "أخرى"
+            };
+            return carTypes[carType] || carType;
+        }
 
         // إرسال نموذج الحجز
-        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // جمع بيانات النموذج
@@ -1509,14 +1177,14 @@
                 time: document.getElementById('time').value,
                 notes: document.getElementById('notes').value,
                 status: 'pending',
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                emailSent: false
             };
             
             // التحقق من صحة البريد الإلكتروني
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(formData.email)) {
-                const currentLang = localStorage.getItem('preferredLanguage') || 'ar';
-                alert(currentLang === 'ar' ? 'يرجى إدخال بريد إلكتروني صحيح' : 'Please enter a valid email address');
+                alert('يرجى إدخال بريد إلكتروني صحيح');
                 return;
             }
             
@@ -1525,30 +1193,38 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             
-            const currentLang = localStorage.getItem('preferredLanguage') || 'ar';
-            
             if (selectedDate <= today) {
-                alert(currentLang === 'ar' ? 'لا يمكن الحجز في نفس اليوم أو تاريخ سابق! يرجى اختيار تاريخ في المستقبل.' : 'Cannot book on the same day or a past date! Please choose a future date.');
+                alert('لا يمكن الحجز في نفس اليوم أو تاريخ سابق! يرجى اختيار تاريخ في المستقبل.');
                 return;
             }
             
             // التحقق من أن اليوم ليس جمعة
             if (selectedDate.getDay() === 5) {
-                alert(currentLang === 'ar' ? 'لا يمكن الحجز يوم الجمعة! يرجى اختيار يوم آخر.' : 'Cannot book on Friday! Please choose another day.');
+                alert('لا يمكن الحجز يوم الجمعة! يرجى اختيار يوم آخر.');
                 return;
             }
             
             // التحقق من الأيام المغلقة
             if (closedDates.includes(formData.date)) {
-                alert(currentLang === 'ar' ? 
-                    'عفواً، هذا التاريخ مغلق للحجوزات. يرجى اختيار تاريخ آخر.' : 
-                    'Sorry, this date is closed for bookings. Please choose another date.');
+                alert('عفواً، هذا التاريخ مغلق للحجوزات. يرجى اختيار تاريخ آخر.');
                 return;
             }
             
             // حفظ الحجز
             bookings.push(formData);
             localStorage.setItem('carBookings', JSON.stringify(bookings));
+            
+            // إرسال إيميل الاستلام
+            const emailResult = await sendConfirmationEmail(formData);
+            if (emailResult.success) {
+                formData.emailSent = true;
+                // تحديث البيانات مع حالة الإيميل
+                const index = bookings.findIndex(b => b.id === formData.id);
+                if (index !== -1) {
+                    bookings[index] = formData;
+                    localStorage.setItem('carBookings', JSON.stringify(bookings));
+                }
+            }
             
             // عرض رسالة النجاح
             document.getElementById('customerName').textContent = formData.name;
@@ -1587,16 +1263,14 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             
-            const currentLang = localStorage.getItem('preferredLanguage') || 'ar';
-            
             if (selectedDate <= today) {
-                alert(currentLang === 'ar' ? 'لا يمكن الحجز في نفس اليوم أو تاريخ سابق! يرجى اختيار تاريخ في المستقبل.' : 'Cannot book on the same day or a past date! Please choose a future date.');
+                alert('لا يمكن الحجز في نفس اليوم أو تاريخ سابق! يرجى اختيار تاريخ في المستقبل.');
                 this.value = '';
             }
             
             // التحقق من أن اليوم ليس جمعة
             if (selectedDate.getDay() === 5) {
-                alert(currentLang === 'ar' ? 'لا يمكن الحجز يوم الجمعة! يرجى اختيار يوم آخر.' : 'Cannot book on Friday! Please choose another day.');
+                alert('لا يمكن الحجز يوم الجمعة! يرجى اختيار يوم آخر.');
                 this.value = '';
             }
         });
@@ -1616,10 +1290,7 @@
                 document.getElementById('adminDashboard').style.display = 'block';
                 loadAdminDashboard();
             } else {
-                const currentLang = localStorage.getItem('preferredLanguage') || 'ar';
-                errorElement.textContent = currentLang === 'ar' ? 
-                    'اسم المستخدم أو كلمة المرور غير صحيحة' : 
-                    'Invalid username or password';
+                errorElement.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
                 errorElement.style.display = 'block';
             }
         });
@@ -1641,7 +1312,6 @@
             updateStats();
             loadBookingsTable();
             loadClosedDates();
-            updateAdminTranslations();
         }
 
         function updateStats() {
@@ -1677,11 +1347,8 @@
                 filteredBookings = filteredBookings.filter(booking => booking.status === statusFilter);
             }
             
-            const currentLang = localStorage.getItem('preferredLanguage') || 'ar';
-            const translations = translations[currentLang];
-            
             if (filteredBookings.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center;">${translations.noBookings}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center;">لا توجد حجوزات</td></tr>`;
                 return;
             }
             
@@ -1691,65 +1358,103 @@
                     <td>${booking.name}</td>
                     <td>${booking.phone}</td>
                     <td>${booking.email}</td>
-                    <td>${getServiceName(booking.serviceType, currentLang)}</td>
+                    <td>${getServiceName(booking.serviceType)}</td>
                     <td>${booking.date}</td>
                     <td>${booking.time}</td>
-                    <td class="status-${booking.status}">${getStatusText(booking.status, currentLang)}</td>
+                    <td class="status-${booking.status}">
+                        ${getStatusText(booking.status)}
+                        ${booking.emailSent ? '<span class="email-status email-sent">تم الإرسال</span>' : '<span class="email-status email-failed">لم يُرسل</span>'}
+                    </td>
                     <td>
                         ${booking.status === 'pending' ? `
                             <button class="btn-admin btn-confirm" onclick="confirmBooking(${booking.id})">
-                                ${translations.btnConfirm}
+                                تأكيد
                             </button>
                             <button class="btn-admin btn-cancel" onclick="cancelBooking(${booking.id})">
-                                ${translations.btnCancel}
+                                إلغاء
                             </button>
                         ` : ''}
                         ${booking.status === 'confirmed' ? `
                             <button class="btn-admin btn-cancel" onclick="cancelBooking(${booking.id})">
-                                ${translations.btnCancel}
+                                إلغاء
                             </button>
                         ` : ''}
+                        <button class="btn-admin btn-secondary" onclick="resendEmail(${booking.id})" title="إعادة إرسال الإيميل">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function getServiceName(serviceType, lang) {
+        function getServiceName(serviceType) {
             const services = {
-                oil: { ar: "زيت وسيفون", en: "Oil and Siphon" },
-                fabric: { ar: "غيار أقمشة", en: "Fabric Change" },
-                gearbox: { ar: "غيار زيت الجيربوكس", en: "Gearbox Oil Change" },
-                computer: { ar: "فحص كمبيوتر", en: "Computer Diagnostics" },
-                electricity: { ar: "فحص كهرباء", en: "Electrical Inspection" },
-                sounds: { ar: "فحص أصوات أسفل السيارة", en: "Sound Inspection" },
-                hydraulic: { ar: "برمجة ووزن وإصلاح أنظمة الهيدروليك", en: "Hydraulic Systems" },
-                bodywork: { ar: "سمكرة ودهان", en: "Bodywork and Painting" },
-                brakes: { ar: "فحص وصيانة الفرامل", en: "Brake Inspection" },
-                engine: { ar: "صيانة المحرك", en: "Engine Maintenance" },
-                tires: { ar: "فحص واستبدال الإطارات", en: "Tire Inspection" },
-                other: { ar: "خدمة أخرى", en: "Other Service" }
+                oil: "زيت وسيفون",
+                fabric: "غيار أقمشة",
+                gearbox: "غيار زيت الجيربوكس",
+                computer: "فحص كمبيوتر",
+                electricity: "فحص كهرباء",
+                sounds: "فحص أصوات أسفل السيارة",
+                hydraulic: "برمجة ووزن وإصلاح أنظمة الهيدروليك",
+                bodywork: "سمكرة ودهان",
+                brakes: "فحص وصيانة الفرامل",
+                engine: "صيانة المحرك",
+                tires: "فحص واستبدال الإطارات",
+                other: "خدمة أخرى"
             };
             
-            return services[serviceType] ? services[serviceType][lang] : serviceType;
+            return services[serviceType] || serviceType;
         }
 
-        function getStatusText(status, lang) {
+        function getStatusText(status) {
             const statusTexts = {
-                pending: lang === 'ar' ? 'معلقة' : 'Pending',
-                confirmed: lang === 'ar' ? 'مؤكدة' : 'Confirmed',
-                cancelled: lang === 'ar' ? 'ملغية' : 'Cancelled'
+                pending: 'معلقة',
+                confirmed: 'مؤكدة',
+                cancelled: 'ملغية'
             };
             
             return statusTexts[status] || status;
         }
 
-        function confirmBooking(bookingId) {
+        async function confirmBooking(bookingId) {
             const booking = bookings.find(b => b.id === bookingId);
             if (booking) {
                 booking.status = 'confirmed';
                 localStorage.setItem('carBookings', JSON.stringify(bookings));
+                
+                // إرسال إيميل التأكيد النهائي
+                const emailResult = await sendBookingConfirmedEmail(booking);
+                if (emailResult.success) {
+                    booking.emailSent = true;
+                    localStorage.setItem('carBookings', JSON.stringify(bookings));
+                    alert('تم تأكيد الحجز وإرسال الإيميل بنجاح');
+                } else {
+                    alert('تم تأكيد الحجز ولكن فشل إرسال الإيميل');
+                }
+                
                 loadBookingsTable();
                 updateStats();
+            }
+        }
+
+        async function resendEmail(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (booking) {
+                let emailResult;
+                if (booking.status === 'confirmed') {
+                    emailResult = await sendBookingConfirmedEmail(booking);
+                } else {
+                    emailResult = await sendConfirmationEmail(booking);
+                }
+                
+                if (emailResult.success) {
+                    booking.emailSent = true;
+                    localStorage.setItem('carBookings', JSON.stringify(bookings));
+                    alert('تم إعادة إرسال الإيميل بنجاح');
+                    loadBookingsTable();
+                } else {
+                    alert('فشل إعادة إرسال الإيميل');
+                }
             }
         }
 
@@ -1765,11 +1470,9 @@
 
         function loadClosedDates() {
             const container = document.getElementById('closedDatesList');
-            const currentLang = localStorage.getItem('preferredLanguage') || 'ar';
-            const translations = translations[currentLang];
             
             if (closedDates.length === 0) {
-                container.innerHTML = `<p>${translations.noClosedDates}</p>`;
+                container.innerHTML = `<p>لا توجد أيام مغلقة</p>`;
                 return;
             }
             
@@ -1778,7 +1481,7 @@
                     <span>${date}</span>
                     <div class="closed-date-actions">
                         <button class="btn-admin btn-cancel" onclick="removeClosedDate('${date}')">
-                            ${translations.btnDelete}
+                            حذف
                         </button>
                     </div>
                 </div>
@@ -1823,21 +1526,13 @@
             });
         });
 
-        function updateAdminTranslations() {
-            const currentLang = localStorage.getItem('preferredLanguage') || 'ar';
-            const trans = translations[currentLang];
-            
-            Object.keys(trans).forEach(key => {
-                const element = document.getElementById(key);
-                if (element) {
-                    element.textContent = trans[key];
-                }
-            });
-        }
-
         // إغلاق النوافذ بالأزرار
         document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
-        document.getElementById('langModalCloseBtn').addEventListener('click', closeLangModal);
+
+        // تعيين الحد الأدنى للتاريخ عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            setMinDate();
+        });
     </script>
 </body>
 </html>
