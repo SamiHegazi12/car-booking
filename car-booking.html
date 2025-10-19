@@ -6,8 +6,6 @@
     <title>مركز تقني المحركات - حجوزات الصيانة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- إضافة EmailJS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         :root {
             --primary: #2c5aa0;
@@ -64,6 +62,48 @@
         
         .logo img {
             height: 60px;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .simple-notification {
+            position: relative;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: background 0.3s;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .simple-notification:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
         
         .hero {
@@ -184,8 +224,13 @@
             background: var(--success);
         }
         
-        .btn-success:hover {
-            background: #218838;
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
         }
         
         .services-grid {
@@ -382,19 +427,13 @@
             text-align: center;
         }
         
-        /* أنماط لوحة التحكم */
         .admin-access-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 1000;
             background: var(--dark);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 50px;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -492,6 +531,15 @@
         
         .bookings-table tr:hover {
             background: #f8f9fa;
+        }
+
+        .booking-new {
+            background: #fff3cd !important;
+            border-right: 3px solid var(--warning);
+        }
+
+        .booking-pending {
+            background: #e3f2fd;
         }
         
         .status-pending {
@@ -645,28 +693,57 @@
             display: flex;
             gap: 10px;
         }
-        
-        .email-status {
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            margin-left: 10px;
+
+        /* أنماط التشخيص */
+        .diagnostics-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
         }
-        
-        .email-sent {
+
+        .diagnostic-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .diagnostic-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .alert-success {
             background: #d4edda;
             color: #155724;
+            border: 1px solid #c3e6cb;
         }
-        
-        .email-failed {
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .alert-danger {
             background: #f8d7da;
             color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
                 text-align: center;
+                gap: 15px;
             }
             
             .form-row {
@@ -686,6 +763,10 @@
             .search-box {
                 width: 100%;
             }
+
+            .diagnostic-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -695,6 +776,16 @@
             <div class="logo">
                 <h1>مركز تقني المحركات</h1>
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAxNWw1LjUtNS41YTQuOTUgNC45NSAwIDAgMC03LjA3LTcuMDcgNC45NSA0Ljk1IDAgMCAwLTcuMDcgNy4wN0wxMiAxNXoiPjwvcGF0aD48cGF0aCBkPSJNMTIgMTVsLTUuNSA1LjVhNC45NSA0Ljk1IDAgMCAwIDcuMDcgNy4wNyA0Ljk1IDQuOTUgMCAwIDAgNy4wNy03LjA3TDEyIDE1eiI+PC9wYXRoPjwvc3ZnPg==" alt="شعار المركز">
+            </div>
+            <div class="header-actions">
+                <div class="simple-notification" id="simpleNotification">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="simpleNotificationBadge">0</span>
+                </div>
+                <button class="admin-access-btn" id="adminAccessBtn">
+                    <i class="fas fa-cog"></i>
+                    <span>لوحة التحكم</span>
+                </button>
             </div>
         </div>
     </header>
@@ -963,12 +1054,6 @@
         </div>
     </div>
 
-    <!-- زر الدخول لوحة التحكم -->
-    <button class="admin-access-btn" id="adminAccessBtn">
-        <i class="fas fa-cog"></i>
-        <span>لوحة التحكم</span>
-    </button>
-
     <!-- نافذة تسجيل الدخول للمدير -->
     <div class="admin-login-modal" id="adminLoginModal">
         <div class="admin-login-content">
@@ -1020,6 +1105,7 @@
         <div class="admin-tabs">
             <div class="admin-tab active" data-tab="bookings">إدارة الحجوزات</div>
             <div class="admin-tab" data-tab="closedDates">إدارة الأيام المغلقة</div>
+            <div class="admin-tab" data-tab="diagnostics">تشخيص النظام</div>
         </div>
         
         <div class="tab-content active" id="bookingsTabContent">
@@ -1075,15 +1161,13 @@
                 </div>
             </div>
         </div>
+
+        <div class="tab-content" id="diagnosticsTabContent">
+            <!-- سيتم إضافة قسم التشخيص هنا من JavaScript -->
+        </div>
     </div>
 
     <script>
-        // تهيئة EmailJS
-        (function() {
-            // قم بتغيير هذه المعطيات بعد إنشاء حسابك في EmailJS
-            emailjs.init("YOUR_PUBLIC_KEY"); // استبدل YOUR_PUBLIC_KEY بمفتاحك العام
-        })();
-
         // بيانات المدير
         const ADMIN_CREDENTIALS = {
             username: "Hegazi",
@@ -1094,146 +1178,565 @@
         let bookings = JSON.parse(localStorage.getItem('carBookings')) || [];
         let closedDates = JSON.parse(localStorage.getItem('closedDates')) || [];
 
-        // دالة لإرسال إيميل تأكيد الحجز
-        async function sendConfirmationEmail(bookingData) {
-            try {
-                const templateParams = {
-                    customer_name: bookingData.name,
-                    customer_email: bookingData.email,
-                    service_type: getServiceName(bookingData.serviceType),
-                    appointment_date: bookingData.date,
-                    appointment_time: bookingData.time,
-                    car_type: getCarTypeName(bookingData.carType),
-                    car_model: bookingData.carModel,
-                    notes: bookingData.notes || 'لا توجد ملاحظات',
-                    center_name: 'مركز تقني المحركات',
-                    center_phone: '0530694999',
-                    center_address: 'صناعية أبها الجديدة، أبها'
-                };
+        // =============================================
+        // نظام الإشعارات الآمن
+        // =============================================
+        const SimpleNotifications = {
+            init() {
+                this.updateBadge();
+                this.setupAutoRefresh();
+                console.log('✅ تم تهيئة نظام الإشعارات البسيط');
+            },
+            
+            updateBadge() {
+                try {
+                    const pendingBookings = bookings.filter(b => b.status === 'pending').length;
+                    const badge = document.getElementById('simpleNotificationBadge');
+                    
+                    if (badge) {
+                        badge.textContent = pendingBookings;
+                        badge.style.display = pendingBookings > 0 ? 'flex' : 'none';
+                        
+                        // إضافة تأثير عند تغيير الرقم
+                        if (pendingBookings > 0) {
+                            badge.style.animation = 'pulse 0.5s ease-in-out';
+                            setTimeout(() => {
+                                badge.style.animation = '';
+                            }, 500);
+                        }
+                    }
+                } catch (error) {
+                    console.error('خطأ في تحديث العداد:', error);
+                }
+            },
+            
+            setupAutoRefresh() {
+                // تحديث تلقائي كل 30 ثانية عندما تكون لوحة التحكم مفتوحة
+                setInterval(() => {
+                    try {
+                        if (document.getElementById('adminDashboard').style.display === 'block') {
+                            this.updateBadge();
+                            this.highlightNewBookings();
+                        }
+                    } catch (error) {
+                        console.error('خطأ في التحديث التلقائي:', error);
+                    }
+                }, 30000);
+            },
+            
+            highlightNewBookings() {
+                try {
+                    const rows = document.querySelectorAll('#bookingsTableBody tr');
+                    rows.forEach(row => {
+                        const firstTd = row.querySelector('td:first-child');
+                        if (!firstTd) return;
+                        
+                        const rowIndex = parseInt(firstTd.textContent) - 1;
+                        const booking = bookings[rowIndex];
+                        
+                        if (booking) {
+                            // إزالة الكلاسات القديمة
+                            row.classList.remove('booking-new', 'booking-pending');
+                            
+                            // إضافة كلاسات جديدة حسب الحالة
+                            if (booking.status === 'pending') {
+                                row.classList.add('booking-pending');
+                                
+                                // تمييز الحجوزات الجديدة (آخر 10 دقائق)
+                                const bookingTime = new Date(booking.createdAt);
+                                const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+                                if (bookingTime > tenMinutesAgo) {
+                                    row.classList.add('booking-new');
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('خطأ في تمييز الحجوزات:', error);
+                }
+            },
+            
+            showToast(message, type = 'success') {
+                try {
+                    const toast = document.createElement('div');
+                    toast.className = 'simple-toast';
+                    toast.textContent = message;
+                    toast.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: ${type === 'error' ? 'var(--danger)' : 'var(--success)'};
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 5px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                        z-index: 10000;
+                        font-weight: 600;
+                    `;
+                    
+                    document.body.appendChild(toast);
+                    
+                    // إخفاء تلقائي بعد 3 ثواني
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 3000);
+                    
+                } catch (error) {
+                    console.error('خطأ في عرض الإشعار:', error);
+                }
+            },
+            
+            logNewBooking(bookingData) {
+                console.log('🆕 حجز جديد تم استلامه:', {
+                    '👤 العميل': bookingData.name,
+                    '📞 الجوال': bookingData.phone,
+                    '🔧 الخدمة': getServiceName(bookingData.serviceType),
+                    '📅 التاريخ': bookingData.date,
+                    '⏰ الوقت': bookingData.time,
+                    '🆔 رقم الحجز': bookingData.id
+                });
+            }
+        };
 
-                // استبدل 'YOUR_SERVICE_ID' و 'YOUR_TEMPLATE_ID' بمعرفاتك من EmailJS
-                const response = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
-                
-                console.log('تم إرسال الإيميل بنجاح:', response);
-                return { success: true, message: 'تم إرسال إيميل التأكيد بنجاح' };
-            } catch (error) {
-                console.error('فشل إرسال الإيميل:', error);
-                return { success: false, message: 'فشل إرسال إيميل التأكيد' };
-            }
-        }
-
-        // دالة لإرسال إيميل عند تأكيد الحجز من المدير
-        async function sendBookingConfirmedEmail(bookingData) {
-            try {
-                const templateParams = {
-                    customer_name: bookingData.name,
-                    customer_email: bookingData.email,
-                    service_type: getServiceName(bookingData.serviceType),
-                    appointment_date: bookingData.date,
-                    appointment_time: bookingData.time,
-                    car_type: getCarTypeName(bookingData.carType),
-                    car_model: bookingData.carModel,
-                    center_name: 'مركز تقني المحركات',
-                    center_phone: '0530694999',
-                    center_address: 'صناعية أبها الجديدة، أبها',
-                    confirmation_number: bookingData.id
-                };
-
-                // استبدل 'YOUR_SERVICE_ID' و 'YOUR_CONFIRMATION_TEMPLATE_ID' بمعرفاتك
-                const response = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_CONFIRMATION_TEMPLATE_ID', templateParams);
-                
-                console.log('تم إرسال إيميل التأكيد النهائي:', response);
-                return { success: true, message: 'تم إرسال إيميل التأكيد النهائي' };
-            } catch (error) {
-                console.error('فشل إرسال إيميل التأكيد النهائي:', error);
-                return { success: false, message: 'فشل إرسال إيميل التأكيد النهائي' };
-            }
-        }
-
-        function getCarTypeName(carType) {
-            const carTypes = {
-                sedan: "سيدان",
-                suv: "دفع رباعي",
-                truck: "شاحنة",
-                other: "أخرى"
-            };
-            return carTypes[carType] || carType;
-        }
-
-        // إرسال نموذج الحجز
-        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // =============================================
+        // نظام تسجيل الحجوزات الفاشلة
+        // =============================================
+        const BookingLogger = {
+            logFailedBooking(bookingData, error) {
+                try {
+                    const failedBookings = JSON.parse(localStorage.getItem('failedBookings')) || [];
+                    failedBookings.push({
+                        ...bookingData,
+                        error: error.toString(),
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('failedBookings', JSON.stringify(failedBookings));
+                    console.log('📝 تم تسجيل الحجز الفاشل');
+                } catch (e) {
+                    console.error('❌ فشل تسجيل الحجز الفاشل:', e);
+                }
+            },
             
-            // جمع بيانات النموذج
-            const formData = {
-                id: Date.now(),
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value,
-                carType: document.getElementById('carType').value,
-                carModel: document.getElementById('carModel').value,
-                serviceType: document.getElementById('serviceType').value,
-                date: document.getElementById('date').value,
-                time: document.getElementById('time').value,
-                notes: document.getElementById('notes').value,
-                status: 'pending',
-                createdAt: new Date().toISOString(),
-                emailSent: false
-            };
-            
-            // التحقق من صحة البريد الإلكتروني
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                alert('يرجى إدخال بريد إلكتروني صحيح');
-                return;
-            }
-            
-            // التحقق من التاريخ
-            const selectedDate = new Date(formData.date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            if (selectedDate <= today) {
-                alert('لا يمكن الحجز في نفس اليوم أو تاريخ سابق! يرجى اختيار تاريخ في المستقبل.');
-                return;
-            }
-            
-            // التحقق من أن اليوم ليس جمعة
-            if (selectedDate.getDay() === 5) {
-                alert('لا يمكن الحجز يوم الجمعة! يرجى اختيار يوم آخر.');
-                return;
-            }
-            
-            // التحقق من الأيام المغلقة
-            if (closedDates.includes(formData.date)) {
-                alert('عفواً، هذا التاريخ مغلق للحجوزات. يرجى اختيار تاريخ آخر.');
-                return;
-            }
-            
-            // حفظ الحجز
-            bookings.push(formData);
-            localStorage.setItem('carBookings', JSON.stringify(bookings));
-            
-            // إرسال إيميل الاستلام
-            const emailResult = await sendConfirmationEmail(formData);
-            if (emailResult.success) {
-                formData.emailSent = true;
-                // تحديث البيانات مع حالة الإيميل
-                const index = bookings.findIndex(b => b.id === formData.id);
-                if (index !== -1) {
-                    bookings[index] = formData;
-                    localStorage.setItem('carBookings', JSON.stringify(bookings));
+            showFailedBookings() {
+                try {
+                    const failed = JSON.parse(localStorage.getItem('failedBookings')) || [];
+                    console.log('الحجوزات الفاشلة:', failed);
+                    return failed;
+                } catch (error) {
+                    console.error('❌ خطأ في عرض الحجوزات الفاشلة:', error);
+                    return [];
                 }
             }
+        };
+
+        // =============================================
+        // نظام المزامنة التلقائية
+        // =============================================
+        const SyncManager = {
+            init() {
+                this.syncFromMultipleSources();
+                setInterval(() => this.syncFromMultipleSources(), 10000); // كل 10 ثواني
+            },
             
-            // عرض رسالة النجاح
-            document.getElementById('customerName').textContent = formData.name;
-            document.getElementById('customerEmail').textContent = formData.email;
-            document.getElementById('confirmationModal').style.display = 'flex';
+            syncFromMultipleSources() {
+                try {
+                    // المصادر المختلفة للبيانات
+                    const sources = [
+                        'carBookings',
+                        'carBookings_backup', 
+                        'carBookings_backup_2',
+                        'carBookings_simple',
+                        'failedBookings'
+                    ];
+                    
+                    let allBookings = [];
+                    
+                    sources.forEach(source => {
+                        try {
+                            const data = JSON.parse(localStorage.getItem(source)) || [];
+                            if (Array.isArray(data)) {
+                                // معالجة البيانات من failedBookings
+                                if (source === 'failedBookings') {
+                                    const validBookings = data.filter(item => item.id && item.name);
+                                    allBookings = allBookings.concat(validBookings);
+                                } else {
+                                    allBookings = allBookings.concat(data);
+                                }
+                            }
+                        } catch (e) {
+                            console.log('❌ لا يمكن قراءة مصدر:', source, e);
+                        }
+                    });
+                    
+                    // إزالة التكرارات
+                    const uniqueBookings = allBookings.filter((booking, index, self) =>
+                        index === self.findIndex(b => b.id === booking.id)
+                    );
+                    
+                    // تحديث البيانات إذا وجدنا حجوزات جديدة
+                    if (uniqueBookings.length > bookings.length) {
+                        bookings = uniqueBookings;
+                        this.saveBookingsWithBackup(bookings);
+                        console.log('🔄 تم مزامنة الحجوزات:', uniqueBookings.length);
+                        
+                        // تحديث الواجهة
+                        if (document.getElementById('adminDashboard').style.display === 'block') {
+                            loadBookingsTable();
+                            updateStats();
+                            SimpleNotifications.updateBadge();
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في المزامنة:', error);
+                }
+            },
             
-            // إعادة تعيين النموذج
-            this.reset();
-            setMinDate();
+            saveBookingsWithBackup(newBookings) {
+                try {
+                    // المحاولة الأولى
+                    localStorage.setItem('carBookings', JSON.stringify(newBookings));
+                    
+                    // النسخ الاحتياطي المتعددة
+                    localStorage.setItem('carBookings_backup', JSON.stringify(newBookings));
+                    localStorage.setItem('carBookings_backup_2', JSON.stringify(newBookings));
+                    
+                    // نسخة مبسطة للطوارئ
+                    const simplifiedBookings = newBookings.map(booking => ({
+                        id: booking.id,
+                        name: booking.name,
+                        phone: booking.phone,
+                        serviceType: booking.serviceType,
+                        date: booking.date,
+                        time: booking.time,
+                        status: booking.status,
+                        createdAt: booking.createdAt
+                    }));
+                    localStorage.setItem('carBookings_simple', JSON.stringify(simplifiedBookings));
+                    
+                    // تسجيل وقت الحفظ
+                    localStorage.setItem('last_save', new Date().toISOString());
+                    
+                    console.log('💾 تم حفظ البيانات في', newBookings.length, 'حجز');
+                    return true;
+                    
+                } catch (error) {
+                    console.error('❌ فشل حفظ البيانات:', error);
+                    return false;
+                }
+            }
+        };
+
+        // =============================================
+        // نظام التشخيص
+        // =============================================
+        const DiagnosticsManager = {
+            init() {
+                this.addDiagnosticsSection();
+                setInterval(() => this.updateDiagnostics(), 5000);
+            },
+            
+            addDiagnosticsSection() {
+                const diagnosticsHTML = `
+                    <div class="admin-section">
+                        <h3><i class="fas fa-stethoscope"></i> تشخيص النظام</h3>
+                        
+                        <div class="diagnostics-info">
+                            <div class="diagnostic-item">
+                                <strong>إجمالي الحجوزات في localStorage:</strong>
+                                <span id="localStorageCount">0</span>
+                            </div>
+                            <div class="diagnostic-item">
+                                <strong>الحجوزات الفاشلة:</strong>
+                                <span id="failedBookingsCount">0</span>
+                            </div>
+                            <div class="diagnostic-item">
+                                <strong>آخر تحديث:</strong>
+                                <span id="lastUpdateTime">-</span>
+                            </div>
+                            <div class="diagnostic-item">
+                                <strong>حالة localStorage:</strong>
+                                <span id="localStorageStatus">جاري الفحص...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="diagnostic-actions">
+                            <button class="btn btn-secondary" onclick="DiagnosticsManager.runDiagnostics()">
+                                <i class="fas fa-sync"></i> تشغيل التشخيص
+                            </button>
+                            <button class="btn btn-warning" onclick="DiagnosticsManager.recoverLostBookings()">
+                                <i class="fas fa-first-aid"></i> استعادة الحجوزات المفقودة
+                            </button>
+                            <button class="btn btn-danger" onclick="DiagnosticsManager.clearAllData()">
+                                <i class="fas fa-trash"></i> مسح كل البيانات (احتياطي)
+                            </button>
+                        </div>
+                        
+                        <div id="diagnosticsResults" style="margin-top: 15px;"></div>
+                    </div>
+                `;
+                
+                document.getElementById('diagnosticsTabContent').innerHTML = diagnosticsHTML;
+                this.updateDiagnostics();
+            },
+            
+            updateDiagnostics() {
+                try {
+                    const mainBookings = JSON.parse(localStorage.getItem('carBookings')) || [];
+                    const backupBookings = JSON.parse(localStorage.getItem('carBookings_backup')) || [];
+                    const failedBookings = JSON.parse(localStorage.getItem('failedBookings')) || [];
+                    const simpleBookings = JSON.parse(localStorage.getItem('carBookings_simple')) || [];
+                    
+                    document.getElementById('localStorageCount').textContent = mainBookings.length;
+                    document.getElementById('failedBookingsCount').textContent = failedBookings.length;
+                    document.getElementById('lastUpdateTime').textContent = new Date().toLocaleString('ar-SA');
+                    
+                    // فحص حالة localStorage
+                    const testData = { test: true, timestamp: Date.now() };
+                    localStorage.setItem('storage_test', JSON.stringify(testData));
+                    const retrieved = JSON.parse(localStorage.getItem('storage_test'));
+                    
+                    if (retrieved && retrieved.test) {
+                        document.getElementById('localStorageStatus').textContent = '✅ يعمل بشكل طبيعي';
+                        document.getElementById('localStorageStatus').style.color = 'green';
+                    } else {
+                        document.getElementById('localStorageStatus').textContent = '❌ هناك مشكلة';
+                        document.getElementById('localStorageStatus').style.color = 'red';
+                    }
+                    
+                    localStorage.removeItem('storage_test');
+                    
+                } catch (error) {
+                    document.getElementById('localStorageStatus').textContent = '❌ فشل الفحص: ' + error.message;
+                    document.getElementById('localStorageStatus').style.color = 'red';
+                }
+            },
+            
+            runDiagnostics() {
+                const results = document.getElementById('diagnosticsResults');
+                results.innerHTML = '<div class="alert alert-warning">جاري التشخيص...</div>';
+                
+                setTimeout(() => {
+                    try {
+                        let diagnosticMessages = [];
+                        
+                        // فحص localStorage
+                        try {
+                            const testData = { test: true };
+                            localStorage.setItem('diagnostic_test', JSON.stringify(testData));
+                            const retrieved = JSON.parse(localStorage.getItem('diagnostic_test'));
+                            if (retrieved && retrieved.test) {
+                                diagnosticMessages.push('✅ localStorage يعمل بشكل صحيح');
+                            } else {
+                                diagnosticMessages.push('❌ localStorage لا يعمل بشكل صحيح');
+                            }
+                            localStorage.removeItem('diagnostic_test');
+                        } catch (e) {
+                            diagnosticMessages.push('❌ فشل فحص localStorage');
+                        }
+                        
+                        // فحص البيانات
+                        const mainBookings = JSON.parse(localStorage.getItem('carBookings')) || [];
+                        const failedBookings = JSON.parse(localStorage.getItem('failedBookings')) || [];
+                        
+                        diagnosticMessages.push(`📊 إجمالي الحجوزات: ${mainBookings.length}`);
+                        diagnosticMessages.push(`❌ الحجوزات الفاشلة: ${failedBookings.length}`);
+                        
+                        // فحص التكرارات
+                        const uniqueIds = [...new Set(mainBookings.map(b => b.id))];
+                        if (uniqueIds.length !== mainBookings.length) {
+                            diagnosticMessages.push('⚠️ يوجد حجوزات مكررة');
+                        }
+                        
+                        results.innerHTML = `
+                            <div class="alert alert-success">
+                                <strong>نتائج التشخيص:</strong><br>
+                                ${diagnosticMessages.join('<br>')}
+                            </div>
+                        `;
+                        
+                    } catch (error) {
+                        results.innerHTML = `
+                            <div class="alert alert-danger">
+                                ❌ فشل التشخيص: ${error.message}
+                            </div>
+                        `;
+                    }
+                }, 1000);
+            },
+            
+            recoverLostBookings() {
+                const results = document.getElementById('diagnosticsResults');
+                results.innerHTML = '<div class="alert alert-warning">جاري استعادة الحجوزات...</div>';
+                
+                setTimeout(() => {
+                    try {
+                        const sources = [
+                            'carBookings',
+                            'carBookings_backup', 
+                            'carBookings_backup_2',
+                            'carBookings_simple',
+                            'failedBookings'
+                        ];
+                        
+                        let allRecovered = [];
+                        
+                        sources.forEach(source => {
+                            try {
+                                const data = JSON.parse(localStorage.getItem(source)) || [];
+                                if (Array.isArray(data)) {
+                                    // معالجة البيانات من failedBookings
+                                    if (source === 'failedBookings') {
+                                        const validBookings = data.filter(item => item.id && item.name);
+                                        allRecovered = allRecovered.concat(validBookings);
+                                    } else {
+                                        allRecovered = allRecovered.concat(data);
+                                    }
+                                }
+                            } catch (e) {
+                                console.log('❌ لا يمكن قراءة مصدر:', source, e);
+                            }
+                        });
+                        
+                        // إزالة التكرارات
+                        const uniqueBookings = allRecovered.filter((booking, index, self) =>
+                            index === self.findIndex(b => b.id === booking.id)
+                        );
+                        
+                        if (uniqueBookings.length > 0) {
+                            bookings = uniqueBookings;
+                            SyncManager.saveBookingsWithBackup(bookings);
+                            
+                            results.innerHTML = `
+                                <div class="alert alert-success">
+                                    ✅ تم استعادة ${uniqueBookings.length} حجز بنجاح
+                                </div>
+                            `;
+                            
+                            loadBookingsTable();
+                            updateStats();
+                            SimpleNotifications.updateBadge();
+                            
+                        } else {
+                            results.innerHTML = `
+                                <div class="alert alert-warning">
+                                    ⚠️ لم يتم العثور على حجوزات للاستعادة
+                                </div>
+                            `;
+                        }
+                        
+                    } catch (error) {
+                        results.innerHTML = `
+                            <div class="alert alert-danger">
+                                ❌ فشل الاستعادة: ${error.message}
+                            </div>
+                        `;
+                    }
+                    
+                    this.updateDiagnostics();
+                }, 1500);
+            },
+            
+            clearAllData() {
+                if (confirm('⚠️ هل أنت متأكد من مسح كل البيانات؟ هذا الإجراء لا يمكن التراجع عنه.')) {
+                    localStorage.clear();
+                    bookings = [];
+                    closedDates = [];
+                    
+                    document.getElementById('diagnosticsResults').innerHTML = `
+                        <div class="alert alert-success">
+                            ✅ تم مسح جميع البيانات بنجاح
+                        </div>
+                    `;
+                    
+                    loadBookingsTable();
+                    updateStats();
+                    SimpleNotifications.updateBadge();
+                    this.updateDiagnostics();
+                }
+            }
+        };
+
+        // =============================================
+        // الدوال الأساسية للتطبيق
+        // =============================================
+
+        // إرسال نموذج الحجز
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            try {
+                // جمع بيانات النموذج
+                const formData = {
+                    id: Date.now(),
+                    name: document.getElementById('name').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    carType: document.getElementById('carType').value,
+                    carModel: document.getElementById('carModel').value,
+                    serviceType: document.getElementById('serviceType').value,
+                    date: document.getElementById('date').value,
+                    time: document.getElementById('time').value,
+                    notes: document.getElementById('notes').value,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // التحقق من صحة البريد الإلكتروني
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    alert('يرجى إدخال بريد إلكتروني صحيح');
+                    return;
+                }
+                
+                // التحقق من التاريخ
+                const selectedDate = new Date(formData.date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (selectedDate <= today) {
+                    alert('لا يمكن الحجز في نفس اليوم أو تاريخ سابق! يرجى اختيار تاريخ في المستقبل.');
+                    return;
+                }
+                
+                // التحقق من أن اليوم ليس جمعة
+                if (selectedDate.getDay() === 5) {
+                    alert('لا يمكن الحجز يوم الجمعة! يرجى اختيار يوم آخر.');
+                    return;
+                }
+                
+                // التحقق من الأيام المغلقة
+                if (closedDates.includes(formData.date)) {
+                    alert('عفواً، هذا التاريخ مغلق للحجوزات. يرجى اختيار تاريخ آخر.');
+                    return;
+                }
+                
+                // حفظ الحجز
+                bookings.push(formData);
+                SyncManager.saveBookingsWithBackup(bookings);
+                
+                // 🔔 الإشعارات البسيطة
+                SimpleNotifications.logNewBooking(formData);
+                SimpleNotifications.updateBadge();
+                SimpleNotifications.showToast('تم استلام طلب الحجز بنجاح! سيتم المراجعة خلال 24 ساعة');
+                
+                // عرض رسالة النجاح
+                document.getElementById('customerName').textContent = formData.name;
+                document.getElementById('customerEmail').textContent = formData.email;
+                document.getElementById('confirmationModal').style.display = 'flex';
+                
+                // إعادة تعيين النموذج
+                this.reset();
+                setMinDate();
+                
+            } catch (error) {
+                console.error('❌ فشل حفظ الحجز:', error);
+                BookingLogger.logFailedBooking(formData, error);
+                SimpleNotifications.showToast('حدث خطأ في حفظ الحجز. يرجى المحاولة مرة أخرى.', 'error');
+            }
         });
 
         // تعيين الحد الأدنى للتاريخ ليكون غداً
@@ -1289,6 +1792,7 @@
                 document.getElementById('adminLoginModal').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
                 loadAdminDashboard();
+                SimpleNotifications.showToast('مرحباً بك في لوحة التحكم!');
             } else {
                 errorElement.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
                 errorElement.style.display = 'block';
@@ -1306,12 +1810,15 @@
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('adminUsername').value = '';
             document.getElementById('adminPassword').value = '';
+            SimpleNotifications.showToast('تم تسجيل الخروج بنجاح');
         }
 
         function loadAdminDashboard() {
             updateStats();
             loadBookingsTable();
             loadClosedDates();
+            SimpleNotifications.highlightNewBookings();
+            DiagnosticsManager.updateDiagnostics();
         }
 
         function updateStats() {
@@ -1352,39 +1859,38 @@
                 return;
             }
             
-            tbody.innerHTML = filteredBookings.map((booking, index) => `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${booking.name}</td>
-                    <td>${booking.phone}</td>
-                    <td>${booking.email}</td>
-                    <td>${getServiceName(booking.serviceType)}</td>
-                    <td>${booking.date}</td>
-                    <td>${booking.time}</td>
-                    <td class="status-${booking.status}">
-                        ${getStatusText(booking.status)}
-                        ${booking.emailSent ? '<span class="email-status email-sent">تم الإرسال</span>' : '<span class="email-status email-failed">لم يُرسل</span>'}
-                    </td>
-                    <td>
-                        ${booking.status === 'pending' ? `
-                            <button class="btn-admin btn-confirm" onclick="confirmBooking(${booking.id})">
-                                تأكيد
-                            </button>
-                            <button class="btn-admin btn-cancel" onclick="cancelBooking(${booking.id})">
-                                إلغاء
-                            </button>
-                        ` : ''}
-                        ${booking.status === 'confirmed' ? `
-                            <button class="btn-admin btn-cancel" onclick="cancelBooking(${booking.id})">
-                                إلغاء
-                            </button>
-                        ` : ''}
-                        <button class="btn-admin btn-secondary" onclick="resendEmail(${booking.id})" title="إعادة إرسال الإيميل">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = filteredBookings.map((booking, index) => {
+                const isNew = new Date(booking.createdAt) > new Date(Date.now() - 10 * 60 * 1000);
+                const rowClass = booking.status === 'pending' ? (isNew ? 'booking-new' : 'booking-pending') : '';
+                
+                return `
+                    <tr class="${rowClass}">
+                        <td>${index + 1}</td>
+                        <td>${booking.name}</td>
+                        <td>${booking.phone}</td>
+                        <td>${booking.email}</td>
+                        <td>${getServiceName(booking.serviceType)}</td>
+                        <td>${booking.date}</td>
+                        <td>${booking.time}</td>
+                        <td class="status-${booking.status}">${getStatusText(booking.status)}</td>
+                        <td>
+                            ${booking.status === 'pending' ? `
+                                <button class="btn-admin btn-confirm" onclick="confirmBooking(${booking.id})">
+                                    تأكيد
+                                </button>
+                                <button class="btn-admin btn-cancel" onclick="cancelBooking(${booking.id})">
+                                    إلغاء
+                                </button>
+                            ` : ''}
+                            ${booking.status === 'confirmed' ? `
+                                <button class="btn-admin btn-cancel" onclick="cancelBooking(${booking.id})">
+                                    إلغاء
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function getServiceName(serviceType) {
@@ -1416,45 +1922,17 @@
             return statusTexts[status] || status;
         }
 
-        async function confirmBooking(bookingId) {
+        function confirmBooking(bookingId) {
             const booking = bookings.find(b => b.id === bookingId);
             if (booking) {
                 booking.status = 'confirmed';
-                localStorage.setItem('carBookings', JSON.stringify(bookings));
+                SyncManager.saveBookingsWithBackup(bookings);
                 
-                // إرسال إيميل التأكيد النهائي
-                const emailResult = await sendBookingConfirmedEmail(booking);
-                if (emailResult.success) {
-                    booking.emailSent = true;
-                    localStorage.setItem('carBookings', JSON.stringify(bookings));
-                    alert('تم تأكيد الحجز وإرسال الإيميل بنجاح');
-                } else {
-                    alert('تم تأكيد الحجز ولكن فشل إرسال الإيميل');
-                }
+                SimpleNotifications.updateBadge();
+                SimpleNotifications.showToast('تم تأكيد الحجز بنجاح');
                 
                 loadBookingsTable();
                 updateStats();
-            }
-        }
-
-        async function resendEmail(bookingId) {
-            const booking = bookings.find(b => b.id === bookingId);
-            if (booking) {
-                let emailResult;
-                if (booking.status === 'confirmed') {
-                    emailResult = await sendBookingConfirmedEmail(booking);
-                } else {
-                    emailResult = await sendConfirmationEmail(booking);
-                }
-                
-                if (emailResult.success) {
-                    booking.emailSent = true;
-                    localStorage.setItem('carBookings', JSON.stringify(bookings));
-                    alert('تم إعادة إرسال الإيميل بنجاح');
-                    loadBookingsTable();
-                } else {
-                    alert('فشل إعادة إرسال الإيميل');
-                }
             }
         }
 
@@ -1462,7 +1940,11 @@
             const booking = bookings.find(b => b.id === bookingId);
             if (booking) {
                 booking.status = 'cancelled';
-                localStorage.setItem('carBookings', JSON.stringify(bookings));
+                SyncManager.saveBookingsWithBackup(bookings);
+                
+                SimpleNotifications.updateBadge();
+                SimpleNotifications.showToast('تم إلغاء الحجز');
+                
                 loadBookingsTable();
                 updateStats();
             }
@@ -1498,6 +1980,7 @@
                 loadClosedDates();
                 updateStats();
                 dateInput.value = '';
+                SimpleNotifications.showToast('تم إغلاق التاريخ بنجاح');
             }
         });
 
@@ -1506,6 +1989,7 @@
             localStorage.setItem('closedDates', JSON.stringify(closedDates));
             loadClosedDates();
             updateStats();
+            SimpleNotifications.showToast('تم فتح التاريخ بنجاح');
         }
 
         // إضافة فلتر البحث والتبويبات
@@ -1523,16 +2007,68 @@
                 // إضافة النشاط للتبويب المحدد
                 this.classList.add('active');
                 document.getElementById(tabId + 'TabContent').classList.add('active');
+                
+                // إذا كان تبويب التشخيص، قم بتحديثه
+                if (tabId === 'diagnostics') {
+                    DiagnosticsManager.updateDiagnostics();
+                }
             });
         });
 
         // إغلاق النوافذ بالأزرار
         document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 
-        // تعيين الحد الأدنى للتاريخ عند تحميل الصفحة
+        // تهيئة النظام عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', function() {
             setMinDate();
+            SimpleNotifications.init();
+            SyncManager.init();
+            DiagnosticsManager.init();
+            
+            // إضافة بيانات تجريبية للاختبار (يمكن إزالتها لاحقاً)
+            addSampleData();
         });
+
+        // إضافة بيانات تجريبية للاختبار
+        function addSampleData() {
+            if (bookings.length === 0) {
+                const sampleBookings = [
+                    {
+                        id: Date.now() - 1000,
+                        name: 'أحمد محمد',
+                        phone: '0551234567',
+                        email: 'ahmed@example.com',
+                        carType: 'sedan',
+                        carModel: 'كامري 2022',
+                        serviceType: 'oil',
+                        date: '2024-01-15',
+                        time: '10:00',
+                        notes: 'أول مرة',
+                        status: 'pending',
+                        createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: Date.now() - 2000,
+                        name: 'سارة عبدالله',
+                        phone: '0547654321',
+                        email: 'sara@example.com',
+                        carType: 'suv',
+                        carModel: 'باترول 2021',
+                        serviceType: 'brakes',
+                        date: '2024-01-16',
+                        time: '11:00',
+                        notes: '',
+                        status: 'confirmed',
+                        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+                    }
+                ];
+                
+                bookings.push(...sampleBookings);
+                SyncManager.saveBookingsWithBackup(bookings);
+                SimpleNotifications.updateBadge();
+                console.log('✅ تم إضافة بيانات تجريبية للاختبار');
+            }
+        }
     </script>
 </body>
 </html>
