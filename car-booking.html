@@ -1058,12 +1058,15 @@
     <div class="admin-login-modal" id="adminLoginModal">
         <div class="admin-login-content">
             <h3>تسجيل الدخول للمدير</h3>
-            <div class="form-group">
-                <label for="adminPassword">كلمة المرور</label>
-                <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور">
-            </div>
-            <button class="btn" id="adminLoginBtn">دخول</button>
-            <button class="btn btn-secondary" id="adminLoginCancel">إلغاء</button>
+            <!-- إضافة form لحل مشكلة الكونسول -->
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminPassword">كلمة المرور</label>
+                    <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required>
+                </div>
+                <button type="submit" class="btn">دخول</button>
+                <button type="button" class="btn btn-secondary" id="adminLoginCancel">إلغاء</button>
+            </form>
         </div>
     </div>
 
@@ -1185,12 +1188,11 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // الكود JavaScript يبقى كما هو بدون تغيير
         document.addEventListener('DOMContentLoaded', function() {
             // متغيرات التطبيق
-            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            let bookings = JSON.parse(localStorage.getItem('carBookings')) || [];
             let closedDates = JSON.parse(localStorage.getItem('closedDates')) || [];
-            const adminPassword = "admin123"; // كلمة مرور المدير الافتراضية
+            const adminPassword = "admin123";
             
             // عناصر DOM
             const bookingForm = document.getElementById('bookingForm');
@@ -1201,7 +1203,7 @@
             const adminLoginModal = document.getElementById('adminLoginModal');
             const adminDashboard = document.getElementById('adminDashboard');
             const adminPasswordInput = document.getElementById('adminPassword');
-            const adminLoginBtn = document.getElementById('adminLoginBtn');
+            const adminLoginForm = document.getElementById('adminLoginForm');
             const adminLoginCancel = document.getElementById('adminLoginCancel');
             const adminLogoutBtn = document.getElementById('adminLogoutBtn');
             const bookingsTableBody = document.getElementById('bookingsTableBody');
@@ -1227,6 +1229,7 @@
             // تعيين الحد الأدنى للتاريخ إلى اليوم الحالي
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').min = today;
+            closeDateInput.min = today;
             
             // إرسال نموذج الحجز
             bookingForm.addEventListener('submit', function(e) {
@@ -1260,7 +1263,7 @@
                 
                 // حفظ الحجز
                 bookings.push(bookingData);
-                localStorage.setItem('bookings', JSON.stringify(bookings));
+                localStorage.setItem('carBookings', JSON.stringify(bookings));
                 
                 // عرض تأكيد الحجز
                 bookingIdSpan.textContent = bookingId;
@@ -1293,8 +1296,10 @@
                 adminPasswordInput.value = '';
             });
             
-            // تسجيل دخول المدير
-            adminLoginBtn.addEventListener('click', function() {
+            // تسجيل دخول المدير باستخدام form
+            adminLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
                 if (adminPasswordInput.value === adminPassword) {
                     adminLoginModal.style.display = 'none';
                     adminDashboard.style.display = 'block';
@@ -1481,7 +1486,7 @@
                 
                 if (bookingIndex !== -1) {
                     bookings[bookingIndex].status = newStatus;
-                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                    localStorage.setItem('carBookings', JSON.stringify(bookings));
                     updateBookingsTable();
                     updateStats();
                     
