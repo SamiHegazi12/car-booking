@@ -1074,6 +1074,9 @@
                 <button class="btn-admin btn-secondary" id="refreshAdminBtn">
                     <i class="fas fa-sync-alt"></i> تحديث
                 </button>
+                <button class="btn-admin btn-info" id="forceRefreshBtn">
+                    <i class="fas fa-sync"></i> تحديث فوري
+                </button>
                 <button class="btn-admin btn-danger" id="closeAdminBtn">
                     <i class="fas fa-times"></i> إغلاق
                 </button>
@@ -1584,7 +1587,7 @@
         }
 
         // =============================================
-        // نظام الحفظ المحسن
+        // نظام الحفظ المحسن - الإصدار المصحح
         // =============================================
         function saveBookingImmediately(formData) {
             try {
@@ -1592,31 +1595,31 @@
                 
                 // 1. الحفظ المباشر في localStorage
                 const currentBookings = JSON.parse(localStorage.getItem('carBookings')) || [];
-                console.log('📊 الحجوزات الحالية:', currentBookings.length);
+                console.log('📊 الحجوزات الحالية قبل الإضافة:', currentBookings.length);
                 
                 currentBookings.push(formData);
                 localStorage.setItem('carBookings', JSON.stringify(currentBookings));
                 
-                // تحديث المصفوفة المحلية
+                // 2. تحديث المصفوفة المحلية - هذا هو الإصلاح!
                 bookings = currentBookings;
                 
                 console.log('✅ تم الحفظ مباشرة في localStorage');
-                console.log('📋 الحجوزات بعد الإضافة:', currentBookings.length);
+                console.log('📋 الحجوزات بعد الإضافة:', bookings.length);
                 
-                // 2. عرض التأكيد فوراً
+                // 3. عرض التأكيد فوراً
                 document.getElementById('bookingId').textContent = formData.id;
                 document.getElementById('confirmationModal').style.display = 'flex';
                 
                 console.log('🪟 تم عرض نافذة التأكيد');
                 
-                // 3. تحديث العرض إذا كانت لوحة التحكم مفتوحة
+                // 4. تحديث العرض إذا كانت لوحة التحكم مفتوحة
                 if (document.getElementById('adminDashboard').style.display === 'block') {
                     console.log('🔄 تحديث لوحة التحكم...');
                     loadBookingsTable();
                     updateStats();
                 }
                 
-                // 4. محاولة الحفظ في السحابة (في الخلفية)
+                // 5. محاولة الحفظ في السحابة (في الخلفية)
                 setTimeout(() => {
                     CloudStorage.saveBookingToCloud(formData);
                 }, 1000);
@@ -1684,9 +1687,40 @@
         }
 
         // =============================================
+        // دوال فحص وتحديث البيانات
+        // =============================================
+        function checkBookingsImmediately() {
+            console.log('🔍 فحص فوري للحجوزات:');
+            const currentBookings = JSON.parse(localStorage.getItem('carBookings')) || [];
+            console.log('📋 الحجوزات في localStorage:', currentBookings.length);
+            console.log('📋 الحجوزات في المصفوفة:', bookings.length);
+            
+            // تحديث المصفوفة إذا كانت مختلفة
+            if (currentBookings.length !== bookings.length) {
+                console.log('🔄 تصحيح المصفوفة bookings...');
+                bookings = currentBookings;
+            }
+            
+            return currentBookings;
+        }
+
+        function forceReloadBookings() {
+            console.log('🔄 إعادة تحميل الحجوزات من localStorage...');
+            const storedBookings = JSON.parse(localStorage.getItem('carBookings')) || [];
+            bookings = storedBookings;
+            console.log('✅ تم تحميل ' + bookings.length + ' حجز');
+            return bookings;
+        }
+
+        // =============================================
         // دوال لوحة التحكم
         // =============================================
         function loadBookingsTable() {
+            console.log('🔄 تحميل جدول الحجوزات...');
+            
+            // فحص وتحديث المصفوفة أولاً
+            forceReloadBookings();
+            
             const tableBody = document.getElementById('bookingsTableBody');
             const searchTerm = document.getElementById('searchBookings').value.toLowerCase();
             const statusFilter = document.getElementById('filterStatus').value;
@@ -1713,6 +1747,7 @@
             
             if (filteredBookings.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center;">لا توجد حجوزات</td></tr>`;
+                console.log('📭 الجدول فارغ - لا توجد حجوزات');
                 return;
             }
             
@@ -1735,6 +1770,8 @@
                     </td>
                 </tr>
             `).join('');
+            
+            console.log('✅ تم تحميل الجدول بـ ' + filteredBookings.length + ' حجز');
         }
 
         function getCarTypeText(type) {
@@ -1917,9 +1954,11 @@
         async function loadAdminDashboard() {
             console.log('🔄 تحميل لوحة التحكم...');
             
-            // تحميل البيانات من localStorage أولاً
+            // تحميل البيانات من localStorage أولاً وتحديث المصفوفة
             const localBookings = JSON.parse(localStorage.getItem('carBookings')) || [];
-            console.log('📊 الحجوزات المحلية:', localBookings.length);
+            bookings = localBookings;
+            
+            console.log('📊 الحجوزات المحلية:', bookings.length);
             
             // تحديث الواجهة
             updateStats();
@@ -1996,6 +2035,14 @@
                 SimpleNotifications.showToast('تم تحديث البيانات');
             });
             
+            document.getElementById('forceRefreshBtn').addEventListener('click', function() {
+                console.log('🔄 تحديث فوري...');
+                forceReloadBookings();
+                loadBookingsTable();
+                updateStats();
+                SimpleNotifications.showToast('تم التحديث الفوري');
+            });
+            
             document.getElementById('searchBookings').addEventListener('input', loadBookingsTable);
             document.getElementById('filterStatus').addEventListener('change', loadBookingsTable);
             
@@ -2021,8 +2068,9 @@
             
             // اختبار سريع
             setTimeout(() => {
-                const bookings = JSON.parse(localStorage.getItem('carBookings')) || [];
-                console.log('🎯 الحجوزات النهائية بعد التحميل:', bookings.length);
+                const initialBookings = JSON.parse(localStorage.getItem('carBookings')) || [];
+                console.log('🎯 الحجوزات النهائية بعد التحميل:', initialBookings.length);
+                bookings = initialBookings; // تأكيد التزامن
             }, 2000);
         });
 
