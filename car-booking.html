@@ -775,7 +775,6 @@
     </style>
 </head>
 <body>
-    <!-- الهيكل HTML يبقى كما هو بدون تغيير -->
     <header>
         <div class="container header-content">
             <div class="logo">
@@ -805,18 +804,18 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">الاسم الكامل</label>
-                        <input type="text" id="name" required>
+                        <input type="text" id="name" required autocomplete="name">
                     </div>
                     <div class="form-group">
                         <label for="phone">رقم الجوال</label>
-                        <input type="tel" id="phone" required>
+                        <input type="tel" id="phone" required autocomplete="tel">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">البريد الإلكتروني</label>
-                        <input type="email" id="email" required placeholder="example@domain.com">
+                        <input type="email" id="email" required placeholder="example@domain.com" autocomplete="email">
                     </div>
                     <div class="form-group">
                         <label for="carType">نوع السيارة</label>
@@ -833,7 +832,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="carModel">موديل السيارة</label>
-                        <input type="text" id="carModel" required>
+                        <input type="text" id="carModel" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="serviceType">نوع الخدمة</label>
@@ -879,7 +878,7 @@
                 
                 <div class="form-group">
                     <label for="notes">ملاحظات إضافية</label>
-                    <textarea id="notes" rows="4"></textarea>
+                    <textarea id="notes" rows="4" autocomplete="off"></textarea>
                 </div>
                 
                 <div class="form-group">
@@ -1058,11 +1057,10 @@
     <div class="admin-login-modal" id="adminLoginModal">
         <div class="admin-login-content">
             <h3>تسجيل الدخول للمدير</h3>
-            <!-- إضافة form لحل مشكلة الكونسول -->
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label for="adminPassword">كلمة المرور</label>
-                    <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required>
+                    <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn">دخول</button>
                 <button type="button" class="btn btn-secondary" id="adminLoginCancel">إلغاء</button>
@@ -1235,8 +1233,29 @@
             bookingForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // التحقق من التاريخ المغلق
+                // التحقق من صحة البيانات
+                const name = document.getElementById('name').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const carType = document.getElementById('carType').value;
+                const carModel = document.getElementById('carModel').value.trim();
+                const serviceType = document.getElementById('serviceType').value;
                 const selectedDate = document.getElementById('date').value;
+                const time = document.getElementById('time').value;
+                
+                if (!name || !phone || !email || !carType || !carModel || !serviceType || !selectedDate || !time) {
+                    showToast('يرجى ملء جميع الحقول المطلوبة', 'error');
+                    return;
+                }
+                
+                // التحقق من صحة البريد الإلكتروني
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showToast('يرجى إدخال بريد إلكتروني صحيح', 'error');
+                    return;
+                }
+                
+                // التحقق من التاريخ المغلق
                 if (closedDates.includes(selectedDate)) {
                     showToast('التاريخ المحدد غير متاح للحجز، يرجى اختيار تاريخ آخر', 'error');
                     return;
@@ -1248,18 +1267,20 @@
                 // جمع بيانات الحجز
                 const bookingData = {
                     id: bookingId,
-                    name: document.getElementById('name').value,
-                    phone: document.getElementById('phone').value,
-                    email: document.getElementById('email').value,
-                    carType: document.getElementById('carType').value,
-                    carModel: document.getElementById('carModel').value,
-                    serviceType: document.getElementById('serviceType').value,
+                    name: name,
+                    phone: phone,
+                    email: email,
+                    carType: carType,
+                    carModel: carModel,
+                    serviceType: serviceType,
                     date: selectedDate,
-                    time: document.getElementById('time').value,
-                    notes: document.getElementById('notes').value,
+                    time: time,
+                    notes: document.getElementById('notes').value.trim(),
                     status: 'pending',
                     createdAt: new Date().toISOString()
                 };
+                
+                console.log('تم إنشاء الحجز:', bookingData);
                 
                 // حفظ الحجز
                 bookings.push(bookingData);
@@ -1277,6 +1298,8 @@
                     updateBookingsTable();
                     updateStats();
                 }
+                
+                console.log('الحجوزات الحالية:', bookings);
             });
             
             // إغلاق نافذة التأكيد
@@ -1310,6 +1333,8 @@
                     updateClosedDatesList();
                     updateStats();
                     runSystemDiagnostics();
+                    
+                    showToast('تم تسجيل الدخول بنجاح', 'success');
                 } else {
                     showToast('كلمة المرور غير صحيحة', 'error');
                 }
@@ -1318,6 +1343,7 @@
             // تسجيل خروج المدير
             adminLogoutBtn.addEventListener('click', function() {
                 adminDashboard.style.display = 'none';
+                showToast('تم تسجيل الخروج', 'info');
             });
             
             // البحث والتصفية في الحجوزات
@@ -1367,8 +1393,8 @@
             
             // إرسال إشعار
             sendNotificationBtn.addEventListener('click', function() {
-                const title = notificationTitleInput.value;
-                const message = notificationMessageInput.value;
+                const title = notificationTitleInput.value.trim();
+                const message = notificationMessageInput.value.trim();
                 
                 if (!title || !message) {
                     showToast('يرجى ملء جميع الحقول', 'error');
@@ -1396,6 +1422,8 @@
             function updateBookingsTable() {
                 const searchTerm = searchBookingsInput.value.toLowerCase();
                 const statusFilter = filterStatusSelect.value;
+                
+                console.log('جاري تحديث الجدول...', bookings.length, 'حجز');
                 
                 let filteredBookings = bookings.filter(booking => {
                     const matchesSearch = 
@@ -1479,6 +1507,8 @@
                         updateBookingStatus(bookingId, 'cancelled');
                     });
                 });
+                
+                console.log('تم تحديث الجدول بـ', filteredBookings.length, 'حجز');
             }
             
             function updateBookingStatus(bookingId, newStatus) {
@@ -1505,6 +1535,13 @@
                 pendingBookingsSpan.textContent = bookings.filter(b => b.status === 'pending').length;
                 confirmedBookingsSpan.textContent = bookings.filter(b => b.status === 'confirmed').length;
                 cancelledBookingsSpan.textContent = bookings.filter(b => b.status === 'cancelled').length;
+                
+                console.log('الإحصائيات المحدثة:', {
+                    total: bookings.length,
+                    pending: bookings.filter(b => b.status === 'pending').length,
+                    confirmed: bookings.filter(b => b.status === 'confirmed').length,
+                    cancelled: bookings.filter(b => b.status === 'cancelled').length
+                });
             }
             
             function updateClosedDatesList() {
@@ -1653,6 +1690,7 @@
             }
             
             // تهيئة البيانات عند التحميل
+            console.log('تم تحميل التطبيق، عدد الحجوزات:', bookings.length);
             updateStats();
         });
     </script>
