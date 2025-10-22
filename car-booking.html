@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* الأنماط تبقى كما هي */
         :root {
             --primary: #2c5aa0;
             --secondary: #f8a41c;
@@ -43,6 +42,7 @@
             color: white;
             padding: 1rem 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         
         .header-content {
@@ -62,7 +62,47 @@
         }
         
         .logo img {
-            height: 60px;
+            height: 50px;
+            width: 50px;
+        }
+        
+        .notification-bell {
+            position: relative;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-bell:hover {
+            background: #e69500;
+            transform: scale(1.1);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
         }
         
         .hero {
@@ -179,6 +219,24 @@
             background: #e69500;
         }
         
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #138496;
+        }
+        
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -224,6 +282,12 @@
             font-size: 0.8rem;
             font-weight: bold;
             margin-top: 10px;
+        }
+        
+        .details-btn {
+            margin-top: 15px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
         }
         
         .constraints-section {
@@ -519,34 +583,9 @@
             color: white;
         }
         
-        .btn-close-date {
+        .btn-warning {
             background: var(--warning);
             color: white;
-        }
-        
-        .closed-dates-list {
-            list-style: none;
-            margin-top: 15px;
-        }
-        
-        .closed-dates-list li {
-            padding: 10px;
-            background: #f8f9fa;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .date-picker-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .date-picker-container input {
-            flex: 1;
         }
         
         .stats-cards {
@@ -622,14 +661,30 @@
             display: block;
         }
         
+        .date-picker-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .date-picker-container input {
+            flex: 1;
+        }
+        
+        .closed-dates-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
         .closed-date-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding: 12px 15px;
             background: #f8f9fa;
             margin-bottom: 8px;
-            border-radius: 4px;
+            border-radius: 5px;
+            border-right: 4px solid var(--danger);
         }
         
         .closed-date-actions {
@@ -637,79 +692,15 @@
             gap: 10px;
         }
         
-        /* أنماط جديدة للتشخيص والإشعارات */
-        .alert {
-            padding: 12px 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .alert-warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-        
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        
-        .diagnostic-item {
+        .closed-date-info {
             display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            flex-direction: column;
         }
         
-        .diagnostic-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-        
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-        
-        .btn-info {
-            background: var(--info);
-            color: white;
-        }
-        
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--danger);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .closed-date-day {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 4px;
         }
         
         .toast {
@@ -724,6 +715,7 @@
             z-index: 3000;
             max-width: 300px;
             display: none;
+            animation: slideIn 0.3s ease-out;
         }
         
         .toast.error {
@@ -734,10 +726,45 @@
             background: var(--warning);
         }
         
+        .toast.info {
+            background: var(--info);
+        }
+        
+        .backup-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+        
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
                 text-align: center;
+                gap: 15px;
             }
             
             .form-row {
@@ -758,10 +785,6 @@
                 width: 100%;
             }
             
-            .diagnostic-actions {
-                flex-direction: column;
-            }
-            
             .admin-tabs {
                 flex-wrap: wrap;
             }
@@ -771,6 +794,38 @@
                 min-width: 120px;
                 text-align: center;
             }
+            
+            .date-picker-container {
+                flex-direction: column;
+            }
+            
+            .backup-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .booking-section, .constraints-section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .service-card {
+                margin-bottom: 15px;
+            }
+            
+            .admin-section {
+                padding: 15px;
+            }
+            
+            .bookings-table {
+                font-size: 0.8rem;
+            }
+            
+            .bookings-table th, 
+            .bookings-table td {
+                padding: 8px 5px;
+            }
         }
     </style>
 </head>
@@ -779,8 +834,12 @@
         <div class="container header-content">
             <div class="logo">
                 <h1>مركز تقني المحركات</h1>
-                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAxNWw1LjUtNS41YTQuOTUgNC45NSAwIDAgMC03LjA3LTcuMDcgNC45NSA0Ljk1IDAgMCAwLTcuMDcgNy4wN0wxMiAxNXoiPjwvcGF0aD48cGF0aCBkPSJNMTIgMTVsLTUuNSA1LjVhNC45NSA0Ljk1IDAgMCAwIDcuMDcgNy4wNyA0Ljk1IDQuOTUgMCAwIDAgNy4wNy03LjA3TDEyIDE1eiI+PC9wYXRoPjwvc3ZnPg==" alt="شعار المركز">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIj48L2NpcmNsZT48cGF0aCBkPSJNMTQgMzFsLTQtNGwtNC00Ij48L3BhdGg+PHBhdGggZD0iTTEwIDlsNC00bDQgNCI+PC9wYXRoPjxwYXRoIGQ9Ik00IDE2bDQtNGw0IDQiPjwvcGF0aD48cGF0aCBkPSJNMjAgMTZsLTQgNGwtNC00Ij48L3BhdGg+PC9zdmc+" alt="شعار المركز">
             </div>
+            <button class="notification-bell" id="notificationBell">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+            </button>
         </div>
     </header>
 
@@ -804,18 +863,18 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">الاسم الكامل</label>
-                        <input type="text" id="name" required autocomplete="name">
+                        <input type="text" id="name" required>
                     </div>
                     <div class="form-group">
                         <label for="phone">رقم الجوال</label>
-                        <input type="tel" id="phone" required autocomplete="tel">
+                        <input type="tel" id="phone" required placeholder="05XXXXXXXX">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">البريد الإلكتروني</label>
-                        <input type="email" id="email" required placeholder="example@domain.com" autocomplete="email">
+                        <input type="email" id="email" required placeholder="example@domain.com">
                     </div>
                     <div class="form-group">
                         <label for="carType">نوع السيارة</label>
@@ -823,7 +882,6 @@
                             <option value="">اختر نوع السيارة</option>
                             <option value="sedan">سيدان</option>
                             <option value="suv">دفع رباعي</option>
-                            <option value="truck">شاحنة</option>
                             <option value="other">أخرى</option>
                         </select>
                     </div>
@@ -832,7 +890,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="carModel">موديل السيارة</label>
-                        <input type="text" id="carModel" required autocomplete="off">
+                        <input type="text" id="carModel" required placeholder="مثال: كامري 2023">
                     </div>
                     <div class="form-group">
                         <label for="serviceType">نوع الخدمة</label>
@@ -845,10 +903,7 @@
                             <option value="electricity">فحص كهرباء</option>
                             <option value="sounds">فحص أصوات أسفل السيارة</option>
                             <option value="hydraulic">برمجة ووزن وإصلاح أنظمة الهيدروليك</option>
-                            <option value="bodywork">سمكرة ودهان</option>
-                            <option value="brakes">فحص وصيانة الفرامل</option>
-                            <option value="engine">صيانة المحرك</option>
-                            <option value="tires">فحص واستبدال الإطارات</option>
+                            <option value="engine_filter">تصفية المحرك</option>
                             <option value="other">خدمة أخرى</option>
                         </select>
                     </div>
@@ -863,22 +918,14 @@
                         <label for="time">الوقت المفضل</label>
                         <select id="time" required>
                             <option value="">اختر الوقت</option>
-                            <option value="08:00">8:00 صباحاً</option>
-                            <option value="09:00">9:00 صباحاً</option>
-                            <option value="10:00">10:00 صباحاً</option>
-                            <option value="11:00">11:00 صباحاً</option>
-                            <option value="12:00">12:00 ظهراً</option>
-                            <option value="15:00">3:00 مساءً</option>
-                            <option value="16:00">4:00 مساءً</option>
-                            <option value="17:00">5:00 مساءً</option>
-                            <option value="18:00">6:00 مساءً</option>
+                            <!-- سيتم ملء الأوقات المتاحة تلقائياً -->
                         </select>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="notes">ملاحظات إضافية</label>
-                    <textarea id="notes" rows="4" autocomplete="off"></textarea>
+                    <textarea id="notes" rows="4" placeholder="أي ملاحظات إضافية حول الخدمة المطلوبة..."></textarea>
                 </div>
                 
                 <div class="form-group">
@@ -888,11 +935,155 @@
             </form>
         </section>
 
-        <!-- باقي الأقسام تبقى كما هي -->
+        <section class="services-section">
+            <h2 class="section-title">خدماتنا</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🛢️</div>
+                    <div class="service-content">
+                        <h3>زيت وسيفون</h3>
+                        <p>تغيير الزيت والفلتر بمنتجات عالية الجودة مع تنظيف نظام التزييت بالكامل.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <div class="service-content">
+                        <h3>غيار أقمشة</h3>
+                        <p>استبدال الأقمشة الداخلية للسيارة بأخرى جديدة وعالية الجودة.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🔄</div>
+                    <div class="service-content">
+                        <h3>غيار زيت الجيربوكس</h3>
+                        <p>تغيير زيت ناقل الحركة لضمان أداء سلس وعمر أطول للنظام.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🔋</div>
+                    <div class="service-content">
+                        <h3>فحص كهرباء</h3>
+                        <p>فحص شامل للبطارية والنظام الكهربائي للسيارة واستبدالها إذا لزم الأمر.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <div class="service-content">
+                        <h3>فحص الكمبيوتر</h3>
+                        <p>تشخيص أعطال السيارات باستخدام أحدث أجهزة الفحص الإلكتروني.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🔊</div>
+                    <div class="service-content">
+                        <h3>فحص الأصوات</h3>
+                        <p>فحص وتشخيص الأصوات غير الطبيعية أسفل السيارة وإصلاحها.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">⚙️</div>
+                    <div class="service-content">
+                        <h3>أنظمة الهيدروليك</h3>
+                        <p>مراجعة برمجة ووزن وإصلاحات أنظمة الهيدروليك باحترافية عالية.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🔥</div>
+                    <div class="service-content">
+                        <h3>تصفية المحرك</h3>
+                        <p>نظافة البخاخات والحساسات الأساسية وغيار قطع أخرى مهمة في عملية حرق المحرك حتى يستعيد عزمه المطلوب.</p>
+                        <button class="btn btn-info details-btn" onclick="window.open('https://tinyurl.com/yshwfzv6', '_blank')">
+                            <i class="fas fa-info-circle"></i> انقر هنا للتفاصيل
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="constraints-section">
+            <h2 class="section-title">شروط وقيود الحجز</h2>
+            <div class="constraint-item warning">
+                <h3><i class="fas fa-exclamation-triangle"></i> تأكيد الحجز النهائي</h3>
+                <p>الحجز يعتبر مبدئي وسيتم تأكيده نهائياً بعد مراجعته من قبل مدير المركز وإرسال رسالة تأكيد إلى بريدك الإلكتروني.</p>
+            </div>
+            
+            <div class="constraint-item">
+                <h3><i class="fas fa-calendar-times"></i> أيام العطل</h3>
+                <p>لا توجد حجوزات أيام الجمعة أو العطلات الرسمية.</p>
+            </div>
+            
+            <div class="constraint-item">
+                <h3><i class="fas fa-clock"></i> مواعيد العمل</h3>
+                <p>مواعيد الدوام من 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً.</p>
+            </div>
+            
+            <div class="constraint-item">
+                <h3><i class="fas fa-calendar-day"></i> الحجز في نفس اليوم</h3>
+                <p>لا يمكن الحجز في نفس اليوم أو تاريخ سابق لليوم الحالي.</p>
+            </div>
+            
+            <div class="constraint-item">
+                <h3><i class="fas fa-envelope"></i> تأكيد الحجز</h3>
+                <p>سيتم تأكيد الحجز النهائي بعد تلقي رسالة على الإيميل من مدير التطبيق.</p>
+            </div>
+            
+            <div class="constraint-item">
+                <h3><i class="fas fa-ban"></i> الإلغاء والتعديل</h3>
+                <p>يمكن إلغاء أو تعديل الحجز قبل 24 ساعة على الأقل من الموعد المحدد.</p>
+            </div>
+        </section>
     </div>
 
     <footer>
-        <!-- الفوتر يبقى كما هو -->
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>عن المركز</h3>
+                    <p>مركز تقني المحركات في صناعية أبها الجديدة، نقدم خدمات صيانة السيارات بأعلى معايير الجودة والكفاءة. نحن متخصصون في صيانة جميع أنواع السيارات باستخدام أحدث التقنيات.</p>
+                    <a href="https://maps.app.goo.gl/NswtkuwYebBAW2Cc6" target="_blank" class="map-link">
+                        <i class="fas fa-map-marker-alt"></i> انقر هنا للوصول إلى موقع المركز على الخريطة
+                    </a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>اتصل بنا</h3>
+                    <div class="contact-info">
+                        <i class="fas fa-phone"></i>
+                        <span>0530694999</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>0530694999</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fas fa-envelope"></i>
+                        <span>mailus@enginetechnician.net</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>صناعية أبها الجديدة، أبها</span>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>ساعات العمل</h3>
+                    <p>السبت - الخميس: 8 ص - 1 م | 3 م - 7 م</p>
+                    <p>الجمعة: مغلق</p>
+                    <p>العطلات الرسمية: مغلق</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>جميع الحقوق محفوظة &copy; 2026 مركز تقني المحركات | <a href="http://www.enginetechnician.net" class="website-link">www.enginetechnician.net</a></p>
+            </div>
+        </div>
     </footer>
 
     <!-- نافذة التأكيد -->
@@ -918,7 +1109,7 @@
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label for="adminPassword">كلمة المرور</label>
-                    <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required autocomplete="current-password">
+                    <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required>
                 </div>
                 <button type="submit" class="btn">دخول</button>
                 <button type="button" class="btn btn-secondary" id="adminLoginCancel">إلغاء</button>
@@ -934,45 +1125,27 @@
         </div>
         
         <div class="container">
-            <div class="admin-controls">
-                <input type="text" class="search-box" id="searchBookings" placeholder="ابحث في الحجوزات...">
-                <select class="filter-select" id="filterStatus">
-                    <option value="all">جميع الحجوزات</option>
-                    <option value="pending">قيد الانتظار</option>
-                    <option value="confirmed">مؤكدة</option>
-                    <option value="cancelled">ملغاة</option>
-                </select>
-            </div>
-            
             <div class="admin-tabs">
                 <div class="admin-tab active" data-tab="bookings">إدارة الحجوزات</div>
-                <div class="admin-tab" data-tab="calendar">إدارة المواعيد</div>
-                <div class="admin-tab" data-tab="diagnostics">التشخيص والإشعارات</div>
+                <div class="admin-tab" data-tab="dates">إدارة التواريخ المغلقة</div>
+                <div class="admin-tab" data-tab="stats">الإحصائيات</div>
+                <div class="admin-tab" data-tab="backup">النسخ الاحتياطي</div>
             </div>
             
             <!-- قسم إدارة الحجوزات -->
             <div class="tab-content active" id="bookings-tab">
+                <div class="admin-controls">
+                    <input type="text" class="search-box" id="searchBookings" placeholder="ابحث في الحجوزات...">
+                    <select class="filter-select" id="filterStatus">
+                        <option value="all">جميع الحجوزات</option>
+                        <option value="pending">قيد الانتظار</option>
+                        <option value="confirmed">مؤكدة</option>
+                        <option value="cancelled">ملغاة</option>
+                    </select>
+                </div>
+                
                 <div class="admin-section">
                     <h3>الحجوزات الحالية</h3>
-                    <div class="stats-cards">
-                        <div class="stat-card">
-                            <h4>إجمالي الحجوزات</h4>
-                            <div class="stat-number" id="totalBookings">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <h4>قيد الانتظار</h4>
-                            <div class="stat-number" id="pendingBookings">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <h4>مؤكدة</h4>
-                            <div class="stat-number" id="confirmedBookings">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <h4>ملغاة</h4>
-                            <div class="stat-number" id="cancelledBookings">0</div>
-                        </div>
-                    </div>
-                    
                     <div class="table-responsive">
                         <table class="bookings-table">
                             <thead>
@@ -996,7 +1169,82 @@
                 </div>
             </div>
             
-            <!-- باقي الأقسام تبقى كما هي -->
+            <!-- قسم إدارة التواريخ المغلقة -->
+            <div class="tab-content" id="dates-tab">
+                <div class="admin-section">
+                    <h3><i class="fas fa-calendar-times"></i> إدارة التواريخ المغلقة</h3>
+                    <p class="work-hours">أضف التواريخ التي تريد إغلاقها لمنع الحجز فيها (العطلات الرسمية، أيام الصيانة، إلخ)</p>
+                    
+                    <div class="date-picker-container">
+                        <input type="date" id="closeDateInput">
+                        <button class="btn btn-warning" id="addClosedDateBtn">
+                            <i class="fas fa-plus"></i> إغلاق التاريخ
+                        </button>
+                    </div>
+                    
+                    <div class="closed-dates-list" id="closedDatesList">
+                        <!-- سيتم ملء القائمة ديناميكياً -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- قسم الإحصائيات -->
+            <div class="tab-content" id="stats-tab">
+                <div class="admin-section">
+                    <h3><i class="fas fa-chart-bar"></i> إحصائيات الحجوزات</h3>
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <h4>إجمالي الحجوزات</h4>
+                            <div class="stat-number" id="totalBookings">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>قيد الانتظار</h4>
+                            <div class="stat-number" id="pendingBookings">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>مؤكدة</h4>
+                            <div class="stat-number" id="confirmedBookings">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>ملغاة</h4>
+                            <div class="stat-number" id="cancelledBookings">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h4>الحجوزات حسب نوع الخدمة</h4>
+                    <div id="serviceStats">
+                        <!-- سيتم ملء الإحصائيات ديناميكياً -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- قسم النسخ الاحتياطي -->
+            <div class="tab-content" id="backup-tab">
+                <div class="admin-section">
+                    <h3><i class="fas fa-database"></i> النسخ الاحتياطي للبيانات</h3>
+                    <div class="backup-section">
+                        <p>يمكنك حفظ نسخة احتياطية من جميع بيانات الحجوزات أو استعادة بيانات من نسخة سابقة.</p>
+                        
+                        <div class="backup-buttons">
+                            <button class="btn btn-secondary" id="exportBackupBtn">
+                                <i class="fas fa-download"></i> تصدير البيانات
+                            </button>
+                            <button class="btn btn-warning" id="importBackupBtn">
+                                <i class="fas fa-upload"></i> استيراد البيانات
+                            </button>
+                            <input type="file" id="backupFileInput" accept=".json" style="display: none;">
+                        </div>
+                        
+                        <div class="work-hours" style="margin-top: 20px;">
+                            <h4><i class="fas fa-info-circle"></i> معلومات النسخ الاحتياطي</h4>
+                            <p>النسخ الاحتياطي يشمل: جميع الحجوزات + التواريخ المغلقة</p>
+                            <p>آخر تحديث: <span id="lastBackupInfo">لم يتم إنشاء نسخة احتياطية بعد</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1004,18 +1252,14 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // نظام الحجوزات المبسط والمؤكد عمله
+        // نظام الحجوزات المتكامل مع التحسينات
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 بدء تحميل نظام الحجوزات...');
-            
-            // تهيئة البيانات
+            // البيانات
             let bookings = JSON.parse(localStorage.getItem('carBookings')) || [];
             let closedDates = JSON.parse(localStorage.getItem('closedDates')) || [];
-            const adminPassword = "admin123";
+            const adminPassword = "ap#28767"; // كلمة المرور الجديدة
             
-            console.log('📊 الحجوزات المحملة:', bookings);
-            
-            // عناصر DOM الأساسية
+            // عناصر DOM
             const bookingForm = document.getElementById('bookingForm');
             const confirmationModal = document.getElementById('confirmationModal');
             const closeModalBtn = document.getElementById('closeModalBtn');
@@ -1034,18 +1278,134 @@
             const pendingBookingsSpan = document.getElementById('pendingBookings');
             const confirmedBookingsSpan = document.getElementById('confirmedBookings');
             const cancelledBookingsSpan = document.getElementById('cancelledBookings');
+            const notificationBell = document.getElementById('notificationBell');
+            const notificationBadge = document.getElementById('notificationBadge');
+            const adminTabs = document.querySelectorAll('.admin-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const closeDateInput = document.getElementById('closeDateInput');
+            const addClosedDateBtn = document.getElementById('addClosedDateBtn');
+            const closedDatesList = document.getElementById('closedDatesList');
+            const serviceStats = document.getElementById('serviceStats');
             const toast = document.getElementById('toast');
+            const dateInput = document.getElementById('date');
+            const timeSelect = document.getElementById('time');
+            const exportBackupBtn = document.getElementById('exportBackupBtn');
+            const importBackupBtn = document.getElementById('importBackupBtn');
+            const backupFileInput = document.getElementById('backupFileInput');
+            const lastBackupInfo = document.getElementById('lastBackupInfo');
+            
+            // المحققين من صحة البيانات
+            const validators = {
+                phone: function(phone) {
+                    const saudiPhoneRegex = /^(05)(5|0|3|6|4|9|1|8|7)([0-9]{7})$/;
+                    return saudiPhoneRegex.test(phone.replace(/\D/g, ''));
+                },
+                
+                email: function(email) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return emailRegex.test(email);
+                },
+                
+                date: function(date) {
+                    const selectedDate = new Date(date);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    return selectedDate >= today;
+                }
+            };
             
             // تعيين الحد الأدنى للتاريخ
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('date').min = today;
+            dateInput.min = today;
+            closeDateInput.min = today;
             
-            // ========== نظام الحجوزات ==========
+            // تحديث الإشعارات
+            function updateNotifications() {
+                const pendingCount = bookings.filter(b => b.status === 'pending').length;
+                if (pendingCount > 0) {
+                    notificationBadge.textContent = pendingCount;
+                    notificationBadge.style.display = 'flex';
+                    // تأثير الاهتزاز للإشعارات الجديدة
+                    notificationBell.style.animation = 'shake 0.5s ease-in-out';
+                    setTimeout(() => {
+                        notificationBell.style.animation = '';
+                    }, 500);
+                } else {
+                    notificationBadge.style.display = 'none';
+                }
+            }
+            
+            // التحقق من توفر المواعيد
+            function checkAvailability(date, time) {
+                const existingBookings = bookings.filter(b => 
+                    b.date === date && 
+                    b.time === time && 
+                    b.status !== 'cancelled'
+                );
+                return existingBookings.length === 0;
+            }
+            
+            // تحديث قائمة الأوقات المتاحة
+            function updateAvailableTimes() {
+                const selectedDate = dateInput.value;
+                timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
+                
+                if (!selectedDate) {
+                    // إذا لم يتم اختيار تاريخ، عرض جميع الأوقات المتاحة
+                    loadAllAvailableTimes();
+                    return;
+                }
+                
+                // الأوقات المتاحة: 8-11 صباحاً و 3-5 مساءً
+                const morningTimes = ['08:00', '09:00', '10:00', '11:00'];
+                const eveningTimes = ['15:00', '16:00', '17:00'];
+                const allTimes = [...morningTimes, ...eveningTimes];
+                
+                allTimes.forEach(time => {
+                    if (checkAvailability(selectedDate, time)) {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.textContent = time;
+                        timeSelect.appendChild(option);
+                    }
+                });
+                
+                // إذا لم توجد أوقات متاحة
+                if (timeSelect.options.length === 1) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'لا توجد أوقات متاحة لهذا التاريخ';
+                    option.disabled = true;
+                    timeSelect.appendChild(option);
+                }
+            }
+            
+            // تحميل جميع الأوقات المتاحة عند فتح الصفحة
+            function loadAllAvailableTimes() {
+                timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
+                
+                const morningTimes = ['08:00', '09:00', '10:00', '11:00'];
+                const eveningTimes = ['15:00', '16:00', '17:00'];
+                const allTimes = [...morningTimes, ...eveningTimes];
+                
+                allTimes.forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time;
+                    timeSelect.appendChild(option);
+                });
+            }
+            
+            // إشعار فوري عند وجود حجز جديد
+            function showNewBookingNotification(booking) {
+                showToast(`حجز جديد: ${booking.name} - ${booking.serviceType}`, 'info');
+                updateNotifications();
+            }
+            
+            // نظام الحجوزات
             bookingForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                console.log('📝 بدء عملية الحجز...');
                 
-                // جمع البيانات من النموذج
                 const formData = {
                     name: document.getElementById('name').value.trim(),
                     phone: document.getElementById('phone').value.trim(),
@@ -1058,22 +1418,28 @@
                     notes: document.getElementById('notes').value.trim()
                 };
                 
-                console.log('📋 البيانات المجمعة:', formData);
-                
                 // التحقق من البيانات المطلوبة
                 const requiredFields = ['name', 'phone', 'email', 'carType', 'carModel', 'serviceType', 'date', 'time'];
                 const missingFields = requiredFields.filter(field => !formData[field]);
                 
                 if (missingFields.length > 0) {
                     showToast('يرجى ملء جميع الحقول المطلوبة', 'error');
-                    console.log('❌ الحقول الناقصة:', missingFields);
                     return;
                 }
                 
-                // التحقق من صحة البريد الإلكتروني
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(formData.email)) {
-                    showToast('يرجى إدخال بريد إلكتروني صحيح', 'error');
+                // التحقق من صحة البيانات
+                if (!validators.phone(formData.phone)) {
+                    showToast('رقم الجوال غير صالح', 'error');
+                    return;
+                }
+                
+                if (!validators.email(formData.email)) {
+                    showToast('البريد الإلكتروني غير صالح', 'error');
+                    return;
+                }
+                
+                if (!validators.date(formData.date)) {
+                    showToast('التاريخ المحدد غير صالح', 'error');
                     return;
                 }
                 
@@ -1083,64 +1449,51 @@
                     return;
                 }
                 
-                // إنشاء الحجز
-                createBooking(formData);
-            });
-            
-            function createBooking(formData) {
-                // إنشاء رقم حجز فريد
-                const bookingId = 'BK' + Date.now();
+                // التحقق من توفر الوقت
+                if (!checkAvailability(formData.date, formData.time)) {
+                    showToast('الوقت المحدد غير متاح، يرجى اختيار وقت آخر', 'error');
+                    return;
+                }
                 
-                // إنشاء كائن الحجز
+                // إنشاء الحجز
+                const bookingId = 'BK' + Date.now();
                 const newBooking = {
                     id: bookingId,
                     ...formData,
                     status: 'pending',
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
+                    createdAt: new Date().toISOString()
                 };
                 
-                console.log('🆕 الحجز الجديد:', newBooking);
-                
-                // إضافة الحجز إلى المصفوفة
                 bookings.push(newBooking);
+                localStorage.setItem('carBookings', JSON.stringify(bookings));
                 
-                // حفظ في localStorage
-                try {
-                    localStorage.setItem('carBookings', JSON.stringify(bookings));
-                    console.log('💾 تم حفظ الحجز في localStorage');
-                } catch (error) {
-                    console.error('❌ خطأ في حفظ الحجز:', error);
-                    showToast('حدث خطأ في حفظ الحجز', 'error');
-                    return;
-                }
-                
-                // عرض تأكيد الحجز
+                // عرض التأكيد وتحديث النظام
                 showBookingConfirmation(bookingId);
-                
-                // إعادة تعيين النموذج
                 bookingForm.reset();
+                
+                // إشعار فوري
+                showNewBookingNotification(newBooking);
                 
                 // تحديث لوحة التحكم إذا كانت مفتوحة
                 if (adminDashboard.style.display === 'block') {
                     updateBookingsTable();
                     updateStats();
                 }
-                
-                console.log('✅ تم إنشاء الحجز بنجاح!');
-            }
+            });
+            
+            // تحديث الأوقات عند تغيير التاريخ
+            dateInput.addEventListener('change', updateAvailableTimes);
             
             function showBookingConfirmation(bookingId) {
                 bookingIdSpan.textContent = bookingId;
                 confirmationModal.style.display = 'flex';
             }
             
-            // إغلاق نافذة التأكيد
             closeModalBtn.addEventListener('click', function() {
                 confirmationModal.style.display = 'none';
             });
             
-            // ========== نظام لوحة التحكم ==========
+            // نظام لوحة التحكم
             adminAccessBtn.addEventListener('click', function() {
                 adminLoginModal.style.display = 'flex';
                 adminPasswordInput.focus();
@@ -1159,9 +1512,11 @@
                     adminDashboard.style.display = 'block';
                     adminPasswordInput.value = '';
                     
-                    // تحديث البيانات
                     updateBookingsTable();
+                    updateClosedDatesList();
                     updateStats();
+                    updateNotifications();
+                    updateBackupInfo();
                     showToast('تم تسجيل الدخول بنجاح', 'success');
                 } else {
                     showToast('كلمة المرور غير صحيحة', 'error');
@@ -1173,14 +1528,117 @@
                 showToast('تم تسجيل الخروج', 'info');
             });
             
+            // التبديل بين علامات التبويب
+            adminTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // إزالة النشاط من جميع علامات التبويب
+                    adminTabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // إضافة النشاط إلى علامة التبويب المحددة
+                    this.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    
+                    // تحديث البيانات حسب التبويب
+                    if (tabId === 'stats') {
+                        updateServiceStats();
+                    }
+                });
+            });
+            
             // البحث والتصفية
             searchBookingsInput.addEventListener('input', updateBookingsTable);
             filterStatusSelect.addEventListener('change', updateBookingsTable);
             
+            // إدارة التواريخ المغلقة
+            addClosedDateBtn.addEventListener('click', function() {
+                const dateToClose = closeDateInput.value;
+                
+                if (!dateToClose) {
+                    showToast('يرجى اختيار تاريخ', 'error');
+                    return;
+                }
+                
+                if (closedDates.includes(dateToClose)) {
+                    showToast('هذا التاريخ مغلق بالفعل', 'warning');
+                    return;
+                }
+                
+                closedDates.push(dateToClose);
+                localStorage.setItem('closedDates', JSON.stringify(closedDates));
+                updateClosedDatesList();
+                closeDateInput.value = '';
+                showToast('تم إغلاق التاريخ بنجاح', 'success');
+                
+                // تحديث الأوقات المتاحة في نموذج الحجز
+                updateAvailableTimes();
+            });
+            
+            function updateClosedDatesList() {
+                closedDatesList.innerHTML = '';
+                
+                if (closedDates.length === 0) {
+                    closedDatesList.innerHTML = '<li style="text-align: center; padding: 20px; color: #666;">لا توجد تواريخ مغلقة</li>';
+                    return;
+                }
+                
+                // ترتيب التواريخ من الأحدث إلى الأقدم
+                closedDates.sort((a, b) => new Date(b) - new Date(a));
+                
+                closedDates.forEach(date => {
+                    const dateItem = document.createElement('li');
+                    dateItem.className = 'closed-date-item';
+                    
+                    // تحويل التاريخ إلى اليوم بالأسبوع
+                    const dateObj = new Date(date);
+                    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                    const dayName = days[dateObj.getDay()];
+                    
+                    // تنسيق التاريخ الميلادي
+                    const formattedDate = dateObj.toLocaleDateString('ar-EG', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    dateItem.innerHTML = `
+                        <div class="closed-date-info">
+                            <strong>${formattedDate}</strong>
+                            <span class="closed-date-day">${dayName}</span>
+                        </div>
+                        <div class="closed-date-actions">
+                            <button class="btn-admin btn-danger remove-closed-date" data-date="${date}">
+                                <i class="fas fa-times"></i> إزالة
+                            </button>
+                        </div>
+                    `;
+                    
+                    closedDatesList.appendChild(dateItem);
+                });
+                
+                // إضافة مستمعي الأحداث لأزرار الإزالة
+                document.querySelectorAll('.remove-closed-date').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const dateToRemove = this.getAttribute('data-date');
+                        removeClosedDate(dateToRemove);
+                    });
+                });
+            }
+            
+            function removeClosedDate(date) {
+                closedDates = closedDates.filter(d => d !== date);
+                localStorage.setItem('closedDates', JSON.stringify(closedDates));
+                updateClosedDatesList();
+                showToast('تم إزالة التاريخ من القائمة المغلقة', 'success');
+                
+                // تحديث الأوقات المتاحة في نموذج الحجز
+                updateAvailableTimes();
+            }
+            
             // تحديث جدول الحجوزات
             function updateBookingsTable() {
-                console.log('🔄 تحديث جدول الحجوزات...');
-                
                 const searchTerm = searchBookingsInput.value.toLowerCase();
                 const statusFilter = filterStatusSelect.value;
                 
@@ -1200,75 +1658,79 @@
                 // ترتيب من الأحدث إلى الأقدم
                 filteredBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 
-                // تحديث الجدول
                 bookingsTableBody.innerHTML = '';
                 
                 if (filteredBookings.length === 0) {
-                    bookingsTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center;">لا توجد حجوزات</td></tr>';
-                    return;
+                    bookingsTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px;">لا توجد حجوزات</td></tr>';
+                } else {
+                    filteredBookings.forEach(booking => {
+                        const row = document.createElement('tr');
+                        
+                        let statusClass = '';
+                        let statusText = '';
+                        
+                        switch(booking.status) {
+                            case 'pending':
+                                statusClass = 'status-pending';
+                                statusText = 'قيد الانتظار';
+                                break;
+                            case 'confirmed':
+                                statusClass = 'status-confirmed';
+                                statusText = 'مؤكدة';
+                                break;
+                            case 'cancelled':
+                                statusClass = 'status-cancelled';
+                                statusText = 'ملغاة';
+                                break;
+                        }
+                        
+                        // تنسيق التاريخ الميلادي
+                        const bookingDate = new Date(booking.date);
+                        const formattedDate = bookingDate.toLocaleDateString('ar-EG', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        
+                        row.innerHTML = `
+                            <td>${booking.id}</td>
+                            <td>${booking.name}</td>
+                            <td>${booking.phone}</td>
+                            <td>${booking.carType}</td>
+                            <td>${booking.serviceType}</td>
+                            <td>${formattedDate}</td>
+                            <td>${booking.time}</td>
+                            <td class="${statusClass}">${statusText}</td>
+                            <td>
+                                ${booking.status === 'pending' ? 
+                                    `<button class="btn-admin btn-confirm" data-id="${booking.id}">تأكيد</button>` : 
+                                    ''
+                                }
+                                ${booking.status !== 'cancelled' ? 
+                                    `<button class="btn-admin btn-cancel" data-id="${booking.id}">إلغاء</button>` : 
+                                    ''
+                                }
+                            </td>
+                        `;
+                        
+                        bookingsTableBody.appendChild(row);
+                    });
+                    
+                    // إضافة مستمعي الأحداث للأزرار
+                    document.querySelectorAll('.btn-confirm').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const bookingId = this.getAttribute('data-id');
+                            updateBookingStatus(bookingId, 'confirmed');
+                        });
+                    });
+                    
+                    document.querySelectorAll('.btn-cancel').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const bookingId = this.getAttribute('data-id');
+                            updateBookingStatus(bookingId, 'cancelled');
+                        });
+                    });
                 }
-                
-                filteredBookings.forEach(booking => {
-                    const row = document.createElement('tr');
-                    
-                    let statusClass = '';
-                    let statusText = '';
-                    
-                    switch(booking.status) {
-                        case 'pending':
-                            statusClass = 'status-pending';
-                            statusText = 'قيد الانتظار';
-                            break;
-                        case 'confirmed':
-                            statusClass = 'status-confirmed';
-                            statusText = 'مؤكدة';
-                            break;
-                        case 'cancelled':
-                            statusClass = 'status-cancelled';
-                            statusText = 'ملغاة';
-                            break;
-                    }
-                    
-                    row.innerHTML = `
-                        <td>${booking.id}</td>
-                        <td>${booking.name}</td>
-                        <td>${booking.phone}</td>
-                        <td>${booking.carType}</td>
-                        <td>${booking.serviceType}</td>
-                        <td>${booking.date}</td>
-                        <td>${booking.time}</td>
-                        <td class="${statusClass}">${statusText}</td>
-                        <td>
-                            ${booking.status === 'pending' ? 
-                                `<button class="btn-admin btn-confirm" data-id="${booking.id}">تأكيد</button>` : 
-                                ''
-                            }
-                            ${booking.status !== 'cancelled' ? 
-                                `<button class="btn-admin btn-cancel" data-id="${booking.id}">إلغاء</button>` : 
-                                ''
-                            }
-                        </td>
-                    `;
-                    
-                    bookingsTableBody.appendChild(row);
-                });
-                
-                // إضافة مستمعي الأحداث للأزرار
-                document.querySelectorAll('.btn-confirm').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const bookingId = this.getAttribute('data-id');
-                        updateBookingStatus(bookingId, 'confirmed');
-                    });
-                });
-                
-                document.querySelectorAll('.btn-cancel').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const bookingId = this.getAttribute('data-id');
-                        updateBookingStatus(bookingId, 'cancelled');
-                    });
-                });
-                
-                console.log('✅ تم تحديث الجدول بـ ' + filteredBookings.length + ' حجز');
             }
             
             function updateBookingStatus(bookingId, newStatus) {
@@ -1276,12 +1738,11 @@
                 
                 if (bookingIndex !== -1) {
                     bookings[bookingIndex].status = newStatus;
-                    bookings[bookingIndex].updatedAt = new Date().toISOString();
-                    
                     localStorage.setItem('carBookings', JSON.stringify(bookings));
                     
                     updateBookingsTable();
                     updateStats();
+                    updateNotifications();
                     
                     let statusText = '';
                     switch(newStatus) {
@@ -1298,13 +1759,110 @@
                 pendingBookingsSpan.textContent = bookings.filter(b => b.status === 'pending').length;
                 confirmedBookingsSpan.textContent = bookings.filter(b => b.status === 'confirmed').length;
                 cancelledBookingsSpan.textContent = bookings.filter(b => b.status === 'cancelled').length;
-                
-                console.log('📈 الإحصائيات المحدثة:', {
-                    total: bookings.length,
-                    pending: bookings.filter(b => b.status === 'pending').length,
-                    confirmed: bookings.filter(b => b.status === 'confirmed').length,
-                    cancelled: bookings.filter(b => b.status === 'cancelled').length
+            }
+            
+            function updateServiceStats() {
+                const serviceCounts = {};
+                bookings.forEach(booking => {
+                    serviceCounts[booking.serviceType] = (serviceCounts[booking.serviceType] || 0) + 1;
                 });
+                
+                let statsHTML = '';
+                for (const [service, count] of Object.entries(serviceCounts)) {
+                    const percentage = bookings.length > 0 ? ((count / bookings.length) * 100).toFixed(1) : 0;
+                    statsHTML += `
+                        <div style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>${service}</span>
+                                <span><strong>${count}</strong> (${percentage}%)</span>
+                            </div>
+                            <div style="background: #ddd; border-radius: 3px; height: 8px;">
+                                <div style="background: var(--primary); height: 100%; width: ${percentage}%; border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                serviceStats.innerHTML = statsHTML || '<p style="text-align: center; color: #666;">لا توجد إحصائيات متاحة</p>';
+            }
+            
+            // نظام النسخ الاحتياطي
+            exportBackupBtn.addEventListener('click', function() {
+                const data = {
+                    bookings: bookings,
+                    closedDates: closedDates,
+                    exportDate: new Date().toISOString(),
+                    totalRecords: bookings.length + closedDates.length
+                };
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `car-bookings-backup-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                // تحديث معلومات النسخ الاحتياطي
+                localStorage.setItem('lastBackup', new Date().toISOString());
+                updateBackupInfo();
+                
+                showToast('تم تصدير البيانات بنجاح', 'success');
+            });
+            
+            importBackupBtn.addEventListener('click', function() {
+                backupFileInput.click();
+            });
+            
+            backupFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (confirm('هل تريد استبدال البيانات الحالية؟ سيتم فقدان البيانات غير المحفوظة.')) {
+                            bookings = data.bookings || [];
+                            closedDates = data.closedDates || [];
+                            
+                            localStorage.setItem('carBookings', JSON.stringify(bookings));
+                            localStorage.setItem('closedDates', JSON.stringify(closedDates));
+                            localStorage.setItem('lastBackup', new Date().toISOString());
+                            
+                            updateBookingsTable();
+                            updateClosedDatesList();
+                            updateStats();
+                            updateBackupInfo();
+                            updateAvailableTimes();
+                            
+                            showToast('تم استيراد البيانات بنجاح', 'success');
+                        }
+                    } catch (error) {
+                        showToast('خطأ في استيراد البيانات: ملف غير صالح', 'error');
+                    }
+                };
+                reader.readAsText(file);
+                
+                // إعادة تعيين حقل الملف
+                backupFileInput.value = '';
+            });
+            
+            function updateBackupInfo() {
+                const lastBackup = localStorage.getItem('lastBackup');
+                if (lastBackup) {
+                    const backupDate = new Date(lastBackup);
+                    lastBackupInfo.textContent = backupDate.toLocaleDateString('ar-EG', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } else {
+                    lastBackupInfo.textContent = 'لم يتم إنشاء نسخة احتياطية بعد';
+                }
             }
             
             // وظيفة الإشعارات
@@ -1316,13 +1874,25 @@
                 
                 setTimeout(() => {
                     toast.style.display = 'none';
-                }, 3000);
+                }, 4000);
             }
             
             // التهيئة النهائية
-            console.log('✅ نظام الحجوزات جاهز للعمل!');
-            console.log('عدد الحجوزات الحالية:', bookings.length);
             updateStats();
+            updateNotifications();
+            updateClosedDatesList();
+            updateBackupInfo();
+            loadAllAvailableTimes(); // تحميل الأوقات المتاحة عند فتح الصفحة
+            
+            // إظهار عدد الحجوزات عند الضغط على الجرس
+            notificationBell.addEventListener('click', function() {
+                const pendingCount = bookings.filter(b => b.status === 'pending').length;
+                if (pendingCount > 0) {
+                    showToast(`لديك ${pendingCount} حجز قيد الانتظار`, 'info');
+                } else {
+                    showToast('لا توجد حجوزات جديدة', 'info');
+                }
+            });
         });
     </script>
 </body>
