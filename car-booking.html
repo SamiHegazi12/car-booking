@@ -61,12 +61,10 @@
             margin-right: 15px;
         }
         
-        /* تعديل الشعار: استخدام أيقونة أقوى */
-        .logo i {
-            font-size: 2.2rem;
-            color: var(--secondary);
+        .logo img {
+            height: 50px;
+            width: 50px;
         }
-        /* نهاية تعديل الشعار */
         
         .notification-bell {
             position: relative;
@@ -713,7 +711,7 @@
             color: white;
             padding: 15px 20px;
             border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 3000;
             max-width: 300px;
             display: none;
@@ -836,7 +834,6 @@
         <div class="container header-content">
             <div class="logo">
                 <h1>مركز تقني المحركات</h1>
-                <i class="fas fa-cogs"></i>
             </div>
             <button class="notification-bell" id="notificationBell">
                 <i class="fas fa-bell"></i>
@@ -864,7 +861,7 @@
             <form id="bookingForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="name">الاسم الكامل</label>
+                        <label for="name">الاسم الكامل (ثلاثي على الأقل)</label>
                         <input type="text" id="name" required>
                     </div>
                     <div class="form-group">
@@ -903,6 +900,7 @@
                             <option value="gearbox">غيار زيت الجيربوكس</option>
                             <option value="computer">فحص كمبيوتر</option>
                             <option value="electricity">فحص كهرباء</option>
+                            <option value="hybrid_check">فحص هايبرد</option>
                             <option value="sounds">فحص أصوات أسفل السيارة</option>
                             <option value="hydraulic">برمجة ووزن وإصلاح أنظمة الهيدروليك</option>
                             <option value="engine_filter">تصفية المحرك</option>
@@ -918,8 +916,8 @@
                     </div>
                     <div class="form-group">
                         <label for="time">الوقت المفضل</label>
-                        <select id="time" required disabled>
-                            <option value="">اختر التاريخ والخدمة أولاً</option>
+                        <select id="time" required>
+                            <option value="">اختر الوقت</option>
                             </select>
                     </div>
                 </div>
@@ -964,6 +962,25 @@
                 </div>
                 
                 <div class="service-card">
+                    <div class="service-icon">🚗</div>
+                    <div class="service-content">
+                        <h3>سمكرة ودهان</h3>
+                        <p>خدمات السمكرة وتعديل الأضرار الهيكلية والدهان بأفضل جودة وتناسق للألوان.</p>
+                        <div class="warranty-badge" style="background: var(--primary);">
+                            <i class="fas fa-medal"></i> ضمان دهان 10 سنوات
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🔨</div>
+                    <div class="service-content">
+                        <h3>تعديل على البارد (PDR)</h3>
+                        <p>إصلاح الانبعاجات الصغيرة دون الحاجة للسمكرة أو الدهان، مع المحافظة على طلاء المصنع.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
                     <div class="service-icon">🔋</div>
                     <div class="service-content">
                         <h3>فحص كهرباء</h3>
@@ -994,15 +1011,7 @@
                         <p>مراجعة برمجة ووزن وإصلاحات أنظمة الهيدروليك باحترافية عالية.</p>
                     </div>
                 </div>
-
-                <div class="service-card">
-                    <div class="service-icon">🔨</div>
-                    <div class="service-content">
-                        <h3>سمكرة ودهان وتعديل على البارد</h3>
-                        <p>إصلاح الهياكل الخارجية للسيارات، تعديل على البارد بدون دهان، وإعادة طلاء بجودة عالية.</p>
-                        <span class="warranty-badge"><i class="fas fa-shield-alt"></i> ضمان 10 سنوات على الدهان</span>
-                    </div>
-                </div>
+                
                 <div class="service-card">
                     <div class="service-icon">🔥</div>
                     <div class="service-content">
@@ -1030,17 +1039,13 @@
             
             <div class="constraint-item">
                 <h3><i class="fas fa-clock"></i> مواعيد العمل</h3>
-                <p>مواعيد الدوام من 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً.</p>
+                <p>مواعيد الدوام من 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً. (حجز سيارة واحدة لكل ساعة متاحة).</p>
             </div>
             
-            <div class="constraint-item">
-                <h3><i class="fas fa-car"></i> قيد الحجز لكل ساعة</h3>
-                <p>يسمح بحجز سيارة واحدة فقط لكل فترة زمنية متاحة (ساعة واحدة).</p>
-            </div>
-
-            <div class="constraint-item">
-                <h3><i class="fas fa-clock"></i> قيود الأوقات حسب نوع الخدمة</h3>
-                <p>بعض الخدمات (مثل فحص الكمبيوتر والكهرباء) متاحة فقط في الفترة الصباحية.</p>
+            <div class="constraint-item warning">
+                <h3><i class="fas fa-car-side"></i> قيود زمنية للخدمات المتخصصة</h3>
+                <p>خدمات (فحص كهرباء، فحص كمبيوتر، فحص هايبرد، فحص هيدروليك، فحص أصوات) متاحة **حتى الساعة 11:00 صباحاً** فقط.</p>
+                <p>خدمة (تصفية المحرك) متاحة **حتى الساعة 10:00 صباحاً** فقط.</p>
             </div>
             
             <div class="constraint-item">
@@ -1166,12 +1171,14 @@
                                 <tr>
                                     <th>رقم الحجز</th>
                                     <th>الاسم</th>
+                                    <th>البريد الإلكتروني</th>
                                     <th>الجوال</th>
                                     <th>نوع السيارة</th>
                                     <th>الخدمة</th>
                                     <th>التاريخ</th>
                                     <th>الوقت</th>
                                     <th>الحالة</th>
+                                    <th>الملاحظات</th>
                                     <th>الإجراءات</th>
                                 </tr>
                             </thead>
@@ -1301,9 +1308,56 @@
             const importBackupBtn = document.getElementById('importBackupBtn');
             const backupFileInput = document.getElementById('backupFileInput');
             const lastBackupInfo = document.getElementById('lastBackupInfo');
+
+            // خرائط الترجمة
+            const carTypeMap = {
+                'sedan': 'سيدان',
+                'suv': 'دفع رباعي',
+                'other': 'أخرى'
+            };
             
+            const serviceTypeMap = {
+                'oil': 'زيت وسيفون',
+                'fabric': 'غيار أقمشة',
+                'gearbox': 'غيار زيت الجيربوكس',
+                'computer': 'فحص كمبيوتر',
+                'electricity': 'فحص كهرباء',
+                'hybrid_check': 'فحص هايبرد',
+                'sounds': 'فحص أصوات أسفل السيارة',
+                'hydraulic': 'برمجة ووزن وإصلاح أنظمة الهيدروليك',
+                'engine_filter': 'تصفية المحرك',
+                'other': 'خدمة أخرى'
+            };
+            
+            // تهيئة قيود الأوقات
+            const allTimes = ['08:00', '09:00', '10:00', '11:00', '15:00', '16:00', '17:00'];
+            // الأوقات المتاحة حتى 11:00 صباحاً (الحد الأقصى هو حجز الـ 11)
+            const morningTimesLimited = ['08:00', '09:00', '10:00', '11:00']; 
+            // الأوقات المتاحة حتى 10:00 صباحاً (الحد الأقصى هو حجز الـ 10)
+            const morningTimesFilter = ['08:00', '09:00', '10:00']; 
+
+            const morningOnly11amServices = ['electricity', 'computer', 'hybrid_check', 'hydraulic', 'sounds'];
+            const morningOnly10amServices = ['engine_filter'];
+
+            function getAvailableTimesForService(serviceType) {
+                if (morningOnly10amServices.includes(serviceType)) {
+                    return morningTimesFilter;
+                }
+                if (morningOnly11amServices.includes(serviceType)) {
+                    return morningTimesLimited;
+                }
+                // الخدمات العادية تقبل جميع الأوقات
+                return allTimes;
+            }
+
             // المحققين من صحة البيانات
             const validators = {
+                // دالة التحقق من الاسم الثلاثي
+                name: function(name) {
+                    // التحقق من وجود 3 كلمات على الأقل (فاصلين على الأقل)
+                    return name.trim().split(/\s+/).length >= 3;
+                },
+                
                 phone: function(phone) {
                     const saudiPhoneRegex = /^(05)(5|0|3|6|4|9|1|8|7)([0-9]{7})$/;
                     return saudiPhoneRegex.test(phone.replace(/\D/g, ''));
@@ -1323,9 +1377,9 @@
             };
             
             // تعيين الحد الأدنى للتاريخ
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.min = today;
-            closeDateInput.min = today;
+            const todayISO = new Date().toISOString().split('T')[0];
+            dateInput.min = todayISO;
+            closeDateInput.min = todayISO;
             
             // تحديث الإشعارات
             function updateNotifications() {
@@ -1343,80 +1397,73 @@
                 }
             }
             
-            // التحقق من توفر المواعيد (لا يزال يسمح بحجز واحد لكل فترة زمنية)
+            // التحقق من توفر المواعيد (قيد سيارة واحدة لكل ساعة)
             function checkAvailability(date, time) {
                 const existingBookings = bookings.filter(b => 
                     b.date === date && 
                     b.time === time && 
                     b.status !== 'cancelled'
                 );
+                // يسمح بحجز واحد فقط في الساعة
                 return existingBookings.length === 0;
             }
             
-            // تحديث قائمة الأوقات المتاحة مع قيود الخدمة
+            // تحديث قائمة الأوقات المتاحة
             function updateAvailableTimes() {
                 const selectedDate = dateInput.value;
                 const selectedService = serviceTypeSelect.value;
-                
                 timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
                 
+                // يجب اختيار التاريخ والخدمة أولاً لتحديد الأوقات المتاحة
                 if (!selectedDate || !selectedService) {
-                    timeSelect.innerHTML = '<option value="">اختر التاريخ والخدمة أولاً</option>';
-                    timeSelect.disabled = true;
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'يرجى اختيار الخدمة والتاريخ أولاً';
+                    option.disabled = true;
+                    timeSelect.appendChild(option);
                     return;
                 }
                 
-                // قائمة الأوقات المتاحة للمركز (صباحاً ومساءً)
-                const allTimes = ['08:00', '09:00', '10:00', '11:00', '15:00', '16:00', '17:00'];
+                const timesToConsider = getAvailableTimesForService(selectedService);
                 
-                // تحديد الأوقات المسموح بها حسب نوع الخدمة (القيود الجديدة)
-                let allowedTimes = [];
-
-                const morningOnlyServices = ['electricity', 'computer', 'hydraulic', 'sounds'];
-                const engineFilterService = 'engine_filter';
-
-                if (morningOnlyServices.includes(selectedService)) {
-                    // فحص كهرباء، كمبيوتر، هيدروليك، أصوات: حتى 11:00 صباحاً (شاملة)
-                    allowedTimes = allTimes.filter(time => time <= '11:00');
-                } else if (selectedService === engineFilterService) {
-                    // تصفية المحرك: حتى 10:00 صباحاً (شاملة)
-                    allowedTimes = allTimes.filter(time => time <= '10:00');
-                } else {
-                    // باقي الخدمات (زيت وسيفون، أقمشة، جيربوكس، أخرى): كل الأوقات
-                    allowedTimes = allTimes;
-                }
-
-                // التحقق من التواريخ المغلقة
-                if (closedDates.includes(selectedDate)) {
-                    timeSelect.innerHTML = '<option value="">هذا التاريخ مغلق للحجز</option>';
-                    timeSelect.disabled = true;
-                    return;
-                }
-                
-                timeSelect.disabled = false;
-                let timesAvailable = false;
-                
-                // فلترة الأوقات المسموح بها بناءً على التوفر (حجز واحد في الساعة)
-                allowedTimes.forEach(time => {
+                let availableCount = 0;
+                timesToConsider.forEach(time => {
                     if (checkAvailability(selectedDate, time)) {
                         const option = document.createElement('option');
                         option.value = time;
                         option.textContent = time;
                         timeSelect.appendChild(option);
-                        timesAvailable = true;
+                        availableCount++;
                     }
                 });
                 
                 // إذا لم توجد أوقات متاحة
-                if (!timesAvailable) {
-                    timeSelect.innerHTML = '<option value="">لا توجد أوقات متاحة لهذا التاريخ/الخدمة</option>';
-                    timeSelect.disabled = true;
+                if (availableCount === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'لا توجد أوقات متاحة في التاريخ/الوقت المحدد لهذه الخدمة';
+                    option.disabled = true;
+                    timeSelect.appendChild(option);
                 }
             }
             
+            // دالة لتهيئة قائمة الأوقات عند تحميل الصفحة
+            function loadInitialTimeOptions() {
+                timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'يرجى تحديد التاريخ والخدمة أولاً';
+                option.disabled = true;
+                timeSelect.appendChild(option);
+            }
+
+            // تحديث الأوقات عند تغيير التاريخ أو نوع الخدمة
+            dateInput.addEventListener('change', updateAvailableTimes);
+            serviceTypeSelect.addEventListener('change', updateAvailableTimes);
+            
             // إشعار فوري عند وجود حجز جديد
             function showNewBookingNotification(booking) {
-                showToast(`حجز جديد: ${booking.name} - ${booking.serviceType}`, 'info');
+                showToast(`حجز جديد: ${booking.name} - ${serviceTypeMap[booking.serviceType] || booking.serviceType}`, 'info');
                 updateNotifications();
             }
             
@@ -1445,7 +1492,12 @@
                     return;
                 }
                 
-                // التحقق من صحة البيانات
+                // التحقق من صحة البيانات (الاسم الثلاثي)
+                if (!validators.name(formData.name)) {
+                    showToast('يجب إدخال الاسم كاملاً ثلاثياً على الأقل', 'error');
+                    return;
+                }
+                
                 if (!validators.phone(formData.phone)) {
                     showToast('رقم الجوال غير صالح', 'error');
                     return;
@@ -1467,41 +1519,18 @@
                     return;
                 }
                 
-                // التحقق من توفر الوقت (يتم التحقق هنا مرة أخرى للتأكد)
+                // التحقق من توفر الوقت والالتزام بقيود الخدمة (يتم التحقق منها ضمن updateAvailableTimes، لكن التأكد هنا للحماية)
+                const allowedTimesForService = getAvailableTimesForService(formData.serviceType);
+                if (!allowedTimesForService.includes(formData.time)) {
+                     showToast('الوقت المحدد غير متاح لهذه الخدمة حسب القيود الزمنية', 'error');
+                     return;
+                }
+                
                 if (!checkAvailability(formData.date, formData.time)) {
-                    showToast('الوقت المحدد غير متاح (محجوز)، يرجى اختيار وقت آخر', 'error');
+                    showToast('الوقت المحدد غير متاح، يرجى اختيار وقت آخر', 'error');
                     return;
                 }
-
-                // التحقق من قيد الوقت (تأكد من أن الوقت المختار مسموح به لنوع الخدمة)
-                // يتم إعادة تشغيل منطق التحقق للتأكد من أن المستخدم لم يتلاعب بالـ DOM
                 
-                const morningOnlyServices = ['electricity', 'computer', 'hydraulic', 'sounds'];
-                const engineFilterService = 'engine_filter';
-                const selectedTimeHour = formData.time.split(':')[0]; // مثال: '11'
-                
-                let isTimeAllowed = true;
-
-                if (morningOnlyServices.includes(formData.serviceType)) {
-                    if (selectedTimeHour > '11' && selectedTimeHour < '15') { // بعد 11 صباحاً وقبل 3 مساءً
-                         // حالة فترة الظهيرة غير متاحة
-                         isTimeAllowed = false;
-                    } else if (selectedTimeHour >= '15') {
-                        // حالة فترة المساء غير متاحة
-                         isTimeAllowed = false;
-                    }
-                } else if (formData.serviceType === engineFilterService) {
-                    if (selectedTimeHour > '10') {
-                         isTimeAllowed = false; // بعد 10 صباحاً غير متاح
-                    }
-                }
-                
-                if (!isTimeAllowed) {
-                    showToast('الوقت المختار غير متاح لنوع الخدمة، يرجى إعادة الاختيار', 'error');
-                    updateAvailableTimes(); // تحديث القائمة الصحيحة
-                    return;
-                }
-
                 // إنشاء الحجز
                 const bookingId = 'BK' + Date.now();
                 const newBooking = {
@@ -1518,6 +1547,9 @@
                 showBookingConfirmation(bookingId);
                 bookingForm.reset();
                 
+                // إعادة تهيئة قائمة الأوقات بعد الحجز
+                loadInitialTimeOptions(); 
+                
                 // إشعار فوري
                 showNewBookingNotification(newBooking);
                 
@@ -1526,16 +1558,7 @@
                     updateBookingsTable();
                     updateStats();
                 }
-                
-                // إعادة تعيين حالة حقل الوقت بعد إرسال النموذج
-                updateAvailableTimes();
             });
-            
-            // تحديث الأوقات عند تغيير التاريخ (موجود مسبقاً)
-            dateInput.addEventListener('change', updateAvailableTimes);
-            
-            // تحديث الأوقات عند تغيير نوع الخدمة (تم الإضافة)
-            serviceTypeSelect.addEventListener('change', updateAvailableTimes);
             
             function showBookingConfirmation(bookingId) {
                 bookingIdSpan.textContent = bookingId;
@@ -1714,7 +1737,7 @@
                 bookingsTableBody.innerHTML = '';
                 
                 if (filteredBookings.length === 0) {
-                    bookingsTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px;">لا توجد حجوزات</td></tr>';
+                    bookingsTableBody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px;">لا توجد حجوزات</td></tr>';
                 } else {
                     filteredBookings.forEach(booking => {
                         const row = document.createElement('tr');
@@ -1736,6 +1759,11 @@
                                 statusText = 'ملغاة';
                                 break;
                         }
+
+                        // ترجمة نوع السيارة والخدمة
+                        const localizedCarType = carTypeMap[booking.carType] || booking.carType;
+                        const localizedServiceType = serviceTypeMap[booking.serviceType] || booking.serviceType;
+                        const notesDisplay = booking.notes || 'لا يوجد';
                         
                         // تنسيق التاريخ الميلادي
                         const bookingDate = new Date(booking.date);
@@ -1748,12 +1776,14 @@
                         row.innerHTML = `
                             <td>${booking.id}</td>
                             <td>${booking.name}</td>
+                            <td>${booking.email}</td>
                             <td>${booking.phone}</td>
-                            <td>${booking.carType}</td>
-                            <td>${booking.serviceType}</td>
+                            <td>${localizedCarType}</td>
+                            <td>${localizedServiceType}</td>
                             <td>${formattedDate}</td>
                             <td>${booking.time}</td>
                             <td class="${statusClass}">${statusText}</td>
+                            <td>${notesDisplay}</td>
                             <td>
                                 ${booking.status === 'pending' ? 
                                     `<button class="btn-admin btn-confirm" data-id="${booking.id}">تأكيد</button>` : 
@@ -1823,10 +1853,12 @@
                 let statsHTML = '';
                 for (const [service, count] of Object.entries(serviceCounts)) {
                     const percentage = bookings.length > 0 ? ((count / bookings.length) * 100).toFixed(1) : 0;
+                    // استخدام الخريطة لترجمة اسم الخدمة في الإحصائيات أيضاً
+                    const localizedService = serviceTypeMap[service] || service; 
                     statsHTML += `
                         <div style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                <span>${service}</span>
+                                <span>${localizedService}</span>
                                 <span><strong>${count}</strong> (${percentage}%)</span>
                             </div>
                             <div style="background: #ddd; border-radius: 3px; height: 8px;">
@@ -1935,7 +1967,7 @@
             updateNotifications();
             updateClosedDatesList();
             updateBackupInfo();
-            updateAvailableTimes(); // نداء أولي لضبط حالة حقل الوقت
+            loadInitialTimeOptions(); // تحميل الأوقات المتاحة عند فتح الصفحة
             
             // إظهار عدد الحجوزات عند الضغط على الجرس
             notificationBell.addEventListener('click', function() {
