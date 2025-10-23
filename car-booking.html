@@ -1268,7 +1268,22 @@
     <script>
         // نظام الحجوزات المتكامل مع التحسينات
         document.addEventListener('DOMContentLoaded', function() {
-            // البيانات
+            
+            // *************************************************************************
+            // *** تصفير البيانات التجريبية لمرة واحدة فقط استعداداً للانطلاق الحقيقي ***
+            // *** يرجى عدم إزالة هذا الكود حتى التأكد من تحميل الصفحة لمرة واحدة على الأقل ***
+            // *************************************************************************
+            const resetFlag = 'initialReset_V2'; // مفتاح فريد لضمان التصفير مرة واحدة فقط
+            if (localStorage.getItem(resetFlag) !== 'completed') {
+                localStorage.removeItem('carBookings'); // إزالة بيانات الحجوزات التجريبية
+                localStorage.removeItem('closedDates'); // إزالة التواريخ المغلقة التجريبية
+                localStorage.removeItem('lastBackup'); // إزالة سجل النسخ الاحتياطي القديم
+                localStorage.setItem(resetFlag, 'completed'); // تعيين العلامة لمنع التصفير مجدداً
+                console.log('Admin Dashboard has been reset for real bookings.');
+            }
+            // *************************************************************************
+            
+            // البيانات - يتم تحميلها من التخزين المحلي بعد التأكد من التصفير الأولي
             let bookings = JSON.parse(localStorage.getItem('carBookings')) || [];
             let closedDates = JSON.parse(localStorage.getItem('closedDates')) || [];
             const adminPassword = "ap#28767"; // كلمة المرور الجديدة
