@@ -61,10 +61,12 @@
             margin-right: 15px;
         }
         
-        .logo img {
-            height: 50px;
-            width: 50px;
+        /* تعديل الشعار: استخدام أيقونة أقوى */
+        .logo i {
+            font-size: 2.2rem;
+            color: var(--secondary);
         }
+        /* نهاية تعديل الشعار */
         
         .notification-bell {
             position: relative;
@@ -711,7 +713,7 @@
             color: white;
             padding: 15px 20px;
             border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 3000;
             max-width: 300px;
             display: none;
@@ -834,7 +836,7 @@
         <div class="container header-content">
             <div class="logo">
                 <h1>مركز تقني المحركات</h1>
-                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIj48L2NpcmNsZT48cGF0aCBkPSJNMTQgMzFsLTQtNGwtNC00Ij48L3BhdGg+PHBhdGggZD0iTTEwIDlsNC00bDQgNCI+PC9wYXRoPjxwYXRoIGQ9Ik00IDE2bDQtNGw0IDQiPjwvcGF0aD48cGF0aCBkPSJNMjAgMTZsLTQgNGwtNC00Ij48L3BhdGg+PC9zdmc+" alt="شعار المركز">
+                <i class="fas fa-cogs"></i>
             </div>
             <button class="notification-bell" id="notificationBell">
                 <i class="fas fa-bell"></i>
@@ -916,8 +918,8 @@
                     </div>
                     <div class="form-group">
                         <label for="time">الوقت المفضل</label>
-                        <select id="time" required>
-                            <option value="">اختر الوقت</option>
+                        <select id="time" required disabled>
+                            <option value="">اختر التاريخ والخدمة أولاً</option>
                             </select>
                     </div>
                 </div>
@@ -992,7 +994,15 @@
                         <p>مراجعة برمجة ووزن وإصلاحات أنظمة الهيدروليك باحترافية عالية.</p>
                     </div>
                 </div>
-                
+
+                <div class="service-card">
+                    <div class="service-icon">🔨</div>
+                    <div class="service-content">
+                        <h3>سمكرة ودهان وتعديل على البارد</h3>
+                        <p>إصلاح الهياكل الخارجية للسيارات، تعديل على البارد بدون دهان، وإعادة طلاء بجودة عالية.</p>
+                        <span class="warranty-badge"><i class="fas fa-shield-alt"></i> ضمان 10 سنوات على الدهان</span>
+                    </div>
+                </div>
                 <div class="service-card">
                     <div class="service-icon">🔥</div>
                     <div class="service-content">
@@ -1021,6 +1031,16 @@
             <div class="constraint-item">
                 <h3><i class="fas fa-clock"></i> مواعيد العمل</h3>
                 <p>مواعيد الدوام من 8:00 صباحاً حتى 1:00 ظهراً، ومن 3:00 مساءً حتى 7:00 مساءً.</p>
+            </div>
+            
+            <div class="constraint-item">
+                <h3><i class="fas fa-car"></i> قيد الحجز لكل ساعة</h3>
+                <p>يسمح بحجز سيارة واحدة فقط لكل فترة زمنية متاحة (ساعة واحدة).</p>
+            </div>
+
+            <div class="constraint-item">
+                <h3><i class="fas fa-clock"></i> قيود الأوقات حسب نوع الخدمة</h3>
+                <p>بعض الخدمات (مثل فحص الكمبيوتر والكهرباء) متاحة فقط في الفترة الصباحية.</p>
             </div>
             
             <div class="constraint-item">
@@ -1238,33 +1258,12 @@
 
     <div class="toast" id="toast"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
     <script>
-        // **********************************************************************************************************
-        // ⚠️ يجب استبدال هذه القيم بقيم مشروعك الفعلية من Firebase Console (الإعدادات > إعدادات المشروع > تطبيقاتك)
-        // **********************************************************************************************************
-        const firebaseConfig = {
-            apiKey: "AIzaSyAVweTlVbnd92xtTQcZwWo5sH7hiIDPlds",
-            authDomain: "car-service-booking-edfda.firebaseapp.com",
-            projectId: "car-service-booking-edfda",
-            storageBucket: "car-service-booking-edfda.firebasestorage.app",
-            messagingSenderId: "910485632535",
-            appId: "1:910485632535:web:b16fc6f6ee94bb64da0e52",
-            measurementId: "G-XHZVFM91HP"
-        };
-
-        // تهيئة Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        // **********************************************************************************************************
-
         // نظام الحجوزات المتكامل مع التحسينات
         document.addEventListener('DOMContentLoaded', function() {
-            // البيانات - الآن يتم ملؤها من Firestore بدلاً من localStorage
-            let bookings = []; // مصفوفة مؤقتة لتخزين الحجوزات بعد جلبها من Firestore
-            let closedDates = []; // مصفوفة مؤقتة لتخزين التواريخ المغلقة { id: docId, date: 'YYYY-MM-DD' }
+            // البيانات
+            let bookings = JSON.parse(localStorage.getItem('carBookings')) || [];
+            let closedDates = JSON.parse(localStorage.getItem('closedDates')) || [];
             const adminPassword = "ap#28767"; // كلمة المرور الجديدة
             
             // عناصر DOM
@@ -1297,6 +1296,7 @@
             const toast = document.getElementById('toast');
             const dateInput = document.getElementById('date');
             const timeSelect = document.getElementById('time');
+            const serviceTypeSelect = document.getElementById('serviceType');
             const exportBackupBtn = document.getElementById('exportBackupBtn');
             const importBackupBtn = document.getElementById('importBackupBtn');
             const backupFileInput = document.getElementById('backupFileInput');
@@ -1326,42 +1326,9 @@
             const today = new Date().toISOString().split('T')[0];
             dateInput.min = today;
             closeDateInput.min = today;
-
-            // 🚀 دالة جلب الحجوزات من Firestore
-            function fetchBookings() {
-                return db.collection("bookings").get().then((querySnapshot) => {
-                    bookings = []; 
-                    querySnapshot.forEach((doc) => {
-                        // إضافة doc.id لتحديث الحالة لاحقاً
-                        bookings.push({ id: doc.id, ...doc.data() });
-                    });
-                }).catch(error => {
-                    console.error("Error fetching bookings: ", error);
-                    showToast('فشل في جلب الحجوزات من قاعدة البيانات', 'error');
-                });
-            }
             
-            // 🚀 دالة جلب التواريخ المغلقة من Firestore
-            function fetchClosedDates() {
-                return db.collection("closedDates").get().then((querySnapshot) => {
-                    closedDates = []; 
-                    querySnapshot.forEach((doc) => {
-                        // الآن نخزن الكائن كاملاً بما في ذلك doc.id
-                        closedDates.push({ id: doc.id, date: doc.data().date });
-                    });
-                    // إزالة التواريخ المغلقة من القائمة إذا كانت قديمة (فلترة التواريخ القديمة من العرض)
-                    const today = new Date().toISOString().split('T')[0];
-                    closedDates = closedDates.filter(item => item.date >= today);
-                    
-                }).catch(error => {
-                    console.error("Error fetching closed dates: ", error);
-                    showToast('فشل في جلب التواريخ المغلقة', 'error');
-                });
-            }
-
             // تحديث الإشعارات
             function updateNotifications() {
-                // يعتمد على أن مصفوفة bookings تم ملؤها بالفعل من Firestore
                 const pendingCount = bookings.filter(b => b.status === 'pending').length;
                 if (pendingCount > 0) {
                     notificationBadge.textContent = pendingCount;
@@ -1376,9 +1343,8 @@
                 }
             }
             
-            // التحقق من توفر المواعيد
+            // التحقق من توفر المواعيد (لا يزال يسمح بحجز واحد لكل فترة زمنية)
             function checkAvailability(date, time) {
-                // يعتمد على أن مصفوفة bookings تم ملؤها بالفعل من Firestore
                 const existingBookings = bookings.filter(b => 
                     b.date === date && 
                     b.time === time && 
@@ -1387,61 +1353,70 @@
                 return existingBookings.length === 0;
             }
             
-            // تحديث قائمة الأوقات المتاحة
+            // تحديث قائمة الأوقات المتاحة مع قيود الخدمة
             function updateAvailableTimes() {
                 const selectedDate = dateInput.value;
+                const selectedService = serviceTypeSelect.value;
+                
                 timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
                 
-                if (!selectedDate) {
-                    loadAllAvailableTimes();
+                if (!selectedDate || !selectedService) {
+                    timeSelect.innerHTML = '<option value="">اختر التاريخ والخدمة أولاً</option>';
+                    timeSelect.disabled = true;
                     return;
                 }
                 
-                // التحقق من التاريخ المغلق (الآن يعتمد على المصفوفة المغلقة من Firestore)
-                if (closedDates.some(item => item.date === selectedDate)) {
-                    const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'التاريخ مغلق، يرجى اختيار تاريخ آخر';
-                    option.disabled = true;
-                    timeSelect.appendChild(option);
-                    return;
+                // قائمة الأوقات المتاحة للمركز (صباحاً ومساءً)
+                const allTimes = ['08:00', '09:00', '10:00', '11:00', '15:00', '16:00', '17:00'];
+                
+                // تحديد الأوقات المسموح بها حسب نوع الخدمة (القيود الجديدة)
+                let allowedTimes = [];
+
+                const morningOnlyServices = ['electricity', 'computer', 'hydraulic', 'sounds'];
+                const engineFilterService = 'engine_filter';
+
+                if (morningOnlyServices.includes(selectedService)) {
+                    // فحص كهرباء، كمبيوتر، هيدروليك، أصوات: حتى 11:00 صباحاً (شاملة)
+                    allowedTimes = allTimes.filter(time => time <= '11:00');
+                } else if (selectedService === engineFilterService) {
+                    // تصفية المحرك: حتى 10:00 صباحاً (شاملة)
+                    allowedTimes = allTimes.filter(time => time <= '10:00');
+                } else {
+                    // باقي الخدمات (زيت وسيفون، أقمشة، جيربوكس، أخرى): كل الأوقات
+                    allowedTimes = allTimes;
                 }
 
-                // الأوقات المتاحة: 8-11 صباحاً و 3-5 مساءً
-                const morningTimes = ['08:00', '09:00', '10:00', '11:00'];
-                const eveningTimes = ['15:00', '16:00', '17:00'];
-                const allTimes = [...morningTimes, ...eveningTimes];
+                // التحقق من التواريخ المغلقة
+                if (closedDates.includes(selectedDate)) {
+                    timeSelect.innerHTML = '<option value="">هذا التاريخ مغلق للحجز</option>';
+                    timeSelect.disabled = true;
+                    return;
+                }
                 
-                allTimes.forEach(time => {
+                timeSelect.disabled = false;
+                let timesAvailable = false;
+                
+                // فلترة الأوقات المسموح بها بناءً على التوفر (حجز واحد في الساعة)
+                allowedTimes.forEach(time => {
                     if (checkAvailability(selectedDate, time)) {
                         const option = document.createElement('option');
                         option.value = time;
                         option.textContent = time;
                         timeSelect.appendChild(option);
+                        timesAvailable = true;
                     }
                 });
                 
                 // إذا لم توجد أوقات متاحة
-                if (timeSelect.options.length === 1) {
-                    const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'لا توجد أوقات متاحة لهذا التاريخ';
-                    option.disabled = true;
-                    timeSelect.appendChild(option);
+                if (!timesAvailable) {
+                    timeSelect.innerHTML = '<option value="">لا توجد أوقات متاحة لهذا التاريخ/الخدمة</option>';
+                    timeSelect.disabled = true;
                 }
-            }
-            
-            // تحميل جميع الأوقات المتاحة عند فتح الصفحة (بعد جلب البيانات من Firestore)
-            function loadAllAvailableTimes() {
-                // يجب أن نضمن جلب البيانات أولاً
-                Promise.all([fetchBookings(), fetchClosedDates()]).then(() => {
-                    updateAvailableTimes();
-                });
             }
             
             // إشعار فوري عند وجود حجز جديد
             function showNewBookingNotification(booking) {
-                showToast(`حجز جديد: ${booking.name || 'غير معروف'} - ${booking.serviceType}`, 'info');
+                showToast(`حجز جديد: ${booking.name} - ${booking.serviceType}`, 'info');
                 updateNotifications();
             }
             
@@ -1486,48 +1461,81 @@
                     return;
                 }
                 
-                // التحقق من التاريخ المغلق (يعتمد على مصفوفة closedDates المحدثة من Firestore)
-                if (closedDates.some(item => item.date === formData.date)) {
+                // التحقق من التاريخ المغلق
+                if (closedDates.includes(formData.date)) {
                     showToast('التاريخ المحدد غير متاح للحجز، يرجى اختيار تاريخ آخر', 'error');
                     return;
                 }
                 
-                // التحقق من توفر الوقت (يعتمد على مصفوفة bookings المحدثة من Firestore)
+                // التحقق من توفر الوقت (يتم التحقق هنا مرة أخرى للتأكد)
                 if (!checkAvailability(formData.date, formData.time)) {
-                    showToast('الوقت المحدد غير متاح، يرجى اختيار وقت آخر', 'error');
+                    showToast('الوقت المحدد غير متاح (محجوز)، يرجى اختيار وقت آخر', 'error');
                     return;
                 }
+
+                // التحقق من قيد الوقت (تأكد من أن الوقت المختار مسموح به لنوع الخدمة)
+                // يتم إعادة تشغيل منطق التحقق للتأكد من أن المستخدم لم يتلاعب بالـ DOM
                 
-                // 🚀 استخدام Firestore لإرسال الحجز (بدلاً من localStorage)
-                db.collection("bookings").add({
+                const morningOnlyServices = ['electricity', 'computer', 'hydraulic', 'sounds'];
+                const engineFilterService = 'engine_filter';
+                const selectedTimeHour = formData.time.split(':')[0]; // مثال: '11'
+                
+                let isTimeAllowed = true;
+
+                if (morningOnlyServices.includes(formData.serviceType)) {
+                    if (selectedTimeHour > '11' && selectedTimeHour < '15') { // بعد 11 صباحاً وقبل 3 مساءً
+                         // حالة فترة الظهيرة غير متاحة
+                         isTimeAllowed = false;
+                    } else if (selectedTimeHour >= '15') {
+                        // حالة فترة المساء غير متاحة
+                         isTimeAllowed = false;
+                    }
+                } else if (formData.serviceType === engineFilterService) {
+                    if (selectedTimeHour > '10') {
+                         isTimeAllowed = false; // بعد 10 صباحاً غير متاح
+                    }
+                }
+                
+                if (!isTimeAllowed) {
+                    showToast('الوقت المختار غير متاح لنوع الخدمة، يرجى إعادة الاختيار', 'error');
+                    updateAvailableTimes(); // تحديث القائمة الصحيحة
+                    return;
+                }
+
+                // إنشاء الحجز
+                const bookingId = 'BK' + Date.now();
+                const newBooking = {
+                    id: bookingId,
                     ...formData,
                     status: 'pending',
                     createdAt: new Date().toISOString()
-                })
-                .then((docRef) => {
-                    // عرض التأكيد باستخدام رقم المستند كمعرف الحجز
-                    showBookingConfirmation(docRef.id);
-                    bookingForm.reset();
-                    
-                    // تحديث شامل للبيانات بعد إضافة الحجز
-                    fetchBookings().then(() => {
-                        showNewBookingNotification({ id: docRef.id, ...formData, status: 'pending' });
-                        updateAvailableTimes(); // تحديث الأوقات (للتأكد من أن الوقت تم حجزه الآن)
-                        if (adminDashboard.style.display === 'block') {
-                            updateBookingsTable();
-                            updateStats();
-                        }
-                    });
-
-                })
-                .catch((error) => {
-                    console.error("Error writing document: ", error);
-                    showToast('فشل في إرسال طلب الحجز: ' + error.message, 'error');
-                });
+                };
+                
+                bookings.push(newBooking);
+                localStorage.setItem('carBookings', JSON.stringify(bookings));
+                
+                // عرض التأكيد وتحديث النظام
+                showBookingConfirmation(bookingId);
+                bookingForm.reset();
+                
+                // إشعار فوري
+                showNewBookingNotification(newBooking);
+                
+                // تحديث لوحة التحكم إذا كانت مفتوحة
+                if (adminDashboard.style.display === 'block') {
+                    updateBookingsTable();
+                    updateStats();
+                }
+                
+                // إعادة تعيين حالة حقل الوقت بعد إرسال النموذج
+                updateAvailableTimes();
             });
             
-            // تحديث الأوقات عند تغيير التاريخ
+            // تحديث الأوقات عند تغيير التاريخ (موجود مسبقاً)
             dateInput.addEventListener('change', updateAvailableTimes);
+            
+            // تحديث الأوقات عند تغيير نوع الخدمة (تم الإضافة)
+            serviceTypeSelect.addEventListener('change', updateAvailableTimes);
             
             function showBookingConfirmation(bookingId) {
                 bookingIdSpan.textContent = bookingId;
@@ -1538,24 +1546,6 @@
                 confirmationModal.style.display = 'none';
             });
             
-            // 🚀 دالة تحميل بيانات المدير الرئيسية
-            function loadAdminData() {
-                // جلب الحجوزات والتواريخ المغلقة بالتوازي
-                Promise.all([fetchBookings(), fetchClosedDates()])
-                    .then(() => {
-                        updateBookingsTable(); 
-                        updateClosedDatesList(); 
-                        updateStats();
-                        updateNotifications();
-                        updateBackupInfo();
-                        updateAvailableTimes(); 
-                    })
-                    .catch(error => {
-                        console.error("Failed to load admin data:", error);
-                        showToast('فشل تحميل بيانات المدير الرئيسية', 'error');
-                    });
-            }
-
             // نظام لوحة التحكم
             adminAccessBtn.addEventListener('click', function() {
                 adminLoginModal.style.display = 'flex';
@@ -1575,7 +1565,11 @@
                     adminDashboard.style.display = 'block';
                     adminPasswordInput.value = '';
                     
-                    loadAdminData(); // 🚀 جلب جميع البيانات من Firestore
+                    updateBookingsTable();
+                    updateClosedDatesList();
+                    updateStats();
+                    updateNotifications();
+                    updateBackupInfo();
                     showToast('تم تسجيل الدخول بنجاح', 'success');
                 } else {
                     showToast('كلمة المرور غير صحيحة', 'error');
@@ -1620,32 +1614,21 @@
                     return;
                 }
                 
-                if (closedDates.some(item => item.date === dateToClose)) {
+                if (closedDates.includes(dateToClose)) {
                     showToast('هذا التاريخ مغلق بالفعل', 'warning');
                     return;
                 }
                 
-                // 🚀 إضافة التاريخ المغلق إلى Firestore
-                db.collection("closedDates").add({
-                    date: dateToClose,
-                    createdAt: new Date().toISOString()
-                })
-                .then(() => {
-                    // بعد الإضافة بنجاح، يتم إعادة الجلب وتحديث القائمة
-                    fetchClosedDates().then(() => {
-                        updateClosedDatesList();
-                        closeDateInput.value = '';
-                        showToast('تم إغلاق التاريخ بنجاح', 'success');
-                        updateAvailableTimes(); // تحديث الأوقات المتاحة في نموذج الحجز
-                    });
-                })
-                .catch(error => {
-                    console.error("Error closing date: ", error);
-                    showToast('فشل في إغلاق التاريخ: ' + error.message, 'error');
-                });
+                closedDates.push(dateToClose);
+                localStorage.setItem('closedDates', JSON.stringify(closedDates));
+                updateClosedDatesList();
+                closeDateInput.value = '';
+                showToast('تم إغلاق التاريخ بنجاح', 'success');
+                
+                // تحديث الأوقات المتاحة في نموذج الحجز
+                updateAvailableTimes();
             });
             
-            // 🚀 دالة تحديث قائمة التواريخ المغلقة (تعتمد على closedDates المحدثة)
             function updateClosedDatesList() {
                 closedDatesList.innerHTML = '';
                 
@@ -1655,17 +1638,14 @@
                 }
                 
                 // ترتيب التواريخ من الأحدث إلى الأقدم
-                closedDates.sort((a, b) => new Date(b.date) - new Date(a.date));
+                closedDates.sort((a, b) => new Date(b) - new Date(a));
                 
-                closedDates.forEach(item => {
-                    const date = item.date;
-                    const docId = item.id;
-                    
+                closedDates.forEach(date => {
                     const dateItem = document.createElement('li');
                     dateItem.className = 'closed-date-item';
                     
                     // تحويل التاريخ إلى اليوم بالأسبوع
-                    const dateObj = new Date(date + 'T00:00:00'); // إضافة T00:00:00 لتجنب مشاكل المناطق الزمنية
+                    const dateObj = new Date(date);
                     const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
                     const dayName = days[dateObj.getDay()];
                     
@@ -1682,7 +1662,7 @@
                             <span class="closed-date-day">${dayName}</span>
                         </div>
                         <div class="closed-date-actions">
-                            <button class="btn-admin btn-danger remove-closed-date" data-doc-id="${docId}">
+                            <button class="btn-admin btn-danger remove-closed-date" data-date="${date}">
                                 <i class="fas fa-times"></i> إزالة
                             </button>
                         </div>
@@ -1694,142 +1674,128 @@
                 // إضافة مستمعي الأحداث لأزرار الإزالة
                 document.querySelectorAll('.remove-closed-date').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        const docIdToRemove = this.getAttribute('data-doc-id');
-                        removeClosedDate(docIdToRemove);
+                        const dateToRemove = this.getAttribute('data-date');
+                        removeClosedDate(dateToRemove);
                     });
                 });
             }
             
-            // 🚀 دالة إزالة التاريخ المغلق من Firestore
-            function removeClosedDate(docId) {
-                db.collection("closedDates").doc(docId).delete()
-                .then(() => {
-                    // تحديث القائمة بعد الحذف من Firestore
-                    fetchClosedDates().then(() => {
-                        updateClosedDatesList(); 
-                        showToast('تم إزالة التاريخ من القائمة المغلقة', 'success');
-                        updateAvailableTimes();
-                    });
-                })
-                .catch(error => {
-                    console.error("Error removing document: ", error);
-                    showToast('فشل في إزالة التاريخ: ' + error.message, 'error');
-                });
+            function removeClosedDate(date) {
+                closedDates = closedDates.filter(d => d !== date);
+                localStorage.setItem('closedDates', JSON.stringify(closedDates));
+                updateClosedDatesList();
+                showToast('تم إزالة التاريخ من القائمة المغلقة', 'success');
+                
+                // تحديث الأوقات المتاحة في نموذج الحجز
+                updateAvailableTimes();
             }
             
-            // 🚀 دالة تحديث جدول الحجوزات (الآن تجلب البيانات من Firestore)
+            // تحديث جدول الحجوزات
             function updateBookingsTable() {
-                // يجب جلب البيانات أولاً لضمان أن مصفوفة bookings حديثة
-                fetchBookings().then(() => {
-                    const searchTerm = searchBookingsInput.value.toLowerCase();
-                    const statusFilter = filterStatusSelect.value;
+                const searchTerm = searchBookingsInput.value.toLowerCase();
+                const statusFilter = filterStatusSelect.value;
+                
+                let filteredBookings = bookings.filter(booking => {
+                    const matchesSearch = 
+                        booking.name.toLowerCase().includes(searchTerm) ||
+                        booking.phone.includes(searchTerm) ||
+                        booking.email.toLowerCase().includes(searchTerm) ||
+                        booking.carType.includes(searchTerm) ||
+                        booking.serviceType.includes(searchTerm);
                     
-                    let filteredBookings = bookings.filter(booking => {
-                        const matchesSearch = 
-                            (booking.name && booking.name.toLowerCase().includes(searchTerm)) ||
-                            (booking.phone && booking.phone.includes(searchTerm)) ||
-                            (booking.email && booking.email.toLowerCase().includes(searchTerm)) ||
-                            (booking.carType && booking.carType.includes(searchTerm)) ||
-                            (booking.serviceType && booking.serviceType.includes(searchTerm));
+                    const matchesStatus = statusFilter === 'all' || booking.status === statusFilter;
+                    
+                    return matchesSearch && matchesStatus;
+                });
+                
+                // ترتيب من الأحدث إلى الأقدم
+                filteredBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
+                bookingsTableBody.innerHTML = '';
+                
+                if (filteredBookings.length === 0) {
+                    bookingsTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px;">لا توجد حجوزات</td></tr>';
+                } else {
+                    filteredBookings.forEach(booking => {
+                        const row = document.createElement('tr');
                         
-                        const matchesStatus = statusFilter === 'all' || booking.status === statusFilter;
+                        let statusClass = '';
+                        let statusText = '';
                         
-                        return matchesSearch && matchesStatus;
+                        switch(booking.status) {
+                            case 'pending':
+                                statusClass = 'status-pending';
+                                statusText = 'قيد الانتظار';
+                                break;
+                            case 'confirmed':
+                                statusClass = 'status-confirmed';
+                                statusText = 'مؤكدة';
+                                break;
+                            case 'cancelled':
+                                statusClass = 'status-cancelled';
+                                statusText = 'ملغاة';
+                                break;
+                        }
+                        
+                        // تنسيق التاريخ الميلادي
+                        const bookingDate = new Date(booking.date);
+                        const formattedDate = bookingDate.toLocaleDateString('ar-EG', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        
+                        row.innerHTML = `
+                            <td>${booking.id}</td>
+                            <td>${booking.name}</td>
+                            <td>${booking.phone}</td>
+                            <td>${booking.carType}</td>
+                            <td>${booking.serviceType}</td>
+                            <td>${formattedDate}</td>
+                            <td>${booking.time}</td>
+                            <td class="${statusClass}">${statusText}</td>
+                            <td>
+                                ${booking.status === 'pending' ? 
+                                    `<button class="btn-admin btn-confirm" data-id="${booking.id}">تأكيد</button>` : 
+                                    ''
+                                }
+                                ${booking.status !== 'cancelled' ? 
+                                    `<button class="btn-admin btn-cancel" data-id="${booking.id}">إلغاء</button>` : 
+                                    ''
+                                }
+                            </td>
+                        `;
+                        
+                        bookingsTableBody.appendChild(row);
                     });
                     
-                    // ترتيب من الأحدث إلى الأقدم
-                    filteredBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    // إضافة مستمعي الأحداث للأزرار
+                    document.querySelectorAll('.btn-confirm').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const bookingId = this.getAttribute('data-id');
+                            updateBookingStatus(bookingId, 'confirmed');
+                        });
+                    });
                     
-                    bookingsTableBody.innerHTML = '';
+                    document.querySelectorAll('.btn-cancel').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const bookingId = this.getAttribute('data-id');
+                            updateBookingStatus(bookingId, 'cancelled');
+                        });
+                    });
+                }
+            }
+            
+            function updateBookingStatus(bookingId, newStatus) {
+                const bookingIndex = bookings.findIndex(b => b.id === bookingId);
+                
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].status = newStatus;
+                    localStorage.setItem('carBookings', JSON.stringify(bookings));
                     
-                    if (filteredBookings.length === 0) {
-                        bookingsTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px;">لا توجد حجوزات</td></tr>';
-                    } else {
-                        filteredBookings.forEach(booking => {
-                            const row = document.createElement('tr');
-                            
-                            let statusClass = '';
-                            let statusText = '';
-                            
-                            switch(booking.status) {
-                                case 'pending':
-                                    statusClass = 'status-pending';
-                                    statusText = 'قيد الانتظار';
-                                    break;
-                                case 'confirmed':
-                                    statusClass = 'status-confirmed';
-                                    statusText = 'مؤكدة';
-                                    break;
-                                case 'cancelled':
-                                    statusClass = 'status-cancelled';
-                                    statusText = 'ملغاة';
-                                    break;
-                            }
-                            
-                            // تنسيق التاريخ الميلادي
-                            const bookingDate = new Date(booking.date + 'T00:00:00');
-                            const formattedDate = bookingDate.toLocaleDateString('ar-EG', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            });
-                            
-                            row.innerHTML = `
-                                <td>${booking.id}</td>
-                                <td>${booking.name || ''}</td>
-                                <td>${booking.phone || ''}</td>
-                                <td>${booking.carType || ''}</td>
-                                <td>${booking.serviceType || ''}</td>
-                                <td>${formattedDate}</td>
-                                <td>${booking.time || ''}</td>
-                                <td class="${statusClass}">${statusText}</td>
-                                <td>
-                                    ${booking.status === 'pending' ? 
-                                        `<button class="btn-admin btn-confirm" data-id="${booking.id}">تأكيد</button>` : 
-                                        ''
-                                    }
-                                    ${booking.status !== 'cancelled' ? 
-                                        `<button class="btn-admin btn-cancel" data-id="${booking.id}">إلغاء</button>` : 
-                                        ''
-                                    }
-                                </td>
-                            `;
-                            
-                            bookingsTableBody.appendChild(row);
-                        });
-                        
-                        // إضافة مستمعي الأحداث للأزرار
-                        document.querySelectorAll('.btn-confirm').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const bookingId = this.getAttribute('data-id');
-                                updateBookingStatus(bookingId, 'confirmed');
-                            });
-                        });
-                        
-                        document.querySelectorAll('.btn-cancel').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const bookingId = this.getAttribute('data-id');
-                                updateBookingStatus(bookingId, 'cancelled');
-                            });
-                        });
-                    }
-                    // تحديث الإحصائيات والإشعارات بعد جلب البيانات
+                    updateBookingsTable();
                     updateStats();
                     updateNotifications();
-                }).catch(error => {
-                    bookingsTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px; color: red;">فشل في تحميل الحجوزات: ' + error.message + '</td></tr>';
-                });
-            }
-            
-            // 🚀 دالة تحديث حالة الحجز في Firestore
-            function updateBookingStatus(bookingId, newStatus) {
-                
-                db.collection("bookings").doc(bookingId).update({
-                    status: newStatus
-                })
-                .then(() => {
-                    // بعد التحديث بنجاح في Firestore، نقوم بتحديث الجدول المحلي
-                    updateBookingsTable(); 
                     
                     let statusText = '';
                     switch(newStatus) {
@@ -1838,15 +1804,10 @@
                     }
                     
                     showToast(`تم تحديث حالة الحجز إلى ${statusText}`, 'success');
-                })
-                .catch(error => {
-                    console.error("Error updating document: ", error);
-                    showToast('فشل في تحديث حالة الحجز: ' + error.message, 'error');
-                });
+                }
             }
             
             function updateStats() {
-                // تعتمد على أن مصفوفة bookings تم ملؤها بالفعل من Firestore
                 totalBookingsSpan.textContent = bookings.length;
                 pendingBookingsSpan.textContent = bookings.filter(b => b.status === 'pending').length;
                 confirmedBookingsSpan.textContent = bookings.filter(b => b.status === 'confirmed').length;
@@ -1854,7 +1815,6 @@
             }
             
             function updateServiceStats() {
-                // تعتمد على أن مصفوفة bookings تم ملؤها بالفعل من Firestore
                 const serviceCounts = {};
                 bookings.forEach(booking => {
                     serviceCounts[booking.serviceType] = (serviceCounts[booking.serviceType] || 0) + 1;
@@ -1881,30 +1841,26 @@
             
             // نظام النسخ الاحتياطي
             exportBackupBtn.addEventListener('click', function() {
-                // جلب أحدث البيانات من Firestore قبل التصدير
-                Promise.all([fetchBookings(), fetchClosedDates()])
-                    .then(() => {
-                        const data = {
-                            bookings: bookings,
-                            closedDates: closedDates,
-                            exportDate: new Date().toISOString(),
-                            totalRecords: bookings.length + closedDates.length
-                        };
-                        
-                        const dataStr = JSON.stringify(data, null, 2);
-                        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                        
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(dataBlob);
-                        link.download = `car-bookings-backup-${new Date().toISOString().split('T')[0]}.json`;
-                        link.click();
-                        
-                        // تحديث معلومات النسخ الاحتياطي في الذاكرة المحلية (Backup Info)
-                        localStorage.setItem('lastBackup', new Date().toISOString());
-                        updateBackupInfo();
-                        
-                        showToast('تم تصدير البيانات بنجاح', 'success');
-                    });
+                const data = {
+                    bookings: bookings,
+                    closedDates: closedDates,
+                    exportDate: new Date().toISOString(),
+                    totalRecords: bookings.length + closedDates.length
+                };
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `car-bookings-backup-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                // تحديث معلومات النسخ الاحتياطي
+                localStorage.setItem('lastBackup', new Date().toISOString());
+                updateBackupInfo();
+                
+                showToast('تم تصدير البيانات بنجاح', 'success');
             });
             
             importBackupBtn.addEventListener('click', function() {
@@ -1920,22 +1876,21 @@
                     try {
                         const data = JSON.parse(e.target.result);
                         
-                        if (confirm('هل تريد استيراد البيانات؟ ستتم إضافتها إلى Firebase (لن يتم حذف البيانات الحالية).')) {
+                        if (confirm('هل تريد استبدال البيانات الحالية؟ سيتم فقدان البيانات غير المحفوظة.')) {
+                            bookings = data.bookings || [];
+                            closedDates = data.closedDates || [];
                             
-                            const newBookings = data.bookings || [];
-                            const newClosedDates = data.closedDates || [];
-
-                            // 🚀 إضافة البيانات إلى Firestore (يجب أن يتم تعديلها للتعامل مع الإضافة)
-                            // نظراً لتعقيد عملية الاستيراد كعملية 'استبدال' شاملة، سنقوم بتحويلها إلى 'إضافة'
-                            
-                            // لا يمكن الاعتماد على هذا كحل شامل، لكنه يقوم بإضافة البيانات الجديدة ل Firestore
-                            // لإنجاز عملية الإضافة: يجب إنشاء دالة تقوم بعمليات إضافة Batch إلى Firestore
-                            
-                            showToast('تمت قراءة الملف بنجاح. وظيفة الاستيراد الكاملة إلى Firebase تتطلب كود أكثر تعقيداً.', 'warning');
-                            
-                            // لإبقاء الدالة تعمل، سنقوم بتحديث معلومات النسخ الاحتياطي المحلية فقط
+                            localStorage.setItem('carBookings', JSON.stringify(bookings));
+                            localStorage.setItem('closedDates', JSON.stringify(closedDates));
                             localStorage.setItem('lastBackup', new Date().toISOString());
+                            
+                            updateBookingsTable();
+                            updateClosedDatesList();
+                            updateStats();
                             updateBackupInfo();
+                            updateAvailableTimes();
+                            
+                            showToast('تم استيراد البيانات بنجاح', 'success');
                         }
                     } catch (error) {
                         showToast('خطأ في استيراد البيانات: ملف غير صالح', 'error');
@@ -1975,8 +1930,12 @@
                 }, 4000);
             }
             
-            // التهيئة النهائية (الآن تقوم بتحميل البيانات من Firestore)
-            loadAllAvailableTimes(); // تحميل الأوقات المتاحة عند فتح الصفحة (والتي تتضمن جلب البيانات)
+            // التهيئة النهائية
+            updateStats();
+            updateNotifications();
+            updateClosedDatesList();
+            updateBackupInfo();
+            updateAvailableTimes(); // نداء أولي لضبط حالة حقل الوقت
             
             // إظهار عدد الحجوزات عند الضغط على الجرس
             notificationBell.addEventListener('click', function() {
@@ -1991,4 +1950,3 @@
     </script>
 </body>
 </html>
-
