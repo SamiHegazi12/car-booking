@@ -245,6 +245,16 @@
             background: #138496;
         }
 
+        .btn-whatsapp-link {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-whatsapp-link:hover {
+            background: #1eaf53;
+        }
+
+
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -399,9 +409,9 @@
             margin-top: 4px;
         }
         
-        /* لتحديد أيقونة الواتساب بلونها الأخضر */
+        /* التعديل: أيقونة الواتساب بنفس اللون الثانوي */
         .contact-info-footer i.fab.fa-whatsapp {
-            color: #25D366; 
+            color: var(--secondary); 
         }
 
         .work-hours {
@@ -532,7 +542,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            min-width: 900px; /* زيادة الحد الأدنى ليتسع للأعمدة الجديدة */
+            min-width: 1000px; /* زيادة الحد الأدنى ليتسع للأعمدة الجديدة (بما فيها الواتساب) */
         }
 
         .bookings-table th, .bookings-table td {
@@ -609,6 +619,17 @@
         .btn-warning:hover {
             background: #e69500;
         }
+        
+        .btn-whatsapp {
+            background: #25D366; 
+            color: white;
+            font-size: 0.85rem;
+        }
+        
+        .btn-whatsapp:hover {
+            background: #1eaf53;
+        }
+
 
         .stats-cards {
             display: grid;
@@ -1019,6 +1040,7 @@
                             <option value="gearbox">غيار زيت الجيربوكس</option>
                             <option value="computer">فحص كمبيوتر</option>
                             <option value="electricity">فحص كهرباء وهايبرد</option>
+                            <option value="engine_check">فحص المحرك</option>
                             <option value="sounds">فحص أصوات أسفل السيارة</option>
                             <option value="hydraulic">برمجة ووزن وإصلاح أنظمة الهيدروليك</option>
                             <option value="engine_filter">تصفية المحرك</option>
@@ -1041,8 +1063,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="notes">ملاحظات إضافية</label>
-                    <textarea id="notes" rows="4" placeholder="أي ملاحظات إضافية حول الخدمة المطلوبة..."></textarea>
+                    <label for="notes">ملاحظات على الخدمة المطلوبة</label>
+                    <textarea id="notes" rows="4" placeholder="يرجى توضيح سبب الحجز أو المشكلة التي تواجهها..."></textarea>
                 </div>
                 
                 <div class="form-group">
@@ -1115,6 +1137,14 @@
                 </div>
                 
                 <div class="service-card">
+                    <div class="service-icon">🔬</div>
+                    <div class="service-content">
+                        <h3>فحص المحرك</h3>
+                        <p>فحص دقيق وشامل لأداء المحرك وكفائته لتحديد أي مشكلات داخلية أو ميكانيكية.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
                     <div class="service-icon">🔊</div>
                     <div class="service-content">
                         <h3>فحص الأصوات</h3>
@@ -1162,7 +1192,7 @@
             
             <div class="constraint-item warning">
                 <h3><i class="fas fa-car-side"></i> قيود زمنية للخدمات المتخصصة</h3>
-                <p>خدمات (**فحص كهرباء وهايبرد، فحص كمبيوتر، فحص أصوات، فحص هيدروليك**) متاحة **حتى الساعة 11:00 صباحاً** فقط.</p>
+                <p>خدمات (**فحص كهرباء وهايبرد، فحص كمبيوتر، فحص المحرك، فحص أصوات، فحص هيدروليك**) متاحة **حتى الساعة 11:00 صباحاً** فقط.</p>
                 <p>خدمة (**تصفية المحرك**) متاحة **حتى الساعة 10:00 صباحاً** فقط.</p>
             </div>
             
@@ -1202,7 +1232,7 @@
                     <a href="tel:+966530694999" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
                 </p>
                 <p class="contact-info-footer">
-                    <i class="fab fa-whatsapp" style="color: #25D366;"></i> 
+                    <i class="fab fa-whatsapp"></i> 
                     <a href="https://wa.me/966530694999" target="_blank" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
                 </p>
                 <p class="contact-info-footer"><i class="fas fa-envelope"></i> mail.us@enginetechnician.net</p>
@@ -1413,11 +1443,14 @@
             morningStart: 8, morningEnd: 13, 
             eveningStart: 15, eveningEnd: 19 
         };
-        // تم دمج 'hybrid_check' ضمن 'electricity' في الواجهة الأمامية وفي قيود الوقت.
-        const SPECIALIZED_SERVICES = ['computer', 'electricity', 'sounds', 'hydraulic']; 
+        // تم تحديث الخدمات المتخصصة لتشمل فحص المحرك
+        const SPECIALIZED_SERVICES = ['computer', 'electricity', 'engine_check', 'sounds', 'hydraulic']; 
         const ENGINE_FILTER_SERVICE = 'engine_filter';
         const MAX_SPECIALIZED_HOUR = 11; 
         const MAX_ENGINE_FILTER_HOUR = 10; 
+
+        // لتخزين التواريخ المغلقة محليا لتسهيل التحقق (التعديل رقم 1)
+        let localClosedDates = []; 
 
         // --- وظيفة الـ Toast Notification ---
         function showToast(message, type = 'success') {
@@ -1468,7 +1501,6 @@
 
         async function getAvailableTimeSlots(selectedDate, serviceType) {
             const allBookings = await getBookings();
-            const closedDates = await getClosedDates();
             const dateStr = selectedDate;
             const selectedDay = new Date(selectedDate).getDay(); 
 
@@ -1477,12 +1509,11 @@
                 return [];
             }
             
-            if (closedDates.some(d => d.date === dateStr)) {
+            // التعديل رقم 1: استخدام البيانات المخزنة محليا
+            if (localClosedDates.some(d => d.date === dateStr)) {
                  return [];
             }
             
-            // تحقق من الخدمة الخاصة (فحص الهايبرد تم دمجه في فحص الكهرباء الآن)
-            // ونستخدم قائمة SPECIALIZED_SERVICES الجديدة.
             const isSpecialized = SPECIALIZED_SERVICES.includes(serviceType);
             const isEngineFilter = serviceType === ENGINE_FILTER_SERVICE;
             
@@ -1543,7 +1574,12 @@
                  showToast('لا توجد حجوزات أيام الجمعة.', 'warning');
                  return;
             }
-
+            
+            // التعديل رقم 1: تحقق من التاريخ المغلق
+            if (localClosedDates.some(d => d.date === selectedDate)) {
+                 showToast('عذراً، هذا التاريخ مغلق بسبب: ' + localClosedDates.find(d => d.date === selectedDate).reason, 'warning');
+                 return;
+            }
 
             const availableSlots = await getAvailableTimeSlots(selectedDate, serviceType);
 
@@ -1623,7 +1659,8 @@
             // مستمع للتواريخ المغلقة
             unsubscribeClosedDates = closedDatesCollection
                 .onSnapshot(snapshot => {
-                    renderClosedDates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                    localClosedDates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderClosedDates(localClosedDates);
                     populateTimeSlots(); 
                 }, error => {
                     console.error("Error listening to closed dates: ", error);
@@ -1685,6 +1722,9 @@
                 const statusClass = `status-${booking.status}`;
                 const formattedDate = new Date(booking.date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
                 
+                // التعديل رقم 2: رابط الواتساب للمدير
+                const whatsappLink = `https://wa.me/966${booking.phone.substring(1)}?text=أهلاً%20بك%20يا%20${booking.name}%20من%20مركز%20تقني%20المحركات،%20نرجو%20تأكيد%20موعد%20صيانة%20سيارتك%20(${booking.carModel})%20لخدمة%20${getServiceArabicName(booking.serviceType)}%20بتاريخ%20${formattedDate}%20في%20${formatTime(booking.time)}.`;
+                
                 row.innerHTML = `
                     <td>
                         ${formattedDate} 
@@ -1695,7 +1735,9 @@
                     <td>
                         <strong>${booking.name}</strong> 
                         <br>
-                        <small><i class="fas fa-mobile-alt"></i> ${booking.phone}</small>
+                        <small>
+                            <a href="tel:${booking.phone}" style="color: var(--primary);"><i class="fas fa-mobile-alt"></i> ${booking.phone}</a>
+                        </small>
                         <small><i class="fas fa-envelope"></i> ${booking.email}</small>
                     </td>
                     <td>
@@ -1715,6 +1757,9 @@
                             <i class="fas fa-times"></i> إلغاء
                         </button>
                         <button class="btn-admin btn-info" onclick="showBookingDetails('${booking.id}')"><i class="fas fa-info-circle"></i> التفاصيل</button>
+                        <a href="${whatsappLink}" target="_blank" class="btn-admin btn-whatsapp">
+                            <i class="fab fa-whatsapp"></i> واتساب
+                        </a>
                     </td>
                 `;
                 bookingsTableBody.appendChild(row);
@@ -1724,8 +1769,9 @@
         function getServiceArabicName(value) {
             const services = {
                 'oil': 'زيت وسيفون', 'fabric': 'غيار أقمشة', 'gearbox': 'غيار زيت الجيربوكس', 'computer': 'فحص كمبيوتر',
-                // تم تحديث اسم الخدمة هنا ليعكس التعديل
                 'electricity': 'فحص كهرباء وهايبرد', 
+                // التعديل رقم 4: إضافة خدمة فحص المحرك
+                'engine_check': 'فحص المحرك',
                 'sounds': 'فحص أصوات', 'hydraulic': 'أنظمة هيدروليك',
                 'engine_filter': 'تصفية المحرك', 'other': 'خدمة أخرى'
             };
@@ -1840,8 +1886,8 @@
             }
 
             if (date) {
-                const closedDates = await getClosedDates();
-                if (!closedDates.some(d => d.date === date)) {
+                // استخدام localClosedDates
+                if (!localClosedDates.some(d => d.date === date)) {
                     try {
                         await closedDatesCollection.add({ date: date, reason: reason });
                         addClosedDateForm.reset();
