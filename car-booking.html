@@ -398,7 +398,11 @@
             font-size: 1.1rem;
             margin-top: 4px;
         }
-
+        
+        /* لتحديد أيقونة الواتساب بلونها الأخضر */
+        .contact-info-footer i.fab.fa-whatsapp {
+            color: #25D366; 
+        }
 
         .work-hours {
             background: var(--light);
@@ -421,7 +425,6 @@
             z-index: 1000;
             background: var(--dark);
             color: white;
-            border: none;
             padding: 12px 20px;
             border-radius: 50px;
             cursor: pointer;
@@ -746,7 +749,7 @@
             color: white;
             padding: 15px 20px;
             border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 3000;
             max-width: 300px;
             display: none;
@@ -971,7 +974,7 @@
             
             <div class="work-hours">
                 <h3><i class="fas fa-clock"></i> أوقات العمل</h3>
-                <p>من الساعة **8:00 صباحاً حتى 1:00 ظهراً**، ومن **3:00 مساءً حتى 7:00 مساءً**</p>
+                <p>من يوم **السبت إلى الخميس**، من الساعة **8:00 صباحاً حتى 1:00 ظهراً**، ومن **3:00 مساءً حتى 7:00 مساءً**</p>
             </div>
             
             <form id="bookingForm">
@@ -1015,8 +1018,7 @@
                             <option value="fabric">غيار أقمشة</option>
                             <option value="gearbox">غيار زيت الجيربوكس</option>
                             <option value="computer">فحص كمبيوتر</option>
-                            <option value="electricity">فحص كهرباء</option>
-                            <option value="hybrid_check">فحص هايبرد</option>
+                            <option value="electricity">فحص كهرباء وهايبرد</option>
                             <option value="sounds">فحص أصوات أسفل السيارة</option>
                             <option value="hydraulic">برمجة ووزن وإصلاح أنظمة الهيدروليك</option>
                             <option value="engine_filter">تصفية المحرك</option>
@@ -1097,10 +1099,10 @@
                 </div>
                 
                 <div class="service-card">
-                    <div class="service-icon">🔋</div>
+                    <div class="service-icon">⚡</div>
                     <div class="service-content">
-                        <h3>فحص كهرباء</h3>
-                        <p>فحص شامل للبطارية والنظام الكهربائي للسيارة واستبدالها إذا لزم الأمر.</p>
+                        <h3>فحص الكهرباء والهايبرد</h3>
+                        <p>فحص شامل للبطارية والنظام الكهربائي للسيارة، بالإضافة إلى **تشخيص وصيانة أنظمة سيارات الهايبرد**.</p>
                     </div>
                 </div>
                 
@@ -1145,7 +1147,7 @@
             <h2 class="section-title">شروط وقيود الحجز</h2>
             <div class="constraint-item warning">
                 <h3><i class="fas fa-exclamation-triangle"></i> تأكيد الحجز النهائي</h3>
-                <p>الحجز يعتبر مبدئي وسيتم تأكيده نهائياً بعد مراجعته من قبل مدير المركز وإرسال رسالة تأكيد إلى بريدك الإلكتروني.</p>
+                <p>الحجز يعتبر مبدئي وسيتم تأكيده نهائياً بعد مراجعته من قبل مدير المركز وإرسال رسالة تأكيد إليك عبر **البريد الإلكتروني أو الواتساب**.</p>
             </div>
             
             <div class="constraint-item">
@@ -1160,7 +1162,7 @@
             
             <div class="constraint-item warning">
                 <h3><i class="fas fa-car-side"></i> قيود زمنية للخدمات المتخصصة</h3>
-                <p>خدمات (**فحص كهرباء، فحص كمبيوتر، فحص هايبرد، فحص هيدروليك، فحص أصوات**) متاحة **حتى الساعة 11:00 صباحاً** فقط.</p>
+                <p>خدمات (**فحص كهرباء وهايبرد، فحص كمبيوتر، فحص أصوات، فحص هيدروليك**) متاحة **حتى الساعة 11:00 صباحاً** فقط.</p>
                 <p>خدمة (**تصفية المحرك**) متاحة **حتى الساعة 10:00 صباحاً** فقط.</p>
             </div>
             
@@ -1171,7 +1173,7 @@
             
             <div class="constraint-item">
                 <h3><i class="fas fa-envelope"></i> تأكيد الحجز</h3>
-                <p>سيتم تأكيد الحجز النهائي بعد تلقي رسالة على الإيميل من مدير التطبيق.</p>
+                <p>سيتم تأكيد الحجز النهائي بعد تلقي رسالة على الإيميل أو الواتساب من مدير التطبيق.</p>
             </div>
             
             <div class="constraint-item">
@@ -1195,11 +1197,17 @@
             
             <div class="footer-section">
                 <h3>اتصل بنا</h3>
-                <p class="contact-info-footer"><i class="fas fa-phone"></i> 0530694999</p>
-                <p class="contact-info-footer"><i class="fas fa-phone"></i> 0530694999</p>
+                <p class="contact-info-footer">
+                    <i class="fas fa-phone"></i> 
+                    <a href="tel:+966530694999" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
+                </p>
+                <p class="contact-info-footer">
+                    <i class="fab fa-whatsapp" style="color: #25D366;"></i> 
+                    <a href="https://wa.me/966530694999" target="_blank" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
+                </p>
                 <p class="contact-info-footer"><i class="fas fa-envelope"></i> mail.us@enginetechnician.net</p>
                 <p class="contact-info-footer"><i class="fas fa-map-marker-alt"></i> صناعية أبها الجديدة</p>
-                <a href="https://maps.app.goo.gl/YourMapLink" target="_blank" style="font-weight: bold;">
+                <a href="https://maps.app.goo.gl/wRj4BRsLU5mxJbB78" target="_blank" style="font-weight: bold;"> 
                     <i class="fas fa-location-arrow"></i> انقر هنا للوصول إلى موقع المركز على الخريطة
                 </a>
             </div>
@@ -1405,7 +1413,8 @@
             morningStart: 8, morningEnd: 13, 
             eveningStart: 15, eveningEnd: 19 
         };
-        const SPECIALIZED_SERVICES = ['computer', 'electricity', 'hybrid_check', 'sounds', 'hydraulic'];
+        // تم دمج 'hybrid_check' ضمن 'electricity' في الواجهة الأمامية وفي قيود الوقت.
+        const SPECIALIZED_SERVICES = ['computer', 'electricity', 'sounds', 'hydraulic']; 
         const ENGINE_FILTER_SERVICE = 'engine_filter';
         const MAX_SPECIALIZED_HOUR = 11; 
         const MAX_ENGINE_FILTER_HOUR = 10; 
@@ -1452,7 +1461,7 @@
             }
             
             const [hour, minute] = timeStr.split(':').map(Number);
-            const period = hour < 12 ? 'ص' : 'م';
+            const period = hour < 12 || hour === 24 ? 'ص' : 'م';
             const formattedHour = hour % 12 || 12; 
             return `${formattedHour.toString().padStart(2, '0')}:00 ${period}`;
         }
@@ -1463,15 +1472,17 @@
             const dateStr = selectedDate;
             const selectedDay = new Date(selectedDate).getDay(); 
 
-            // 5 = الجمعة (0=الأحد)
-            if (selectedDay === 5 || selectedDay === 6) { 
+            // 5 = الجمعة (0=الأحد، 6=السبت)
+            if (selectedDay === 5) { 
                 return [];
             }
             
             if (closedDates.some(d => d.date === dateStr)) {
                  return [];
             }
-
+            
+            // تحقق من الخدمة الخاصة (فحص الهايبرد تم دمجه في فحص الكهرباء الآن)
+            // ونستخدم قائمة SPECIALIZED_SERVICES الجديدة.
             const isSpecialized = SPECIALIZED_SERVICES.includes(serviceType);
             const isEngineFilter = serviceType === ENGINE_FILTER_SERVICE;
             
@@ -1493,7 +1504,7 @@
                 }
             }
 
-            // الفترة المسائية
+            // الفترة المسائية - الخدمات المتخصصة غير متاحة في المساء
             for (let hour = WORK_HOURS.eveningStart; hour < WORK_HOURS.eveningEnd; hour++) {
                 if (isSpecialized || isEngineFilter) continue;
                 
@@ -1528,8 +1539,8 @@
             }
 
             const selectedDay = new Date(selectedDate).getDay();
-            if (selectedDay === 5 || selectedDay === 6) {
-                 showToast('لا توجد حجوزات أيام الجمعة والسبت.', 'warning');
+            if (selectedDay === 5) { 
+                 showToast('لا توجد حجوزات أيام الجمعة.', 'warning');
                  return;
             }
 
@@ -1599,7 +1610,7 @@
         let unsubscribeClosedDates = () => {};
 
         function startFirestoreListeners() {
-            // مستمع للحجوزات
+            // مستمع للحجوزات (لضمان الآنية في الإشعارات والجدول)
             unsubscribeBookings = bookingsCollection
                 .orderBy('timestamp', 'desc')
                 .onSnapshot(snapshot => {
@@ -1644,7 +1655,7 @@
                     b.name.toLowerCase().includes(lowerCaseSearch) || 
                     b.phone.includes(search) ||
                     b.carModel.toLowerCase().includes(lowerCaseSearch) ||
-                    b.serviceType.toLowerCase().includes(lowerCaseSearch)
+                    getServiceArabicName(b.serviceType).toLowerCase().includes(lowerCaseSearch) 
                 );
             }
 
@@ -1713,7 +1724,9 @@
         function getServiceArabicName(value) {
             const services = {
                 'oil': 'زيت وسيفون', 'fabric': 'غيار أقمشة', 'gearbox': 'غيار زيت الجيربوكس', 'computer': 'فحص كمبيوتر',
-                'electricity': 'فحص كهرباء', 'hybrid_check': 'فحص هايبرد', 'sounds': 'فحص أصوات', 'hydraulic': 'أنظمة هيدروليك',
+                // تم تحديث اسم الخدمة هنا ليعكس التعديل
+                'electricity': 'فحص كهرباء وهايبرد', 
+                'sounds': 'فحص أصوات', 'hydraulic': 'أنظمة هيدروليك',
                 'engine_filter': 'تصفية المحرك', 'other': 'خدمة أخرى'
             };
             return services[value] || value;
@@ -1773,6 +1786,7 @@
 
         function updateDashboard(allBookings) {
             updateDashboardStats(allBookings);
+            // يتم استدعاء هذه الدالة عند كل تغيير في قاعدة البيانات (بفضل onSnapshot)، مما يضمن الآنية في الجدول والإشعار.
             renderBookings(allBookings, filterStatus.value, searchBookings.value);
         }
 
