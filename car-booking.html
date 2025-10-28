@@ -388,6 +388,12 @@
         .footer-section a:hover {
             color: var(--light);
         }
+        
+        /* أنماط لتكبير خط رابط موقع المركز ورابط الخريطة */
+        .footer-section a.highlight-link {
+            /* تم تصغير الخط قليلاً ليصبح أكثر اتساقاً */
+            font-size: 1.0rem; 
+        }
 
         .footer-bottom {
             text-align: center;
@@ -425,6 +431,11 @@
         .work-hours-footer {
             list-style: none;
             padding: 0;
+        }
+        
+        /* لتطبيق لون الأيقونات على أيام العمل */
+        .work-hours-footer li i.fas.fa-calendar-alt {
+            color: var(--secondary);
         }
 
         /* أنماط لوحة التحكم */
@@ -1219,7 +1230,7 @@
                 <h3>عن المركز</h3>
                 <p>مركز تقني المحركات في صناعية أبها الجديدة، نقدم خدمات صيانة السيارات بأعلى مقاييس الجودة والكفاءة. نحن متخصصون في صيانة جميع أنواع السيارات باستخدام أحدث التقنيات.</p>
                 <p style="margin-top: 15px;">
-                    <a href="http://www.enginetechnician.net" target="_blank" style="color: var(--secondary);">
+                    <a href="http://www.enginetechnician.net" target="_blank" class="highlight-link" style="color: var(--secondary);">
                         <i class="fas fa-globe"></i> www.enginetechnician.net
                     </a>
                 </p>
@@ -1235,9 +1246,10 @@
                     <i class="fab fa-whatsapp"></i> 
                     <a href="https://wa.me/966530694999" target="_blank" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
                 </p>
-                <p class="contact-info-footer"><i class="fas fa-envelope"></i> mail.us@enginetechnician.net</p>
+                <p class="contact-info-footer"><i class="fas fa-envelope"></i> mailus@enginetechnician.net</p>
                 <p class="contact-info-footer"><i class="fas fa-map-marker-alt"></i> صناعية أبها الجديدة</p>
-                <a href="https://maps.app.goo.gl/wRj4BRsLU5mxJbB78" target="_blank" style="font-weight: bold;"> 
+                
+                <a href="https://maps.app.goo.gl/wRj4BRsLU5mxJbB78" target="_blank" class="highlight-link" style="font-weight: bold; color: var(--secondary);"> 
                     <i class="fas fa-location-arrow"></i> انقر هنا للوصول إلى موقع المركز على الخريطة
                 </a>
             </div>
@@ -1245,14 +1257,14 @@
             <div class="footer-section">
                 <h3>ساعات العمل</h3>
                 <ul class="work-hours-footer">
-                    <li><i class="fas fa-calendar-alt" style="color: transparent;"></i> السبت - الخميس: 8 ص - 1 م | 3 م - 7 م</li>
+                    <li><i class="fas fa-calendar-alt" style="color: var(--secondary);"></i> السبت - الخميس: 8 ص - 1 م | 3 م - 7 م</li>
                     <li><i class="fas fa-calendar-times" style="color: var(--danger);"></i> الجمعة مغلق</li>
                     <li><i class="fas fa-calendar-day" style="color: var(--danger);"></i> العطلات الرسمية مغلق</li>
                 </ul>
             </div>
         </div>
         <div class="container footer-bottom">
-            <p>جميع الحقوق محفوظة. 2025 مركز تقني المحركات. | <a href="#top" style="color: #777;">العودة للأعلى</a></p>
+            <p>جميع الحقوق محفوظة. © 2026 مركز تقني المحركات. | <a href="#top" style="color: #777;">العودة للأعلى</a></p>
         </div>
     </footer>
     <button class="admin-access-btn" id="adminAccessBtn">
