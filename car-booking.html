@@ -1512,6 +1512,9 @@
         }
 
         async function getAvailableTimeSlots(selectedDate, serviceType) {
+            // <-- التعديل: تم تغيير هذه الدالة لتعتمد على getBookings() بدلاً من جلبها بنفسها
+            // وذلك لتقليل استدعاءات قاعدة البيانات، لكن للتبسيط أبقينا على getBookings() هنا
+            // الأهم هو التحقق من localClosedDates
             const allBookings = await getBookings();
             const dateStr = selectedDate;
             const selectedDay = new Date(selectedDate).getDay(); 
@@ -1521,7 +1524,7 @@
                 return [];
             }
             
-            // التعديل رقم 1: استخدام البيانات المخزنة محليا
+            // التعديل رقم 1: استخدام البيانات المخزنة محليا (التي يتم جلبها الآن للجميع)
             if (localClosedDates.some(d => d.date === dateStr)) {
                  return [];
             }
@@ -1587,7 +1590,7 @@
                  return;
             }
             
-            // التعديل رقم 1: تحقق من التاريخ المغلق
+            // التعديل رقم 1: تحقق من التاريخ المغلق (الآن هذه المصفوفة ممتلئة)
             if (localClosedDates.some(d => d.date === selectedDate)) {
                  showToast('عذراً، هذا التاريخ مغلق بسبب: ' + localClosedDates.find(d => d.date === selectedDate).reason, 'warning');
                  return;
@@ -1657,6 +1660,34 @@
         let unsubscribeBookings = () => {};
         let unsubscribeClosedDates = () => {};
 
+        // <-- التعديل: إضافة دالة جديدة لجلب التواريخ المغلقة للجميع -->
+        function initializeClosedDatesListener() {
+            // التأكد من عدم تشغيل المستمع مرتين إذا كان يعمل
+            if (typeof unsubscribeClosedDates === 'function') {
+                unsubscribeClosedDates();
+            }
+            
+            unsubscribeClosedDates = closedDatesCollection.onSnapshot(snapshot => {
+                localClosedDates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // 1. إذا كان المستخدم العادي يختار تاريخاً، قم بتحديث المواعيد فوراً
+                // (نتحقق أنه ليس المدير وأن حقل التاريخ ليس فارغاً)
+                if (!auth.currentUser && document.getElementById('date').value) {
+                    populateTimeSlots();
+                }
+                
+                // 2. إذا كان المدير مسجلاً دخوله، قم بتحديث قائمة الإعدادات لديه
+                if (auth.currentUser) {
+                    renderClosedDates(localClosedDates);
+                }
+                
+            }, error => {
+                console.error("Error listening to closed dates: ", error);
+            });
+        }
+        // <-- نهاية الإضافة -->
+
+        // <-- التعديل: هذه الدالة أصبحت خاصة بالمدير فقط -->
         function startFirestoreListeners() {
             // مستمع للحجوزات (لضمان الآنية في الإشعارات والجدول)
             unsubscribeBookings = bookingsCollection
@@ -1668,20 +1699,17 @@
                     console.error("Error listening to bookings: ", error);
                 });
 
-            // مستمع للتواريخ المغلقة
-            unsubscribeClosedDates = closedDatesCollection
-                .onSnapshot(snapshot => {
-                    localClosedDates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    renderClosedDates(localClosedDates);
-                    populateTimeSlots(); 
-                }, error => {
-                    console.error("Error listening to closed dates: ", error);
-                });
+            // ((تم حذف مستمع التواريخ المغلقة من هنا))
+            
+            // عند فتح لوحة التحكم، اعرض التواريخ المغلقة التي تم جلبها مسبقاً (من المستمع العام)
+            renderClosedDates(localClosedDates);
         }
 
+        // <-- التعديل: إيقاف مستمع الحجوزات فقط -->
         function stopFirestoreListeners() {
             unsubscribeBookings();
-            unsubscribeClosedDates();
+            // ((تم حذف إيقاف مستمع التواريخ المغلقة من هنا))
+            // نبقي مستمع التواريخ المغلقة يعمل للمستخدم العادي
         }
 
         function updateNotificationBadge(bookings) {
@@ -2030,6 +2058,9 @@
             today.setDate(today.getDate() + 1); 
             dateInput.min = today.toISOString().split('T')[0];
             closedDateInput.min = today.toISOString().split('T')[0]; 
+            
+            // <-- التعديل: بدء مستمع التواريخ المغلقة لجميع المستخدمين فوراً -->
+            initializeClosedDatesListener();
             
             auth.currentUser ? showAdminDashboard() : hideAdminDashboard();
         }
