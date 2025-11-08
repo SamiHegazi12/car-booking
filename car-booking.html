@@ -738,18 +738,6 @@
         .date-picker-container input {
             flex: 1;
         }
-        
-        /* تعديل CSS لخانة الإغلاق المخصصة */
-        @media (min-width: 768px) {
-            .date-picker-container {
-                flex-direction: row !important; 
-            }
-            .date-picker-container input, .date-picker-container select {
-                flex: 1 !important;
-            }
-        }
-        /* نهاية تعديل CSS لخانة الإغلاق المخصصة */
-
 
         .closed-dates-list {
             list-style: none;
@@ -783,7 +771,6 @@
             font-size: 0.9rem;
             color: #666;
             margin-top: 4px;
-            line-height: 1.5;
         }
 
         .toast {
@@ -1213,15 +1200,11 @@
             </div>
             <div class="constraint-item warning">
                 <h3><i class="fas fa-car-side"></i> قيود زمنية للخدمات المتخصصة</h3>
-                <p>خدمات (**فحص كهرباء وهايبرد، فحص كمبيوتر، فحص المحرك، فحص أصوات، فحص أنظمة هيدروليك**) متاحة فقط من الساعة **8:00 صباحاً حتى 12:00 ظهراً** بسبب حاجتها لوقت أطول في التشخيص.</p>
-            </div>
-            <div class="constraint-item warning">
-                <h3><i class="fas fa-filter"></i> قيد تصفية المحرك</h3>
-                <p>خدمة (**تصفية المحرك**) متاحة فقط من الساعة **8:00 صباحاً حتى 11:00 ظهراً**.</p>
+                <p>خدمات (**فحص كهرباء وهايبرد، فحص كمبيوتر، فحص المحرك، فحص أصوات، فحص هيدروليك**) يجب حجزها قبل الساعة **12 ظهراً** كحد أقصى. أما خدمة (**تصفية المحرك**) فيجب حجزها قبل الساعة **11 صباحاً**.</p>
             </div>
             <div class="constraint-item">
-                <h3><i class="fas fa-user-clock"></i> الحضور المبكر</h3>
-                <p>يجب الحضور إلى المركز قبل نصف ساعة على الأقل من الموعد المحدد.</p>
+                <h3><i class="fas fa-clock"></i> إلغاء الحجز</h3>
+                <p>في حال عدم التزامك، يرجى إلغاء الحجز قبل **24 ساعة** على الأقل من الموعد المحدد.</p>
             </div>
         </section>
     </div>
@@ -1240,12 +1223,10 @@
             <div class="footer-section">
                 <h3>اتصل بنا</h3>
                 <p class="contact-info-footer">
-                    <i class="fas fa-phone"></i> 
-                    <a href="tel:+966530694999" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
+                    <i class="fas fa-phone"></i> <a href="tel:+966530694999" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
                 </p>
                 <p class="contact-info-footer">
-                    <i class="fab fa-whatsapp"></i> 
-                    <a href="https://wa.me/966530694999" target="_blank" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
+                    <i class="fab fa-whatsapp"></i> <a href="https://wa.me/966530694999" target="_blank" style="color: var(--footer-text); text-decoration: none;">0530694999</a>
                 </p>
                 <p class="contact-info-footer"><i class="fas fa-envelope"></i> mailus@enginetechnician.net</p>
                 <p class="contact-info-footer"><i class="fas fa-map-marker-alt"></i> صناعية أبها الجديدة</p>
@@ -1291,50 +1272,56 @@
             </form>
         </div>
     </div>
-    
+
     <div class="admin-dashboard" id="adminDashboard">
         <div class="admin-header">
-            <h2>لوحة تحكم مركز تقني المحركات</h2>
-            <button class="btn btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</button>
+            <h2><i class="fas fa-shield-alt"></i> لوحة تحكم المسؤول</h2>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                <button class="btn btn-danger" id="closeDashboardBtn"><i class="fas fa-times"></i> إغلاق</button>
+            </div>
         </div>
         
         <div class="container">
             <div class="stats-cards">
                 <div class="stat-card">
-                    <h4>إجمالي الحجوزات (شهر)</h4>
-                    <span class="stat-number" id="totalBookingsMonth">0</span>
+                    <h4><i class="fas fa-hourglass-half"></i> حجوزات في الإنتظار</h4>
+                    <p class="stat-number" id="pendingCount">0</p>
                 </div>
                 <div class="stat-card">
-                    <h4>حجوزات في الإنتظار</h4>
-                    <span class="stat-number" id="pendingBookingsCount">0</span>
+                    <h4><i class="fas fa-check-circle"></i> حجوزات مؤكدة</h4>
+                    <p class="stat-number" id="confirmedCount">0</p>
                 </div>
                 <div class="stat-card">
-                    <h4>حجوزات اليوم</h4>
-                    <span class="stat-number" id="todayBookingsCount">0</span>
-                </div>
-                <div class="stat-card">
-                    <h4>تواريخ مغلقة</h4>
-                    <span class="stat-number" id="closedDatesCount">0</span>
+                    <h4><i class="fas fa-car-side"></i> إجمالي الحجوزات</h4>
+                    <p class="stat-number" id="totalCount">0</p>
                 </div>
             </div>
 
             <div class="admin-tabs">
-                <div class="admin-tab active" data-tab="bookings-tab"><i class="fas fa-list-alt"></i> قائمة الحجوزات</div>
-                <div class="admin-tab" data-tab="settings-tab"><i class="fas fa-cogs"></i> الإعدادات</div>
+                <div class="admin-tab active" data-tab="bookings-tab"><i class="fas fa-book"></i> قائمة الحجوزات</div>
+                <div class="admin-tab" data-tab="settings-tab"><i class="fas fa-cog"></i> إعدادات</div>
             </div>
-            
+
             <div class="tab-content active" id="bookings-tab">
                 <div class="admin-section">
-                    <h3>قائمة الحجوزات</h3>
+                    <h3>جدول الحجوزات</h3>
+                    
                     <div class="admin-controls">
-                        <input type="text" id="searchBookings" class="search-box" placeholder="البحث بالاسم، الهاتف، موديل السيارة...">
-                        <select id="filterStatus" class="filter-select">
-                            <option value="all">عرض الكل</option>
-                            <option value="pending">في الإنتظار</option>
-                            <option value="confirmed">مؤكدة</option>
-                            <option value="cancelled">ملغاة</option>
-                        </select>
-                    </div>
+                        <input type="text" id="searchBookings" class="search-box" placeholder="ابحث بالاسم، الهاتف، أو الموديل...">
+                        <div style="display: flex; gap: 10px; width: 40%;">
+                            <select id="filterStatus" class="filter-select" style="flex: 1;">
+                                <option value="all">كل الحجوزات</option>
+                                <option value="pending">في الإنتظار</option>
+                                <option value="confirmed">مؤكدة</option>
+                                <option value="cancelled">ملغاة</option>
+                            </select>
+                            <button class="btn btn-info" id="sortOrderToggleBtn" style="flex: 0 0 100px; padding: 10px;" title="ترتيب حسب التاريخ">
+                                <i class="fas fa-sort-amount-down-alt"></i> تنازلي
+                            </button>
+                        </div>
+                        </div>
+
                     <div class="table-responsive">
                         <table class="bookings-table">
                             <thead>
@@ -1352,27 +1339,16 @@
                         </table>
                         <p id="noBookingsMessage" style="text-align: center; margin-top: 20px; color: #666; display: none;">لا توجد حجوزات لعرضها.</p>
                     </div>
-                    <div class="backup-section">
-                        <h3><i class="fas fa-download"></i> تصدير البيانات</h3>
-                        <div class="backup-buttons">
-                            <button class="btn btn-info" id="exportAllBookings"><i class="fas fa-file-export"></i> تصدير كل الحجوزات (JSON)</button>
-                            <button class="btn btn-success" id="exportFilteredBookings"><i class="fas fa-file-csv"></i> تصدير الجدول الحالي (CSV)</button>
-                        </div>
-                    </div>
                 </div>
             </div>
-            
+
             <div class="tab-content" id="settings-tab">
                 <div class="admin-section">
                     <h3>إغلاق مواعيد محددة</h3>
                     <p>أضف تواريخ لإغلاقها (مثال: عطلة رسمية، إجازة).</p>
                     <form id="addClosedDateForm">
-                        <div class="date-picker-container" style="flex-direction: column; gap: 15px;">
+                        <div class="date-picker-container">
                             <input type="date" id="closedDate" required>
-                            <select id="closedDateType" required>
-                                <option value="full">إغلاق كامل لجميع الحجوزات</option>
-                                <option value="specialized_only">إغلاق الفحوصات والأعمال الكبيرة فقط</option>
-                            </select>
                             <input type="text" id="closedDateReason" placeholder="سبب الإغلاق" required>
                         </div>
                         <button type="submit" class="btn btn-danger">إغلاق التاريخ</button>
@@ -1380,10 +1356,22 @@
                     <ul id="closedDatesList" class="closed-dates-list">
                     </ul>
                 </div>
+
+                <div class="admin-section backup-section">
+                    <h3><i class="fas fa-cloud-download-alt"></i> نسخ احتياطي واسترجاع البيانات</h3>
+                    <p>قم بتنزيل نسخة احتياطية من جميع الحجوزات والتواريخ المغلقة أو استرجع بيانات سابقة.</p>
+                    <div class="backup-buttons">
+                        <button class="btn btn-success" id="downloadBookingsBtn"><i class="fas fa-download"></i> تحميل الحجوزات (JSON)</button>
+                        <button class="btn btn-success" id="downloadClosedDatesBtn"><i class="fas fa-download"></i> تحميل التواريخ المغلقة (JSON)</button>
+                        <label for="restoreFile" class="btn btn-warning" style="margin: 0; display: flex; align-items: center; justify-content: center;"><i class="fas fa-upload"></i> استرجاع البيانات (JSON)</label>
+                        <input type="file" id="restoreFile" style="display: none;" accept=".json">
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
-    
+
     <div class="modal" id="successModal">
         <div class="modal-content">
             <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 15px;"></i>
@@ -1400,42 +1388,48 @@
             <button class="close-modal" onclick="document.getElementById('detailsModal').style.display = 'none'">إغلاق</button>
         </div>
     </div>
-    
+
     <div class="toast" id="toast"></div>
 
     <script>
-        // 1. تعريف المتغيرات والعناصر الأساسية
+        // 1. تعريف المتغيرات والعناصر
         const adminAccessBtn = document.getElementById('adminAccessBtn');
-        const adminDashboard = document.getElementById('adminDashboard');
         const adminLoginModal = document.getElementById('adminLoginModal');
+        const adminDashboard = document.getElementById('adminDashboard');
         const adminLoginForm = document.getElementById('adminLoginForm');
         const logoutBtn = document.getElementById('logoutBtn');
-        const notificationBell = document.getElementById('notificationBell');
-        const notificationBadge = document.getElementById('notificationBadge');
+        const closeDashboardBtn = document.getElementById('closeDashboardBtn');
+        const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+        
         const bookingForm = document.getElementById('bookingForm');
         const dateInput = document.getElementById('date');
         const timeSelect = document.getElementById('time');
         const serviceTypeSelect = document.getElementById('serviceType');
-        const closedDateInput = document.getElementById('closedDate');
-        const closedDateTypeInput = document.getElementById('closedDateType'); // <--- متغير جديد
-        const closedDateReasonInput = document.getElementById('closedDateReason');
-        const addClosedDateForm = document.getElementById('addClosedDateForm');
-        const closedDatesList = document.getElementById('closedDatesList');
         const successModal = document.getElementById('successModal');
         const detailsModal = document.getElementById('detailsModal');
         const bookingDetailsContent = document.getElementById('bookingDetailsContent');
-        const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
-        
-        // لوحة التحكم
-        const totalBookingsMonth = document.getElementById('totalBookingsMonth');
-        const pendingBookingsCount = document.getElementById('pendingBookingsCount');
-        const todayBookingsCount = document.getElementById('todayBookingsCount');
-        const closedDatesCount = document.getElementById('closedDatesCount');
-        const searchBookings = document.getElementById('searchBookings');
         const filterStatus = document.getElementById('filterStatus');
-        const exportAllBookingsBtn = document.getElementById('exportAllBookings');
-        const exportFilteredBookingsBtn = document.getElementById('exportFilteredBookings');
+        const searchBookings = document.getElementById('searchBookings');
+        const pendingCountElem = document.getElementById('pendingCount');
+        const confirmedCountElem = document.getElementById('confirmedCount');
+        const totalCountElem = document.getElementById('totalCount');
+        const closedDatesList = document.getElementById('closedDatesList');
+        const addClosedDateForm = document.getElementById('addClosedDateForm');
+        const closedDateInput = document.getElementById('closedDate');
+        const closedDateReasonInput = document.getElementById('closedDateReason');
+        const downloadBookingsBtn = document.getElementById('downloadBookingsBtn');
+        const downloadClosedDatesBtn = document.getElementById('downloadClosedDatesBtn');
+        const restoreFile = document.getElementById('restoreFile');
+        const notificationBadge = document.getElementById('notificationBadge');
         
+        const bookingsTableBody = document.getElementById('bookingsTableBody');
+        const noBookingsMessage = document.getElementById('noBookingsMessage');
+
+        // START OF NEW GLOBAL VARIABLES
+        let currentBookingsSnapshot = []; // لتخزين آخر قائمة حجوزات تم جلبها
+        let currentSortOrder = 'desc'; // 'desc' تنازلي (الأحدث أولاً) هو الافتراضي
+        // END OF NEW GLOBAL VARIABLES
+
         // 2. إعدادات Firebase الخاصة بك
         // **********************************************
         // !! يجب عليك تغيير هذه الإعدادات ببيانات مشروعك الحقيقية !!
@@ -1457,19 +1451,18 @@
         const bookingsCollection = db.collection('bookings');
         const closedDatesCollection = db.collection('closedDates');
 
-        // 4. الثوابت والمتغيرات العامة
+        // 4. الثوابت
         const WORK_HOURS = {
             morningStart: 8, // 8:00 ص
-            morningEnd: 13,  // 1:00 م (ساعة 13)
-            eveningStart: 15, // 3:00 م (ساعة 15)
-            eveningEnd: 19  // 7:00 م (ساعة 19)
+            morningEnd: 13, // 1:00 م
+            eveningStart: 15, // 3:00 م
+            eveningEnd: 19 // 7:00 م
         };
-        // الخدمات التي تأخذ وقتاً طويلاً ومشمولة في الإغلاق الجزئي
-        const SPECIALIZED_SERVICES = ['computer', 'electricity', 'engine_check', 'sounds', 'hydraulic']; 
+        const SPECIALIZED_SERVICES = ['computer', 'electricity', 'engine_check', 'sounds', 'hydraulic'];
         const ENGINE_FILTER_SERVICE = 'engine_filter';
         const MAX_SPECIALIZED_HOUR = 11;
         const MAX_ENGINE_FILTER_HOUR = 10;
-
+        
         // لتخزين التواريخ المغلقة محليا لتسهيل التحقق
         let localClosedDates = [];
 
@@ -1487,8 +1480,7 @@
         // --- وظائف استرجاع البيانات من Firestore ---
         async function getBookings() {
             try {
-                // ملاحظة: ما زلنا نطلب الفرز حسب timestamp من Firestore، لكننا سنعيد الفرز لاحقاً بالموعد الفعلي في JS
-                const snapshot = await bookingsCollection.orderBy('timestamp', 'asc').get();
+                const snapshot = await bookingsCollection.get();
                 return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             } catch (error) {
                 console.error("Error fetching bookings: ", error);
@@ -1518,56 +1510,45 @@
         }
 
         async function getAvailableTimeSlots(selectedDate, serviceType) {
+            // التحقق من localClosedDates
             const allBookings = await getBookings();
             const dateStr = selectedDate;
             const selectedDay = new Date(selectedDate).getDay(); // 5 = الجمعة (0=الأحد، 6=السبت)
-            
+
             if (selectedDay === 5) {
                 return [];
             }
             
-            // التحقق من الإغلاق الجزئي/الكلي
-            const closedDateEntry = localClosedDates.find(d => d.date === dateStr);
-            const isBigJob = SPECIALIZED_SERVICES.includes(serviceType); // الخدمات المتخصصة التي يجب إغلاقها
-
-            if (closedDateEntry) {
-                if (closedDateEntry.type === 'full') {
-                    // إذا كان الإغلاق كاملاً، لا يوجد أي مواعيد
-                    showToast('عذراً، هذا التاريخ مغلق بالكامل بسبب: ' + closedDateEntry.reason, 'warning');
-                    return [];
-                }
-                
-                if (closedDateEntry.type === 'specialized_only' && isBigJob) {
-                    // إذا كان الإغلاق جزئياً والخدمة كبيرة، لا يوجد أي مواعيد
-                    showToast('عذراً، هذا التاريخ مغلق للفحوصات والأعمال الكبيرة بسبب: ' + closedDateEntry.reason, 'warning');
-                    return [];
-                }
+            if (localClosedDates.some(d => d.date === dateStr)) {
+                return [];
             }
-            
-            const isSpecialized = isBigJob; // تستخدم لقيد الوقت (8 ص - 12 م)
-            const isEngineFilter = serviceType === ENGINE_FILTER_SERVICE; // تستخدم لقيد الوقت (8 ص - 11 ص)
 
+            const isSpecialized = SPECIALIZED_SERVICES.includes(serviceType);
+            const isEngineFilter = serviceType === ENGINE_FILTER_SERVICE;
+            
             const bookedTimes = allBookings
                 .filter(b => b.date === dateStr && (b.status === 'pending' || b.status === 'confirmed'))
                 .map(b => b.time);
-            
+
             const slots = [];
             
             // الفترة الصباحية
             for (let hour = WORK_HOURS.morningStart; hour < WORK_HOURS.morningEnd; hour++) {
-                if (isSpecialized && hour > MAX_SPECIALIZED_HOUR) continue;
-                if (isEngineFilter && hour > MAX_ENGINE_FILTER_HOUR) continue;
-
                 const timeStr = `${hour.toString().padStart(2, '0')}:00`;
+                
+                // قيود الخدمات المتخصصة
+                if ((isSpecialized && hour > MAX_SPECIALIZED_HOUR) || (isEngineFilter && hour > MAX_ENGINE_FILTER_HOUR)) {
+                    continue;
+                }
+                
                 if (!bookedTimes.includes(timeStr)) {
                     slots.push(timeStr);
                 }
             }
-
-            // الفترة المسائية
+            
+            // الفترة المسائية (إذا لم تكن خدمة متخصصة أو تصفية محرك)
             for (let hour = WORK_HOURS.eveningStart; hour < WORK_HOURS.eveningEnd; hour++) {
                 if (isSpecialized || isEngineFilter) continue;
-                
                 const timeStr = `${hour.toString().padStart(2, '0')}:00`;
                 if (!bookedTimes.includes(timeStr)) {
                     slots.push(timeStr);
@@ -1580,7 +1561,7 @@
         async function populateTimeSlots() {
             const selectedDate = dateInput.value;
             const serviceType = serviceTypeSelect.value;
-            
+
             timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
             timeSelect.disabled = true;
 
@@ -1590,26 +1571,28 @@
 
             const today = new Date();
             const selected = new Date(selectedDate);
-            
             if (selected < today.setHours(0,0,0,0)) {
                 dateInput.value = '';
                 showToast('لا يمكن الحجز في تاريخ سابق لليوم الحالي.', 'error');
                 return;
             }
-            
+
             const selectedDay = new Date(selectedDate).getDay();
             if (selectedDay === 5) {
                 showToast('لا توجد حجوزات أيام الجمعة.', 'warning');
                 return;
             }
-            
+
+            // التحقق من التاريخ المغلق
+            if (localClosedDates.some(d => d.date === selectedDate)) {
+                showToast('عذراً، هذا التاريخ مغلق بسبب: ' + localClosedDates.find(d => d.date === selectedDate).reason, 'warning');
+                return;
+            }
+
             const availableSlots = await getAvailableTimeSlots(selectedDate, serviceType);
 
             if (availableSlots.length === 0) {
-                const closedDateEntry = localClosedDates.find(d => d.date === selectedDate);
-                if (!closedDateEntry || closedDateEntry.type === 'full') {
-                     showToast('لا توجد مواعيد متاحة لهذا التاريخ والخدمة، أو أن اليوم مغلق بالكامل.', 'warning');
-                }
+                showToast('لا توجد مواعيد متاحة لهذا التاريخ والخدمة، أو أن اليوم مغلق بالكامل.', 'warning');
                 return;
             }
 
@@ -1627,7 +1610,7 @@
 
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const newBooking = {
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
@@ -1643,10 +1626,9 @@
             };
 
             const availableSlots = await getAvailableTimeSlots(newBooking.date, newBooking.serviceType);
-            
             if (!availableSlots.includes(newBooking.time)) {
                 showToast('الوقت المحدد تم حجزه للتو أو لم يعد متاحاً. يرجى اختيار وقت آخر.', 'error');
-                populateTimeSlots(); 
+                populateTimeSlots();
                 return;
             }
 
@@ -1654,7 +1636,7 @@
                 await bookingsCollection.add(newBooking);
                 successModal.style.display = 'flex';
                 bookingForm.reset();
-                populateTimeSlots(); 
+                populateTimeSlots();
                 showToast('تم إرسال طلب الحجز بنجاح!', 'success');
             } catch (error) {
                 console.error("Error adding document: ", error);
@@ -1662,41 +1644,54 @@
             }
         });
 
+        // --- وظائف لوحة التحكم (Admin Dashboard) ---
+        let unsubscribeBookings = null;
+        let unsubscribeClosedDates = null;
 
-        // --- وظائف لوحة التحكم (Admin Dashboard) --- 
-        let unsubscribeBookings;
-        let unsubscribeClosedDates; 
-        const bookingsTableBody = document.getElementById('bookingsTableBody');
-        const noBookingsMessage = document.getElementById('noBookingsMessage');
+        function showAdminDashboard() {
+            adminDashboard.style.display = 'flex';
+            adminAccessBtn.style.display = 'none';
+            adminLoginModal.style.display = 'none';
+            startFirestoreListeners();
+            // تحديث التبويب النشط عند الفتح
+            document.querySelector('.admin-tab[data-tab="bookings-tab"]').click();
+        }
 
-
-        // مستمع التواريخ المغلقة للجميع (يعمل دائما)
-        function initializeClosedDatesListener() {
-            unsubscribeClosedDates = closedDatesCollection
-            .onSnapshot(snapshot => {
-                // تحديث المتغير المحلي
-                localClosedDates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                // 1. إعادة تعبئة خانات الوقت للعميل العادي (إذا لم يكن المدير وأن حقل التاريخ ليس فارغاً)
-                if (!auth.currentUser && document.getElementById('date').value) {
-                    populateTimeSlots();
-                }
-
-                // 2. إذا كان المدير مسجلاً دخوله، قم بتحديث قائمة الإعدادات لديه
-                if (auth.currentUser) {
-                    renderClosedDates(localClosedDates);
-                    closedDatesCount.textContent = localClosedDates.length;
-                }
-            }, error => {
-                console.error("Error listening to closed dates: ", error);
-            });
+        function hideAdminDashboard() {
+            adminDashboard.style.display = 'none';
+            adminAccessBtn.style.display = 'flex';
+            if (unsubscribeBookings) {
+                stopFirestoreListeners();
+            }
         }
         
-        // هذه الدالة أصبحت خاصة بالمدير فقط
+        // <-- الإضافة: مستمع التواريخ المغلقة للجميع -->
+        function initializeClosedDatesListener() {
+             unsubscribeClosedDates = closedDatesCollection
+                .onSnapshot(snapshot => {
+                    localClosedDates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                    // 1. تحديث خانة الوقت في نموذج الحجز (في حال كان المستخدم ليس المدير وأن حقل التاريخ ليس فارغاً)
+                    if (!auth.currentUser && document.getElementById('date').value) {
+                        populateTimeSlots();
+                    }
+
+                    // 2. إذا كان المدير مسجلاً دخوله، قم بتحديث قائمة الإعدادات لديه
+                    if (auth.currentUser) {
+                        renderClosedDates(localClosedDates);
+                    }
+                }, error => {
+                    console.error("Error listening to closed dates: ", error);
+                });
+        }
+        // <-- نهاية الإضافة -->
+
+
+        // <-- التعديل: هذه الدالة أصبحت خاصة بالمدير فقط -->
         function startFirestoreListeners() {
-            // مستمع للحجوزات (لضمان الآنية في الإشعارات والجدول). نستخدم timestamp للـ snapshot ولكننا سنعيد الفرز في JS
+            // مستمع للحجوزات (لضمان الآنية في الإشعارات والجدول)
             unsubscribeBookings = bookingsCollection
-                .orderBy('timestamp', 'asc') // الترتيب حسب وقت الإنشاء لجلب أحدث التغييرات
+                .orderBy('timestamp', 'desc')
                 .onSnapshot(snapshot => {
                     const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     updateDashboard(bookings);
@@ -1706,12 +1701,12 @@
 
             // عند فتح لوحة التحكم، اعرض التواريخ المغلقة التي تم جلبها مسبقاً (من المستمع العام)
             renderClosedDates(localClosedDates);
-            closedDatesCount.textContent = localClosedDates.length;
         }
 
-        // إيقاف مستمع الحجوزات فقط
+        // <-- التعديل: إيقاف مستمع الحجوزات فقط -->
         function stopFirestoreListeners() {
             unsubscribeBookings();
+            // نبقي مستمع التواريخ المغلقة يعمل للمستخدم العادي
         }
 
         function updateNotificationBadge(bookings) {
@@ -1719,31 +1714,20 @@
             notificationBadge.textContent = pendingCount;
             notificationBadge.style.display = pendingCount > 0 ? 'flex' : 'none';
         }
-
+        
         function updateDashboard(bookings) {
+            // START OF MODIFICATION: Store the fetched bookings
+            currentBookingsSnapshot = bookings;
+            // END OF MODIFICATION
             updateNotificationBadge(bookings);
-            
-            // إحصائيات الشهر
-            const oneMonthAgo = new Date();
-            oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-            
-            const monthlyBookings = bookings.filter(b => {
-                const bookingDate = b.timestamp ? b.timestamp.toDate() : new Date(0);
-                return bookingDate >= oneMonthAgo;
-            });
-            totalBookingsMonth.textContent = monthlyBookings.length;
-            
-            // إحصائيات في الإنتظار
-            const pendingCount = bookings.filter(b => b.status === 'pending').length;
-            pendingBookingsCount.textContent = pendingCount;
-
-            // إحصائيات اليوم
-            const todayStr = new Date().toISOString().split('T')[0];
-            const todayCount = bookings.filter(b => b.date === todayStr).length;
-            todayBookingsCount.textContent = todayCount;
-            
-            // تحديث الجدول بناءً على آخر فلترة وبحث
             renderBookings(bookings, filterStatus.value, searchBookings.value);
+            updateStats(bookings);
+        }
+
+        function updateStats(bookings) {
+            pendingCountElem.textContent = bookings.filter(b => b.status === 'pending').length;
+            confirmedCountElem.textContent = bookings.filter(b => b.status === 'confirmed').length;
+            totalCountElem.textContent = bookings.length;
         }
 
         function renderBookings(allBookings, filter = 'all', search = '') {
@@ -1758,34 +1742,29 @@
                 bookings = bookings.filter(b => 
                     b.name.toLowerCase().includes(lowerCaseSearch) || 
                     b.phone.includes(search) || 
-                    b.carModel.toLowerCase().includes(lowerCaseSearch) || 
+                    b.carModel.toLowerCase().includes(lowerCaseSearch) ||
                     getServiceArabicName(b.serviceType).toLowerCase().includes(lowerCaseSearch)
                 );
             }
 
-            // **********************************************
-            // ** التعديل الحاسم: الترتيب حسب موعد الحجز الفعلي **
-            // **********************************************
             bookings.sort((a, b) => {
                 const statusOrder = { 'confirmed': 1, 'pending': 2, 'cancelled': 3 };
-                
-                // 1. الفرز حسب الحالة (مؤكدة، قيد الإنتظار، ملغاة)
+                // 1. الترتيب حسب الحالة أولاً (مؤكدة < في الإنتظار < ملغاة)
                 if (statusOrder[a.status] !== statusOrder[b.status]) {
                     return statusOrder[a.status] - statusOrder[b.status];
                 }
                 
-                // 2. الفرز حسب التاريخ والوقت (تصاعدياً: الأقدم أولاً)
-                const bookingDateTimeA = new Date(`${a.date}T${a.time}:00`);
-                const bookingDateTimeB = new Date(`${b.date}T${b.time}:00`);
+                // 2. الترتيب حسب الوقت (التنازلي أو التصاعدي)
+                const dateA = a.timestamp ? a.timestamp.toDate() : new Date(0);
+                const dateB = b.timestamp ? b.timestamp.toDate() : new Date(0);
                 
-                // إذا كان التاريخ غير صالح لأي سبب، نستخدم وقت الإنشاء كحل احتياطي
-                if (isNaN(bookingDateTimeA) || isNaN(bookingDateTimeB)) {
-                    const timestampA = a.timestamp ? a.timestamp.toDate() : new Date(0);
-                    const timestampB = b.timestamp ? b.timestamp.toDate() : new Date(0);
-                    return timestampA - timestampB;
+                // START OF MODIFICATION: Apply sorting based on currentSortOrder
+                if (currentSortOrder === 'desc') {
+                    return dateB - dateA; // تنازلي (الأحدث أولاً)
+                } else {
+                    return dateA - dateB; // تصاعدي (الأقدم أولاً)
                 }
-
-                return bookingDateTimeA - bookingDateTimeB; // الترتيب التصاعدي
+                // END OF MODIFICATION
             });
 
             bookingsTableBody.innerHTML = '';
@@ -1800,22 +1779,24 @@
             bookings.forEach(booking => {
                 const row = document.createElement('tr');
                 const statusClass = `status-${booking.status}`;
+                
                 const formattedDate = new Date(booking.date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
                 
                 // رابط الواتساب للمدير
-                const whatsappLink = `https://wa.me/966${booking.phone.substring(1)}?text=أهلاً%20بك%20يا%20${booking.name}%20من%20مركز%20تقني%20المحركات.%20نود%20تأكيد%20موعد%20حجزك%20لتاريخ%20${formattedDate}%20وقت%20${formatTime(booking.time)}%20لخدمة%20${getServiceArabicName(booking.serviceType)}%20لسيارة%20${booking.carModel}.%20هل%20الموعد%20يناسبكم؟`;
+                const whatsappLink = `https://wa.me/966${booking.phone.substring(1)}?text=أهلاً%20بك%20يا%20${booking.name}%20من%20مركز%20تقني%20المحركات.%20بالنسبة%20لحجزك%20لتاريخ%20${formattedDate}%20والخدمة%20${getServiceArabicName(booking.serviceType)}%20نرغب%20في%20...`;
+
 
                 row.innerHTML = `
                     <td>
                         <strong>${formattedDate}</strong>
                         <br>
                         <small><i class="fas fa-clock"></i> ${formatTime(booking.time)}</small>
+                        <small style="color: #ccc; margin-top: 5px;">${booking.timestamp ? new Date(booking.timestamp.toDate()).toLocaleDateString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : 'N/A'}</small>
                     </td>
                     <td>
                         <strong>${booking.name}</strong>
                         <br>
-                        <small><i class="fas fa-phone"></i> <a href="tel:${booking.phone}" style="color: inherit; text-decoration: none;">${booking.phone}</a></small>
-                        <br>
+                        <small><i class="fas fa-phone"></i> <a href="tel:${booking.phone}" style="text-decoration: none;">${booking.phone}</a></small>
                         <small><i class="fas fa-envelope"></i> ${booking.email}</small>
                     </td>
                     <td>
@@ -1843,6 +1824,22 @@
                 bookingsTableBody.appendChild(row);
             });
         }
+        
+        // START OF NEW FUNCTION FOR SORT TOGGLE
+        function toggleSortOrder() {
+            const btn = document.getElementById('sortOrderToggleBtn');
+            if (currentSortOrder === 'desc') {
+                currentSortOrder = 'asc';
+                btn.innerHTML = '<i class="fas fa-sort-amount-up-alt"></i> تصاعدي';
+            } else {
+                currentSortOrder = 'desc';
+                btn.innerHTML = '<i class="fas fa-sort-amount-down-alt"></i> تنازلي';
+            }
+            
+            // Re-render bookings with the new sort order
+            renderBookings(currentBookingsSnapshot, filterStatus.value, searchBookings.value);
+        }
+        // END OF NEW FUNCTION
 
         function getServiceArabicName(value) {
             const services = {
@@ -1851,7 +1848,6 @@
                 'gearbox': 'غيار زيت الجيربوكس',
                 'computer': 'فحص كمبيوتر',
                 'electricity': 'فحص كهرباء وهايبرد',
-                // التعديل رقم 4: إضافة خدمة فحص المحرك
                 'engine_check': 'فحص المحرك',
                 'sounds': 'فحص أصوات',
                 'hydraulic': 'أنظمة هيدروليك',
@@ -1874,7 +1870,6 @@
             try {
                 const doc = await bookingsCollection.doc(id).get();
                 const booking = doc.data();
-                
                 if (booking) {
                     document.getElementById('detailsModalTitle').textContent = `تفاصيل حجز رقم ${id}`;
                     bookingDetailsContent.innerHTML = `
@@ -1887,7 +1882,7 @@
                         <p><strong>التاريخ والوقت:</strong> ${new Date(booking.date).toLocaleDateString('ar-EG')} @ ${formatTime(booking.time)}</p>
                         <p><strong>الحالة:</strong> <span class="status-${booking.status}">${getStatusArabicName(booking.status)}</span></p>
                         <p><strong>الملاحظات:</strong> ${booking.notes || 'لا توجد ملاحظات'}</p>
-                        <p style="margin-top: 15px;"><strong>تاريخ الإنشاء:</strong> ${booking.timestamp ? booking.timestamp.toDate().toLocaleDateString('ar-EG') + ' ' + booking.timestamp.toDate().toLocaleTimeString('ar-EG') : 'غير متوفر'}</p>
+                        <p><strong>تاريخ الإرسال:</strong> ${booking.timestamp ? new Date(booking.timestamp.toDate()).toLocaleString('ar-EG') : 'N/A'}</p>
                     `;
                     detailsModal.style.display = 'flex';
                 }
@@ -1898,52 +1893,47 @@
         }
 
         async function updateBookingStatus(id, newStatus) {
+            const statusArabic = getStatusArabicName(newStatus);
+            if (!confirm(`هل أنت متأكد من تغيير حالة الحجز إلى "${statusArabic}"؟`)) {
+                return;
+            }
+
             try {
                 await bookingsCollection.doc(id).update({ status: newStatus });
-                showToast(`تم تحديث حالة الحجز إلى: ${getStatusArabicName(newStatus)}`, 'info');
+                showToast(`تم تحديث حالة الحجز إلى ${statusArabic}.`, 'success');
+                // لا نحتاج لـ renderBookings يدوياً لأن المستمع سيتكفل بالتحديث
             } catch (error) {
-                console.error("Error updating document: ", error);
-                showToast('فشل في تحديث حالة الحجز.', 'error');
+                console.error("Error updating status: ", error);
+                showToast(`فشل في تحديث الحالة إلى ${statusArabic}.`, 'error');
             }
         }
+
+        filterStatus.addEventListener('change', () => {
+            renderBookings(currentBookingsSnapshot, filterStatus.value, searchBookings.value);
+        });
+
+        searchBookings.addEventListener('input', () => {
+            renderBookings(currentBookingsSnapshot, filterStatus.value, searchBookings.value);
+        });
         
-        // --- وظائف تصفية وبحث الجدول ---
-        searchBookings.addEventListener('input', async () => {
-            const bookings = await getBookings(); 
-            renderBookings(bookings, filterStatus.value, searchBookings.value);
-        });
-
-        filterStatus.addEventListener('change', async () => {
-            const bookings = await getBookings(); 
-            renderBookings(bookings, filterStatus.value, searchBookings.value);
-        });
-
         // --- وظائف إدارة التواريخ المغلقة (Closed Dates) ---
         function renderClosedDates(closedDates) {
             closedDatesList.innerHTML = '';
-            
             if (closedDates.length === 0) {
                 closedDatesList.innerHTML = '<li style="text-align: center; color: #666; padding: 10px;">لا توجد تواريخ مغلقة حالياً.</li>';
                 return;
             }
 
             closedDates.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
+
             closedDates.forEach(item => {
                 const listItem = document.createElement('li');
                 listItem.className = 'closed-date-item';
                 const formattedDate = new Date(item.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
-                
-                // تحديد نوع الإغلاق باللغة العربية (تعديل لغرض الإغلاق الجزئي)
-                const closureTypeArabic = item.type === 'specialized_only' 
-                    ? 'إغلاق جزئي (الفحوصات والأعمال الكبيرة فقط)' 
-                    : 'إغلاق كامل';
-
                 listItem.innerHTML = `
                     <div class="closed-date-info">
                         <strong>${formattedDate}</strong>
                         <span class="closed-date-day">السبب: ${item.reason}</span>
-                        <span class="closed-date-day" style="color: var(--primary);"><strong>النوع:</strong> ${closureTypeArabic}</span>
                     </div>
                     <button class="btn-admin btn-warning" onclick="removeClosedDate('${item.id}')">
                         <i class="fas fa-undo"></i> إلغاء الإغلاق
@@ -1957,8 +1947,7 @@
             e.preventDefault();
             const date = closedDateInput.value;
             const reason = closedDateReasonInput.value;
-            const type = closedDateTypeInput.value; // <--- جلب نوع الإغلاق
-
+            
             if (new Date(date) < new Date().setHours(0,0,0,0)) {
                 showToast('لا يمكن إغلاق تاريخ سابق لليوم الحالي.', 'error');
                 return;
@@ -1968,8 +1957,7 @@
                 // استخدام localClosedDates
                 if (!localClosedDates.some(d => d.date === date)) {
                     try {
-                        // حفظ نوع الإغلاق في Firebase
-                        await closedDatesCollection.add({ date: date, reason: reason, type: type }); 
+                        await closedDatesCollection.add({ date: date, reason: reason });
                         addClosedDateForm.reset();
                         showToast('تم إغلاق التاريخ بنجاح.', 'info');
                     } catch (error) {
@@ -1983,20 +1971,24 @@
         });
 
         async function removeClosedDate(id) {
-            if (confirm('هل أنت متأكد من إلغاء إغلاق هذا التاريخ؟')) {
-                try {
-                    await closedDatesCollection.doc(id).delete();
-                    showToast('تم إلغاء إغلاق التاريخ بنجاح.', 'info');
-                } catch (error) {
-                    console.error("Error removing closed date: ", error);
-                    showToast('فشل في إلغاء إغلاق التاريخ.', 'error');
-                }
+            if (!confirm('هل أنت متأكد من إلغاء إغلاق هذا التاريخ؟')) {
+                return;
+            }
+            try {
+                await closedDatesCollection.doc(id).delete();
+                showToast('تم إلغاء إغلاق التاريخ بنجاح.', 'success');
+            } catch (error) {
+                console.error("Error removing closed date: ", error);
+                showToast('فشل في إلغاء إغلاق التاريخ.', 'error');
             }
         }
-        
-        // --- وظائف تصدير البيانات (Backup) ---
-        function downloadFile(content, filename, mimeType) {
-            const blob = new Blob([content], { type: mimeType });
+
+        // --- وظائف النسخ الاحتياطي والاسترجاع ---
+
+        // دالة للمساعدة في تنزيل ملف JSON
+        function downloadJSON(data, filename) {
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -2007,104 +1999,106 @@
             URL.revokeObjectURL(url);
         }
 
-        // تصدير جميع الحجوزات كـ JSON
-        exportAllBookingsBtn.addEventListener('click', async () => {
+        downloadBookingsBtn.addEventListener('click', async () => {
             try {
                 const bookings = await getBookings();
-                // تنظيف البيانات من حقول Firebase غير الضرورية وتنسيق التاريخ
-                const dataToExport = bookings.map(b => ({
-                    ...b,
-                    timestamp: b.timestamp ? b.timestamp.toDate().toISOString() : 'N/A',
-                    serviceType: getServiceArabicName(b.serviceType),
-                    status: getStatusArabicName(b.status)
-                }));
-                const jsonContent = JSON.stringify(dataToExport, null, 2);
-                downloadFile(jsonContent, `all_bookings_backup_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
-                showToast('تم تصدير جميع الحجوزات بنجاح.', 'success');
+                // إزالة بيانات Timestamp الخاصة بـ Firestore لتسهيل الاسترجاع (إذا لزم الأمر)
+                const safeBookings = bookings.map(b => {
+                    const { timestamp, ...rest } = b;
+                    return { ...rest, timestamp: timestamp ? timestamp.toDate().toISOString() : null };
+                });
+                downloadJSON(safeBookings, `bookings_backup_${new Date().toISOString().split('T')[0]}.json`);
+                showToast('تم تحميل نسخة احتياطية من الحجوزات.', 'success');
             } catch (error) {
-                console.error("Export error: ", error);
-                showToast('فشل التصدير.', 'error');
+                showToast('فشل تحميل نسخة الحجوزات الاحتياطية.', 'error');
             }
         });
 
-        // تصدير الجدول الحالي كـ CSV
-        exportFilteredBookingsBtn.addEventListener('click', async () => {
-            const table = document.querySelector('.bookings-table');
-            const rows = table.querySelectorAll('tr');
-            
-            let csv = [];
-            
-            // إضافة العناوين
-            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText);
-            csv.push(headers.join(','));
-
-            // إضافة بيانات الصفوف
-            const tableBody = table.querySelector('tbody');
-            if (tableBody) {
-                Array.from(tableBody.rows).forEach(row => {
-                    const rowData = Array.from(row.cells).map((cell, index) => {
-                        // استخراج النص من العناصر المعقدة داخل الخلية (تجاهل الأزرار)
-                        if (index === 5) return ''; // تجاهل عمود الإجراءات
-
-                        let text = cell.innerText.trim().replace(/\s\s+/g, ' ');
-                        
-                        // إزالة الفواصل التي قد تفسد ملف CSV
-                        text = text.replace(/,/g, '؛'); 
-                        
-                        return `"${text}"`;
-                    });
-                    csv.push(rowData.filter((_, index) => index !== 5).join(',')); // تجاهل عمود الإجراءات مرة أخرى
-                });
+        downloadClosedDatesBtn.addEventListener('click', async () => {
+            try {
+                const closedDates = await getClosedDates();
+                downloadJSON(closedDates, `closedDates_backup_${new Date().toISOString().split('T')[0]}.json`);
+                showToast('تم تحميل نسخة احتياطية من التواريخ المغلقة.', 'success');
+            } catch (error) {
+                showToast('فشل تحميل نسخة التواريخ المغلقة الاحتياطية.', 'error');
             }
+        });
 
-            if (csv.length <= 1) {
-                showToast('لا توجد بيانات في الجدول الحالي لتصديرها.', 'warning');
+        restoreFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!confirm('تحذير: استرجاع البيانات سيقوم بإضافة جميع الحجوزات/التواريخ من الملف إلى قاعدة البيانات. هل أنت متأكد؟')) {
+                restoreFile.value = ''; // مسح اختيار الملف
                 return;
             }
 
-            const csvContent = csv.join('\n');
-            downloadFile(csvContent, `filtered_bookings_export_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv;charset=utf-8;');
-            showToast('تم تصدير الجدول الحالي بنجاح.', 'success');
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    let collectionName = '';
+                    
+                    if (Array.isArray(data) && data.length > 0) {
+                        if (data[0].name && data[0].phone) {
+                            collectionName = 'bookings';
+                        } else if (data[0].date && data[0].reason) {
+                            collectionName = 'closedDates';
+                        }
+                    }
+
+                    if (!collectionName) {
+                        showToast('تنسيق الملف غير مدعوم أو غير معروف.', 'error');
+                        restoreFile.value = '';
+                        return;
+                    }
+
+                    const collectionRef = db.collection(collectionName);
+                    const batch = db.batch();
+                    let count = 0;
+
+                    // في حال الحجوزات، نحتاج لتحويل التاريخ مرة أخرى إلى Timestamp
+                    const dataToRestore = data.map(item => {
+                        if (collectionName === 'bookings' && item.timestamp) {
+                            // تحويل التاريخ من ISO String إلى Timestamp
+                            item.timestamp = firebase.firestore.Timestamp.fromDate(new Date(item.timestamp));
+                        }
+                        // إزالة حقل الـ id لتجنب المشاكل
+                        const { id, ...rest } = item; 
+                        return rest;
+                    });
+
+
+                    dataToRestore.forEach(item => {
+                        batch.add(collectionRef, item);
+                        count++;
+                    });
+
+                    await batch.commit();
+                    showToast(`تم استرجاع ${count} عنصر بنجاح إلى مجموعة ${collectionName}.`, 'success');
+                    restoreFile.value = '';
+
+                } catch (error) {
+                    console.error("Restore error: ", error);
+                    showToast('فشل استرجاع البيانات. تأكد من أن الملف بصيغة JSON صحيحة.', 'error');
+                }
+            };
+            reader.readAsText(file);
         });
 
-
-        // --- وظائف التحكم في لوحة التحكم (Admin Auth) ---
-        function showAdminDashboard() {
-            adminDashboard.style.display = 'block';
-            adminLoginModal.style.display = 'none';
-            adminAccessBtn.style.display = 'none';
-            notificationBell.style.display = 'block'; // أظهر الجرس للمدير
-            startFirestoreListeners(); // ابدأ الاستماع للحجوزات
-            document.title = "لوحة التحكم - تقني المحركات";
-        }
-
-        function hideAdminDashboard() {
-            adminDashboard.style.display = 'none';
-            adminLoginModal.style.display = 'none';
-            adminAccessBtn.style.display = 'flex';
-            notificationBell.style.display = 'none'; // أخفِ الجرس للعميل
-            notificationBadge.style.display = 'none';
-            if (unsubscribeBookings) {
-                 stopFirestoreListeners(); // أوقف الاستماع عند الخروج
-            }
-            document.title = "مركز تقني المحركات - حجوزات الصيانة";
-        }
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                showAdminDashboard();
-            } else {
-                hideAdminDashboard();
-            }
-        });
-
+        // --- وظائف المصادقة ---
         adminAccessBtn.addEventListener('click', () => {
             adminLoginModal.style.display = 'flex';
+        });
+
+        closeDashboardBtn.addEventListener('click', () => {
+            hideAdminDashboard();
         });
 
         logoutBtn.addEventListener('click', async () => {
             try {
                 await auth.signOut();
+                hideAdminDashboard();
                 showToast('تم تسجيل الخروج بنجاح.', 'info');
             } catch (error) {
                 console.error("Logout error: ", error);
@@ -2119,20 +2113,21 @@
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                // showAdminDashboard سيتم استدعاؤها عبر onAuthStateChanged
+                showAdminDashboard();
                 showToast('تم تسجيل الدخول بنجاح.', 'success');
             } catch (error) {
                 console.error("Login error: ", error);
                 showToast('فشل تسجيل الدخول. تأكد من البريد وكلمة المرور.', 'error');
             }
         });
-        
+
         forgotPasswordBtn.addEventListener('click', async () => {
             const email = document.getElementById('adminEmail').value;
             if (!email) {
                 showToast('الرجاء إدخال بريدك الإلكتروني أولاً في حقل الدخول.', 'warning');
                 return;
             }
+
             try {
                 await auth.sendPasswordResetEmail(email);
                 showToast(`تم إرسال رابط استعادة كلمة المرور إلى البريد الإلكتروني: ${email}`, 'info');
@@ -2141,8 +2136,16 @@
                 showToast('فشل الإرسال. تأكد أن البريد الإلكتروني صحيح ومسجل كمسؤول.', 'error');
             }
         });
+
+        // --- مستمعي الأحداث والتهيئة ---
         
-        // --- وظائف التبويبات والمودال (Tabs and Modals) ---
+        // مستمع لتبديل الترتيب
+        const sortOrderToggleBtn = document.getElementById('sortOrderToggleBtn');
+        if (sortOrderToggleBtn) {
+            sortOrderToggleBtn.addEventListener('click', toggleSortOrder);
+        }
+
+        // مستمع لتبديل التبويبات في لوحة التحكم
         document.querySelectorAll('.admin-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
@@ -2176,7 +2179,14 @@
             // بدء مستمع التواريخ المغلقة لجميع المستخدمين فوراً
             initializeClosedDatesListener();
             
-            auth.currentUser ? showAdminDashboard() : hideAdminDashboard();
+            // تحقق من حالة المصادقة عند التحميل
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    showAdminDashboard();
+                } else {
+                    hideAdminDashboard();
+                }
+            });
         }
 
         init();
