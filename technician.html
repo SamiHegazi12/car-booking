@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engine Tech - Technician Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <style>
+        /* جميع الأنماط تبقى كما هي بدون تغيير */
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #f8a41c;
+            --light: #f4f6f9;
+            --dark: #343a40;
+            --success: #28a745;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            direction: ltr;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .nav-buttons button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #c82333;
+        }
+
+        /* Task Card Styling */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .task-card {
+            background: white;
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .task-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 5px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .task-card p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .status-badge {
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            text-transform: capitalize;
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 15px 0 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: var(--success);
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s ease-in-out;
+            font-size: 0.8rem;
+        }
+
+        .action-button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .action-button:hover {
+            background-color: #e69500;
+        }
+
+        /* Modals (Login, Update Task) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .modal-content h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="tel"], input[type="password"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        
+        .btn-submit {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background-color: #1e7e34;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            margin-left: 10px;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+        .technician-dashboard {
+            display: none; /* Hidden until login */
+        }
+        
+        .hello-message {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--dark);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 3000;
+        }
+        .toast.success { background-color: var(--success); }
+        .toast.error { background-color: var(--danger); }
+        
+        @media (max-width: 768px) {
+             .tasks-grid {
+                 grid-template-columns: 1fr;
+             }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="modal" id="techLoginModal" style="display: flex;">
+        <div class="modal-content">
+            <h3>Technician Login</h3>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginPhone">Phone Number</label>
+                    <input type="tel" id="loginPhone" required placeholder="+9665XXXXXXXX" pattern="\+9665[0-9]{8}">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </form>
+            <p style="margin-top: 15px; font-size: 0.85rem; color: #6c757d;">*Contact Admin if you forgot your password.</p>
+        </div>
+    </div>
+
+    <div class="technician-dashboard" id="dashboardContent">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Engine Tech Technician Panel</h1>
+                </div>
+                <div class="nav-buttons">
+                    <button id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <h2 id="welcomeMessage" class="hello-message">Hello, Technician!</h2>
+            <h3>Your Assigned Tasks</h3>
+            
+            <div class="tasks-grid" id="tasksGrid">
+                <div style="text-align: center;">Loading tasks...</div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="modal" id="updateModal">
+        <div class="modal-content">
+            <h3 id="updateModalTitle">Update Task Progress</h3>
+            <form id="updateForm">
+                <input type="hidden" id="updateTaskId">
+                <div class="form-group">
+                    <label for="updateProgress">Progress (%)</label>
+                    <input type="number" id="updateProgress" min="0" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateStatus">Status</label>
+                    <select id="updateStatus" required>
+                        <option value="in_progress">In Progress (قيد العمل)</option>
+                        <option value="pending_approval">Pending Approval (بانتظار موافقة العميل)</option>
+                        <option value="paused">Paused (متوقفة مؤقتاً)</option>
+                        <option value="complete">Complete (مكتملة)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="technicianNotes">Notes (Visible to Customer)</label>
+                    <textarea id="technicianNotes" rows="3" placeholder="Provide a brief update for the customer..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit"><i class="fas fa-upload"></i> Update Task</button>
+                <button type="button" class="btn-cancel" onclick="document.getElementById('updateModal').style.display='none'">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+
+<script>
+    // 1. Firebase Initialization
+    // 🛑 يجب استبدال هذا التكوين بمعلومات مشروعك الحقيقية
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    const bookingsCollection = db.collection('bookings');
+    const techniciansCollection = db.collection('technicians');
+
+    // 2. Global Variables
+    let currentTechnicianId = null;
+    let currentTechnicianName = null;
+    
+    // 3. DOM Elements
+    const loginForm = document.getElementById('loginForm');
+    const loginPhoneInput = document.getElementById('loginPhone');
+    const loginPasswordInput = document.getElementById('loginPassword');
+    const techLoginModal = document.getElementById('techLoginModal');
+    const dashboardContent = document.getElementById('dashboardContent');
+    const logoutButton = document.getElementById('logoutButton');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const tasksGrid = document.getElementById('tasksGrid');
+    
+    const updateModal = document.getElementById('updateModal');
+    const updateForm = document.getElementById('updateForm');
+    const updateTaskIdInput = document.getElementById('updateTaskId');
+    const updateProgressInput = document.getElementById('updateProgress');
+    const updateStatusSelect = document.getElementById('updateStatus');
+    const technicianNotesInput = document.getElementById('technicianNotes');
+
+
+    // 4. Utility Functions
+    function showToast(message, type = 'info') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type}`;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 4000);
+    }
+    
+     // Function to convert phone to proxy email for Firebase Auth
+    function phoneToProxyEmail(phone) {
+        // Removes all non-numeric characters and adds a domain
+        const sanitizedPhone = phone.replace(/[^\d+]/g, '');
+        return `${sanitizedPhone}@admintech.com`; // Unique domain for admin/tech
+    }
+    
+    // Function to show/hide Dashboard
+    function showDashboard() {
+        techLoginModal.style.display = 'none';
+        dashboardContent.style.display = 'block';
+        welcomeMessage.textContent = `Hello, ${currentTechnicianName} (Tech ID: ${currentTechnicianId})!`;
+        fetchAssignedTasks();
+    }
+
+    function hideDashboard() {
+        techLoginModal.style.display = 'flex';
+        dashboardContent.style.display = 'none';
+    }
+
+    // 5. Authentication Logic (Firebase Auth Proxy)
+    
+    // 🛑 وظيفة الدخول (Technician Login) - تستخدم البريد الوهمي مع Firebase Auth
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const phone = loginPhoneInput.value;
+        const password = loginPasswordInput.value;
+        
+        if (!phone || !password) {
+            showToast('Please enter phone and password.', 'error');
+            return;
+        }
+
+        const proxyEmail = phoneToProxyEmail(phone);
+        
+        try {
+            showToast('Logging in...', 'info');
+            
+            // 🛑 استخدام signInWithEmailAndPassword مع البريد الوهمي
+            const userCredential = await auth.signInWithEmailAndPassword(proxyEmail, password);
+            const user = userCredential.user;
+            
+            // تحقق إضافي: التأكد من أن المستخدم موجود في كولكشن 'technicians' ولديه role 'technician'
+            const doc = await techniciansCollection.doc(user.uid).get();
+            
+            if (doc.exists && doc.data().role === 'technician') {
+                const userData = doc.data();
+                currentTechnicianId = user.uid;
+                currentTechnicianName = userData.name;
+                localStorage.setItem('techLoggedIn', 'true');
+                localStorage.setItem('currentTechnicianId', currentTechnicianId);
+                localStorage.setItem('currentTechnicianName', currentTechnicianName);
+                
+                showToast(`Welcome back, ${currentTechnicianName}.`, 'success');
+                showDashboard();
+            } else {
+                // ليس لديه دور 'technician' أو غير موجود في Firestore
+                await auth.signOut();
+                showToast('Access denied: User is not a technician.', 'error');
+            }
+
+        } catch (error) {
+            console.error(error);
+            showToast('Login failed: Invalid Phone or Password.', 'error');
+        }
+    });
+
+    // 🛑 وظيفة تسجيل الخروج
+    logoutButton.addEventListener('click', () => {
+        auth.signOut().then(() => {
+            localStorage.removeItem('techLoggedIn');
+            localStorage.removeItem('currentTechnicianId');
+            localStorage.removeItem('currentTechnicianName');
+            currentTechnicianId = null;
+            currentTechnicianName = null;
+            showToast('Logged out successfully.', 'info');
+            hideDashboard();
+        }).catch(error => {
+            showToast('Logout error: ' + error.message, 'error');
+            console.error(error);
+        });
+    });
+
+
+    // 6. Manage Tasks (Existing Logic)
+    // ...
+    function openUpdateModal(taskId, progress, status) {
+        // ... (Existing logic remains the same)
+    }
+
+    updateForm.addEventListener('submit', async function(e) {
+        // ... (Existing logic remains the same)
+    });
+    
+    // Close modal when clicking outside
+    updateModal.addEventListener('click', function(e) {
+        if (e.target === updateModal) {
+            updateModal.style.display = 'none';
+        }
+    });
+
+
+    // 7. Fetch Assigned Tasks (Existing Logic)
+    function fetchAssignedTasks() {
+        if (!currentTechnicianId) return;
+        
+        bookingsCollection.where('technicianId', '==', currentTechnicianId)
+            .where('status', 'in', ['received', 'in_progress', 'pending_approval', 'paused'])
+            .orderBy('createdAt', 'desc')
+            .onSnapshot(snapshot => {
+                tasksGrid.innerHTML = '';
+                if (snapshot.empty) {
+                    tasksGrid.innerHTML = '<p style="text-align: center; color: #6c757d;">You have no active assigned tasks.</p>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const booking = doc.data();
+                    const id = doc.id;
+                    tasksGrid.appendChild(createTaskCard(id, booking));
+                });
+            }, error => {
+                console.error("Error fetching tasks:", error);
+                tasksGrid.innerHTML = '<p style="text-align: center; color: var(--danger);">Error loading tasks. Please try again.</p>';
+            });
+    }
+
+    function createTaskCard(id, booking) {
+        // (The function body remains the same)
+        const card = document.createElement('div');
+        card.className = 'task-card';
+
+        let statusText;
+        let badgeClass;
+        switch(booking.status) {
+            case 'received': statusText = 'Received'; badgeClass = 'bg-info'; break;
+            case 'in_progress': statusText = 'In Progress'; badgeClass = 'bg-primary'; break;
+            case 'paused': statusText = 'Paused'; badgeClass = 'bg-warning text-dark'; break;
+            case 'pending_approval': statusText = 'Pending Approval'; badgeClass = 'bg-danger'; break;
+            case 'complete': statusText = 'Complete'; badgeClass = 'bg-success'; break;
+            default: statusText = 'Unknown'; badgeClass = 'bg-secondary';
+        }
+        
+        // ... (remaining card creation logic)
+
+        card.innerHTML = `
+            <h3 style="direction: rtl;">
+                ${booking.plateNumber}
+                <span class="status-badge ${badgeClass.split(' ')[0]}" style="background-color: var(--${badgeClass.split('-')[1] || 'primary'});">${statusText}</span>
+            </h3>
+            <p><strong>Customer:</strong> ${booking.customerName}</p>
+            <p><strong>Phone:</strong> ${booking.customerPhone}</p>
+            <p><strong>Service:</strong> ${booking.serviceType}</p>
+            <p><strong>Car:</strong> ${booking.carModel} (${booking.carType})</p>
+            <p><strong>Booking:</strong> ${booking.date} at ${booking.time}</p>
+            
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: ${booking.progress || 0}%; background: ${booking.progress === 100 ? 'var(--success)' : 'var(--info)'};">
+                    ${booking.progress || 0}% Done
+                </div>
+            </div>
+
+            <button class="action-button" onclick="openUpdateModal('${id}', ${booking.progress || 0}, '${booking.status}')">
+                <i class="fas fa-edit"></i> Update Progress
+            </button>
+        `;
+
+        return card;
+    }
+
+
+    // 8. Initialization
+    function init() {
+        // 🛑 تحقق من حالة المصادقة باستخدام Firebase Auth Listener
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                // المستخدم مسجل الدخول
+                const doc = await techniciansCollection.doc(user.uid).get();
+                
+                if (doc.exists && doc.data().role === 'technician') {
+                    const userData = doc.data();
+                    currentTechnicianId = user.uid;
+                    currentTechnicianName = userData.name;
+                    localStorage.setItem('techLoggedIn', 'true');
+                    localStorage.setItem('currentTechnicianId', currentTechnicianId);
+                    localStorage.setItem('currentTechnicianName', currentTechnicianName);
+                    showDashboard();
+                } else {
+                    // ليس فني/بيانات مفقودة
+                    await auth.signOut();
+                    localStorage.removeItem('techLoggedIn');
+                    hideDashboard();
+                }
+            } else {
+                // غير مسجل الدخول
+                localStorage.removeItem('techLoggedIn');
+                hideDashboard();
+            }
+        });
+    }
+
+    init();
+</script>
+</body>
+</html>
