@@ -106,7 +106,9 @@
         .auth-switch{margin-top:15px;cursor:pointer;color:var(--primary);text-decoration:underline;font-size:.9rem}
         .auth-form{display:none}
         .auth-form.active{display:block}
-        .toast{display:none;position:fixed;bottom:20px;right:20px;background-color:var(--dark);color:white;padding:15px;border-radius:5px;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:3000}
+        
+        /* Toast Style is already perfect */
+        .toast{display:none;position:fixed;bottom:20px;right:20px;background-color:var(--dark);color:white;padding:15px;border-radius:5px;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:3000; direction: rtl;}
         .toast.success{background-color:var(--success)}
         .toast.error{background-color:var(--danger)}
         .toast.warning{background-color:var(--warning);color:var(--dark)}
@@ -404,7 +406,7 @@
         </div>
     </div>
     <div class="footer-bottom">
-        <p>&copy; 2006 مركز تقني المحركات. جميع الحقوق محفوظة.</p>
+        <p>© 2006 مركز تقني المحركات. جميع الحقوق محفوظة.</p>
     </div>
 </footer>
 
@@ -510,11 +512,16 @@
     const customerTrackingSection = document.getElementById('customerTrackingSection');
     const trackingCardsContainer = document.getElementById('trackingCardsContainer');
 
+    // === NEW: Alert Sound Object ===
+    const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+    // Store previous statuses to detect changes
+    let bookingStatusCache = {};
+
     let userIsAuthenticated = false;
     let currentUserId = null;
     let currentUserName = null;
 
-    // ========= Firebase Config (نفس الإعدادات) =========
+    // ========= Firebase Config =========
     const firebaseConfig = {
         apiKey: "AIzaSyAVweTlVbnd92xtTQcZwWo5sH7hiIDPlds",
         authDomain: "car-service-booking-edfda.firebaseapp.com",
@@ -534,11 +541,8 @@
     const activityLogCollection = db.collection('activityLog');
 
     // ========= دالات مساعدة (Utility Functions) =========
-    // Function to convert phone to proxy email for Firebase Auth
     function phoneToProxyEmail(phone) {
-        // يزيل جميع الأحرف غير الرقمية ويضيف نطاقًا فريدًا للعملاء
         const sanitizedPhone = phone.replace(/[^\d+]/g, ''); 
-        // نطاق clientdomain.com لتمييز العملاء عن الفنيين/المديرين
         return `${sanitizedPhone}@clientdomain.com`; 
     }
 
@@ -551,13 +555,24 @@
         setTimeout(() => toast.style.display = 'none', 5000);
     }
 
+    function translateStatus(status) {
+        const map = {
+            'Received': 'تم الاستلام',
+            'In_Progress': 'قيد العمل',
+            'Paused': 'متوقفة مؤقتاً',
+            'Pending_Approval': 'بانتظار موافقتك',
+            'Complete': 'جاهزة للاستلام',
+            'Confirmed': 'تم تأكيد الموعد'
+        };
+        return map[status] || status;
+    }
+
     // ========= التبديل بين نماذج المصادقة =========
     function switchAuthForm(target) {
         loginForm.classList.remove('active');
         registerForm.classList.remove('active');
         recoverForm.classList.remove('active');
 
-        // إعادة ضبط نموذج استعادة كلمة المرور
         document.getElementById('recoverAnswer').value = '';
         document.getElementById('newPassword').value = '';
         recoverQuestionGroup.style.display = 'none';
@@ -566,7 +581,6 @@
         checkSecurityBtn.style.display = 'block';
         document.getElementById('recoverAnswer').disabled = true;
         document.getElementById('newPassword').disabled = true;
-
 
         if (target === 'login') {
             authTitle.textContent = 'تسجيل الدخول';
@@ -580,7 +594,6 @@
         }
     }
 
-    // Event listeners for auth switches
     document.querySelectorAll('.auth-switch').forEach(switcher => {
         switcher.addEventListener('click', (e) => {
             const target = e.target.getAttribute('data-target') || e.target.parentNode.getAttribute('data-target');
@@ -590,10 +603,9 @@
         });
     });
 
-    // Open/Close Modal
     authButton.addEventListener('click', () => {
         customerAuthModal.style.display = 'flex';
-        switchAuthForm('login'); // Default to login
+        switchAuthForm('login'); 
     });
 
     customerAuthModal.addEventListener('click', (e) => {
@@ -602,14 +614,13 @@
         }
     });
 
-    // Logout
     logoutButton.addEventListener('click', async () => {
         try {
             await auth.signOut();
             localStorage.removeItem('userLoggedIn');
             localStorage.removeItem('currentUserId');
             localStorage.removeItem('currentUserName');
-            localStorage.removeItem('userPhone'); // إزالة رقم الجوال من التخزين المحلي
+            localStorage.removeItem('userPhone');
             initAuthenticationState(false, null, null, null);
             showToast('تم تسجيل الخروج بنجاح.', 'info');
         } catch (error) {
@@ -617,9 +628,7 @@
         }
     });
 
-    // ========= التسجيل والدخول (باستخدام Firebase Auth) =========
-
-    // التسجيل
+    // ========= التسجيل والدخول =========
     registerForm.addEventListener('submit', async e => {
         e.preventDefault();
         const name = document.getElementById('registerName').value;
@@ -628,7 +637,6 @@
         const question = document.getElementById('securityQuestion').value;
         const answer = document.getElementById('securityAnswer').value;
         
-        // 1. تحقق من عدم وجود رقم الجوال مسبقاً في Firestore
         const userSnap = await usersCollection.where('phone', '==', phone).get();
         if (!userSnap.empty) {
             showToast('رقم الجوال مسجل مسبقاً. يرجى تسجيل الدخول.', 'warning');
@@ -638,59 +646,41 @@
         const proxyEmail = phoneToProxyEmail(phone);
 
         try {
-            // 2. إنشاء مستخدم في Firebase Authentication باستخدام الإيميل الوكيل وكلمة السر
             const userCredential = await auth.createUserWithEmailAndPassword(proxyEmail, password);
             const user = userCredential.user;
 
-            // 3. تخزين باقي البيانات في Firestore
             await usersCollection.doc(user.uid).set({
                 name,
                 phone,
                 security_question: question,
-                security_answer: answer.toLowerCase().trim(), // تخزين الإجابة كنص عادي للمطابقة لاحقاً
+                security_answer: answer.toLowerCase().trim(),
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             
-            // 4. تسجيل الخروج من Firebase Auth مؤقتاً لعدم تداخل الحالات
             await auth.signOut();
-            
             showToast('تم التسجيل بنجاح. يمكنك الآن تسجيل الدخول.', 'success');
             switchAuthForm('login');
 
         } catch (error) {
-            // معالجة الأخطاء
-            let errorMessage = 'خطأ في التسجيل';
-            if (error.code === 'auth/email-already-in-use') {
-                errorMessage = 'رقم الجوال مسجل مسبقاً.'; // لن يحدث نظرياً بسبب التحقق الأول
-            } else if (error.code === 'auth/weak-password') {
-                errorMessage = 'كلمة السر ضعيفة (يجب أن تكون 6 أحرف على الأقل).';
-            } else {
-                 errorMessage = 'خطأ في التسجيل: ' + error.message;
-            }
+            let errorMessage = 'خطأ في التسجيل: ' + error.message;
+            if (error.code === 'auth/weak-password') errorMessage = 'كلمة السر ضعيفة (6 أحرف على الأقل).';
             showToast(errorMessage, 'error');
         }
     });
 
-    // الدخول
     loginForm.addEventListener('submit', async e => {
         e.preventDefault();
         const phone = document.getElementById('loginPhone').value;
         const password = document.getElementById('loginPassword').value;
-        
         const proxyEmail = phoneToProxyEmail(phone);
 
         try {
-            // 1. تسجيل الدخول باستخدام Firebase Auth
             const userCredential = await auth.signInWithEmailAndPassword(proxyEmail, password);
             const user = userCredential.user;
-
-            // 2. جلب بيانات المستخدم من Firestore
             const doc = await usersCollection.doc(user.uid).get();
 
             if (doc.exists) {
                 const userData = doc.data();
-                
-                // 3. حفظ بيانات الجلسة والتحديث
                 localStorage.setItem('userLoggedIn', 'true');
                 localStorage.setItem('currentUserId', user.uid);
                 localStorage.setItem('currentUserName', userData.name);
@@ -698,25 +688,17 @@
                 
                 customerAuthModal.style.display = 'none';
                 initAuthenticationState(true, user.uid, userData.name, userData.phone);
-                showToast(`أهلاً بك يا ${userData.name}! تم تسجيل الدخول بنجاح.`, 'success');
+                showToast(`أهلاً بك يا ${userData.name}! تم تسجيل الدخول.`, 'success');
             } else {
-                // حالة نادرة (المستخدم في Auth لكن ليس في Firestore)
                 await auth.signOut();
-                showToast('خطأ: بيانات الحساب مفقودة. يرجى إعادة التسجيل.', 'error');
+                showToast('خطأ: بيانات الحساب مفقودة.', 'error');
             }
 
         } catch (error) {
-            let errorMessage = 'خطأ في تسجيل الدخول';
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-email') {
-                errorMessage = 'رقم الجوال أو كلمة السر غير صحيحة.';
-            } else {
-                errorMessage = 'خطأ في تسجيل الدخول: ' + error.message;
-            }
-            showToast(errorMessage, 'error');
+            showToast('رقم الجوال أو كلمة السر غير صحيحة.', 'error');
         }
     });
     
-    // استعادة كلمة السر: التحقق من سؤال الأمان
     checkSecurityBtn.addEventListener('click', async () => {
         const phone = recoverPhoneInput.value;
         if (!phone || phone.length < 9) {
@@ -739,7 +721,6 @@
                 'mother_name': 'ما هو الاسم الأوسط لوالدتك؟'
             };
 
-            // تخزين بيانات المستخدم مؤقتاً في النموذج
             recoverForm.dataset.userId = userSnap.docs[0].id;
             recoverForm.dataset.securityAnswer = userData.security_answer.toLowerCase().trim();
 
@@ -749,18 +730,15 @@
             recoverQuestionGroup.style.display = 'block';
             checkSecurityBtn.style.display = 'none';
             resetPasswordBtn.style.display = 'block';
-
-            showToast('تم العثور على سؤال الأمان، يرجى الإجابة وتعيين كلمة سر جديدة.', 'info');
+            showToast('تم العثور على سؤال الأمان، يرجى الإجابة.', 'info');
 
         } catch (error) {
-            showToast('خطأ في التحقق من الحساب: ' + error.message, 'error');
+            showToast('خطأ: ' + error.message, 'error');
         }
     });
 
-    // استعادة كلمة السر: تعيين كلمة سر جديدة
     recoverForm.addEventListener('submit', async e => {
         e.preventDefault();
-        const userId = recoverForm.dataset.userId;
         const storedAnswer = recoverForm.dataset.securityAnswer;
         const providedAnswer = document.getElementById('recoverAnswer').value.toLowerCase().trim();
         const newPassword = document.getElementById('newPassword').value;
@@ -770,46 +748,31 @@
             return;
         }
         
-        // إذا كانت الإجابة صحيحة، أظهر حقل كلمة السر الجديدة
         if (newPasswordGroup.style.display === 'none') {
              newPasswordGroup.style.display = 'block';
              document.getElementById('newPassword').disabled = false;
-             showToast('الإجابة صحيحة! أدخل كلمة السر الجديدة الآن.', 'success');
+             showToast('الإجابة صحيحة! أدخل كلمة السر الجديدة.', 'success');
              return;
         }
 
         if (newPassword.length < 6) {
-             showToast('كلمة السر يجب أن تكون 6 أحرف على الأقل.', 'warning');
+             showToast('كلمة السر قصيرة.', 'warning');
              return;
         }
 
         try {
-            // 1. تغيير كلمة السر في Firebase Auth
             const phone = recoverPhoneInput.value;
             const proxyEmail = phoneToProxyEmail(phone);
-            
-            // أرسل إيميل إعادة التعيين باستخدام الإيميل الوكيل
             await auth.sendPasswordResetEmail(proxyEmail);
-
-            showToast('تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك الوكيل (رقمك). يرجى التواصل مع الدعم الفني.', 'info');
+            showToast('تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك (رقمك).', 'info');
             switchAuthForm('login');
-            
         } catch (error) {
-             let errorMessage = 'خطأ في إعادة تعيين كلمة السر: ' + error.message;
-             if (error.code === 'auth/user-not-found') {
-                errorMessage = 'رقم الجوال غير مسجل.';
-            } 
-            showToast(errorMessage, 'error');
+            showToast('خطأ في الاستعادة: ' + error.message, 'error');
         }
     });
 
-    // ========= منطق الحجوزات (الأوقات، الإرسال، التتبع) =========
-    const WORK_HOURS = {
-        morningStart: 8,
-        morningEnd: 13,
-        eveningStart: 15,
-        eveningEnd: 19
-    };
+    // ========= منطق الحجوزات =========
+    const WORK_HOURS = { morningStart: 8, morningEnd: 13, eveningStart: 15, eveningEnd: 19 };
     let closedDatesCache = [];
     let closedTimesCache = [];
 
@@ -817,57 +780,49 @@
         closedDatesCollection.onSnapshot(snapshot => {
             closedDatesCache = snapshot.docs.map(doc => doc.data().date);
             if (dateInput.value) dateInput.dispatchEvent(new Event('change'));
-        }, error => console.error("Error fetching closed dates: ", error));
+        });
     }
 
     dateInput.addEventListener('change', async () => {
         const selectedDate = dateInput.value;
-        timeSelect.innerHTML = '<option value="">جارٍ التحقق من الأوقات...</option>';
+        timeSelect.innerHTML = '<option value="">جارٍ التحقق...</option>';
         timeSelect.disabled = true;
         submitBookingBtn.disabled = true;
 
         if (!selectedDate) return;
 
-        // التحقق من التاريخ المغلق
         if (closedDatesCache.includes(selectedDate)) {
-            timeSelect.innerHTML = '<option value="">التاريخ مغلق بالكامل.</option>';
-            showToast('هذا التاريخ مغلق للصيانة أو عطلة رسمية.', 'warning');
+            timeSelect.innerHTML = '<option value="">التاريخ مغلق.</option>';
+            showToast('هذا التاريخ مغلق.', 'warning');
             return;
         }
 
         try {
-            // جلب الحجوزات القائمة لليوم المحدد
             const snapshot = await bookingsCollection.where('date', '==', selectedDate).get();
             const bookedTimes = snapshot.docs.map(doc => doc.data().time);
-
-            // حساب عدد الحجوزات لكل وقت
             const timeCounts = bookedTimes.reduce((acc, time) => {
                 acc[time] = (acc[time] || 0) + 1;
                 return acc;
             }, {});
 
-            // تحديد الأوقات الممتلئة (3 حجوزات كحد أقصى)
             const fullyBookedTimes = Object.keys(timeCounts).filter(time => timeCounts[time] >= 3);
             closedTimesCache = fullyBookedTimes;
 
             const availableTimes = [];
             const dayOfWeek = new Date(selectedDate).getDay();
 
-            // التحقق من يوم الجمعة (5)
-            if (dayOfWeek === 5) { // الجمعة هو اليوم الخامس (Saturday=0, Friday=5)
-                timeSelect.innerHTML = '<option value="">لا توجد أوقات متاحة في هذا اليوم.</option>';
+            if (dayOfWeek === 5) { // Friday
+                timeSelect.innerHTML = '<option value="">لا توجد أوقات يوم الجمعة.</option>';
                 return;
             }
 
             const workPeriods = [
-                { start: WORK_HOURS.morningStart, end: WORK_HOURS.morningEnd }, // 8 إلى 12
-                { start: WORK_HOURS.eveningStart, end: WORK_HOURS.eveningEnd }  // 3 إلى 6
+                { start: WORK_HOURS.morningStart, end: WORK_HOURS.morningEnd },
+                { start: WORK_HOURS.eveningStart, end: WORK_HOURS.eveningEnd }
             ];
 
-            // توليد الأوقات المتاحة
             workPeriods.forEach(period => {
                 for (let hour = period.start; hour < period.end; hour++) {
-                    // أوقات الساعة بالتحديد (مثل 8:00)
                     let timeValue = `${hour.toString().padStart(2, '0')}:00`;
                     if (!fullyBookedTimes.includes(timeValue)) {
                         availableTimes.push({ value: timeValue, text: timeValue });
@@ -875,7 +830,6 @@
                 }
             });
 
-            // تحديث قائمة الأوقات
             timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
             if (availableTimes.length > 0) {
                 availableTimes.sort((a, b) => a.value.localeCompare(b.value));
@@ -887,21 +841,18 @@
                 });
                 timeSelect.disabled = false;
             } else {
-                timeSelect.innerHTML = '<option value="">جميع المواعيد محجوزة لهذا اليوم.</option>';
+                timeSelect.innerHTML = '<option value="">المواعيد ممتلئة.</option>';
             }
 
         } catch (error) {
-            console.error("Error fetching booked times: ", error);
-            timeSelect.innerHTML = '<option value="">حدث خطأ في تحميل الأوقات.</option>';
+            timeSelect.innerHTML = '<option value="">حدث خطأ.</option>';
         }
     });
     
-    // تفعيل زر الحجز عند اختيار الوقت
     timeSelect.addEventListener('change', () => {
         submitBookingBtn.disabled = !userIsAuthenticated || !timeSelect.value;
     });
 
-    // تغيير نمط إدخال لوحة السيارة
     document.querySelectorAll('input[name="plateType"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
             if (e.target.value === 'saudi') {
@@ -926,38 +877,25 @@
         });
     });
     
-    // منطق جديد للحروف: تقييد بحرف عربي واحد والنقل التلقائي
     [plateLetter1, plateLetter2, plateLetter3].forEach((input, index, array) => {
         input.addEventListener('input', (e) => {
-            // Force Arabic input (or empty) and convert to uppercase
             const arabicRegex = /[\u0600-\u06FF]/;
             let value = e.target.value.toUpperCase().trim().slice(0, 1);
-            if (value && !arabicRegex.test(value)) {
-                value = ''; // Clear if not Arabic
-            }
+            if (value && !arabicRegex.test(value)) value = '';
             e.target.value = value;
-            
-            // Auto-focus to the next input
-            if (value && index < array.length - 1) {
-                array[index + 1].focus();
-            }
+            if (value && index < array.length - 1) array[index + 1].focus();
         });
-        
         input.addEventListener('keydown', (e) => {
-            // Auto-focus to the previous input on backspace if current is empty
-            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                array[index - 1].focus();
-            }
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) array[index - 1].focus();
         });
     });
 
-    // إرسال الحجز
     bookingForm.addEventListener('submit', async e => {
         e.preventDefault();
         submitBookingBtn.disabled = true;
         
         if (!userIsAuthenticated) {
-            showToast('يرجى تسجيل الدخول قبل تأكيد الحجز.', 'warning');
+            showToast('يرجى تسجيل الدخول أولاً.', 'warning');
             submitBookingBtn.disabled = false;
             return;
         }
@@ -970,33 +908,24 @@
             const letter2 = plateLetter2.value.toUpperCase().trim();
             const letter3 = plateLetter3.value.toUpperCase().trim();
             const numbers = plateNumbers.value.trim();
-
             const letters = `${letter1}${letter2}${letter3}`;
             const formattedLetters = `${letter1} ${letter2} ${letter3}`; 
 
-            // التحقق من تنسيق اللوحة السعودية (3 أحرف عربية فقط و 1-4 أرقام)
             const saudiPlateRegex = /^[ء-ي]{3}$/;
             if (!saudiPlateRegex.test(letters) || numbers.length < 1 || numbers.length > 4) {
-                showToast('تنسيق لوحة السيارة السعودية غير صحيح. يرجى إدخال 3 أحرف عربية و 1-4 أرقام.', 'error');
+                showToast('تنسيق اللوحة السعودية غير صحيح.', 'error');
                 submitBookingBtn.disabled = false;
                 return;
             }
-            
-            plateData = {
-                plate_type: 'Saudi',
-                car_plate_data: `${formattedLetters} - ${numbers}`
-            };
+            plateData = { plate_type: 'Saudi', car_plate_data: `${formattedLetters} - ${numbers}` };
         } else {
             const foreignPlateValue = foreignPlate.value.trim();
             if (foreignPlateValue === "") {
-                showToast('يرجى إدخال صيغة اللوحة الأجنبية.', 'error');
+                showToast('يرجى إدخال اللوحة الأجنبية.', 'error');
                 submitBookingBtn.disabled = false;
                 return;
             }
-            plateData = {
-                plate_type: 'Foreign',
-                car_plate_data: foreignPlateValue
-            };
+            plateData = { plate_type: 'Foreign', car_plate_data: foreignPlateValue };
         }
 
         const bookingData = {
@@ -1010,7 +939,7 @@
             time: timeSelect.value,
             notes: document.getElementById('notes').value,
             ...plateData,
-            status: 'Received', // تم تغيير الحالة الأولية إلى Received بعد التحقق من تسجيل الدخول
+            status: 'Received',
             technician_id: null,
             technician_name: null,
             progress_percentage: 0,
@@ -1021,31 +950,24 @@
 
         try {
             await bookingsCollection.add(bookingData);
-            showToast('تم إرسال طلب الحجز بنجاح. سنقوم بمراجعة طلبك.', 'success');
-            
-            // إعادة ضبط النموذج
+            showToast('تم إرسال طلب الحجز بنجاح!', 'success');
             bookingForm.reset();
             timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
             timeSelect.disabled = true;
             dateInput.dispatchEvent(new Event('change'));
             submitBookingBtn.disabled = true; 
-
-            // تحديث قائمة الحجوزات النشطة
             fetchCustomerBookings(currentUserId);
-
         } catch (error) {
-            showToast('خطأ في إرسال الحجز: ' + error.message, 'error');
+            showToast('خطأ في الحجز: ' + error.message, 'error');
             submitBookingBtn.disabled = false;
         }
     });
 
 
-    // ========= تتبع الحجوزات =========
+    // ========= تتبع الحجوزات (Updated with Alert Sound) =========
     function fetchCustomerBookings(userId) {
-        // عرض قسم التتبع
         customerTrackingSection.style.display = 'block';
-        trackingCardsContainer.innerHTML = '<p style="text-align:center;color:var(--info);"><i class="fas fa-spinner fa-spin"></i> جارٍ تحميل الحجوزات النشطة...</p>';
-        let hasActiveBookings = false;
+        trackingCardsContainer.innerHTML = '<p style="text-align:center;color:var(--info);"><i class="fas fa-spinner fa-spin"></i> جارٍ التحميل...</p>';
         let pendingAlertCount = 0;
 
         bookingsCollection
@@ -1054,7 +976,6 @@
             .orderBy('createdAt', 'desc') 
             .onSnapshot(snapshot => {
                 trackingCardsContainer.innerHTML = '';
-                hasActiveBookings = false;
                 pendingAlertCount = 0;
 
                 if (snapshot.empty) {
@@ -1064,12 +985,22 @@
                 }
 
                 snapshot.forEach(doc => {
-                    hasActiveBookings = true;
                     const booking = doc.data();
                     const id = doc.id;
                     booking.id = id;
 
-                    // إظهار تنبيه للعميل في حالة وجود تنبيه pending_approval أو is_alert_pending
+                    // === NEW LOGIC START: Check for Status Change ===
+                    // If we have seen this booking before AND the status is different
+                    if (bookingStatusCache[id] && bookingStatusCache[id] !== booking.status) {
+                        // Play Sound
+                        alertSound.play().catch(e => console.log("Sound blocked by browser until user interaction"));
+                        // Show visual alert
+                        showToast(`🔔 تحديث: أصبحت حالة سيارتك "${translateStatus(booking.status)}"`, 'info');
+                    }
+                    // Update Cache
+                    bookingStatusCache[id] = booking.status;
+                    // === NEW LOGIC END ===
+
                     if (booking.is_alert_pending || booking.status === 'Pending_Approval') {
                         pendingAlertCount++;
                     }
@@ -1084,15 +1015,12 @@
 
                     const status = booking.status || 'Received';
                     const statusInfo = statusMap[status] || statusMap['Received'];
-                    const statusText = statusInfo.text;
-                    const statusClass = statusInfo.class;
                     const progress = booking.progress_percentage || 0;
                     const technicianName = booking.technician_name || 'لم يتم التعيين بعد';
                     const ect = booking.estimated_completion_time ? 
                                 `<strong>التسليم المتوقع:</strong> ${booking.estimated_completion_time}` : 
                                 `<strong>التسليم المتوقع:</strong> يحدد لاحقاً`;
 
-                    // زر الموافقة إذا كانت الحالة بانتظار الموافقة
                     let approvalButton = '';
                     if (status === 'Pending_Approval') {
                         approvalButton = `
@@ -1104,21 +1032,21 @@
                                     <strong>ملاحظات المركز:</strong> ${booking.manager_approval_notes || 'لا توجد ملاحظات.'}
                                 </p>
                                 <button class="btn btn-success" data-action="approve" data-booking-id="${id}" style="margin-left:10px;">
-                                    <i class="fas fa-check-circle"></i> موافقة على الأعمال
+                                    <i class="fas fa-check-circle"></i> موافقة
                                 </button>
                                 <button class="btn btn-danger" data-action="reject" data-booking-id="${id}">
-                                    <i class="fas fa-times-circle"></i> رفض الأعمال
+                                    <i class="fas fa-times-circle"></i> رفض
                                 </button>
                             </div>
                         `;
                     }
                     
                     const cardHtml = document.createElement('div');
-                    cardHtml.className = `tracking-card ${statusClass}`;
+                    cardHtml.className = `tracking-card ${statusInfo.class}`;
                     cardHtml.innerHTML = `
                         <div class="tracking-header">
                             <h3><i class="fas fa-car"></i> لوحة ${booking.car_plate_data}</h3>
-                            <span class="status-badge ${statusClass}">${statusText}</span>
+                            <span class="status-badge ${statusInfo.class}">${statusInfo.text}</span>
                         </div>
                         <div class="tracking-details">
                             <p><strong>الخدمة:</strong> ${booking.service_type}</p>
@@ -1129,14 +1057,13 @@
                             </div>
                             ${approvalButton}
                             <h4><i class="fas fa-comment-dots"></i> سجل إشعارات العمل:</h4>
-                            <div class="tracking-log" id="log-${booking.id}">جاري تحميل الإشعارات...</div>
+                            <div class="tracking-log" id="log-${booking.id}">...</div>
                         </div>
                     `;
                     trackingCardsContainer.appendChild(cardHtml);
                     fetchActivityLog(booking.id);
                 });
                 
-                // تحديث عداد الإشعارات
                 const notificationBadge = document.getElementById('notificationBadge');
                 if (pendingAlertCount > 0) {
                     notificationBadge.textContent = pendingAlertCount;
@@ -1144,7 +1071,6 @@
                 } else {
                     notificationBadge.style.display = 'none';
                 }
-
 
                 document.querySelectorAll('[data-action="approve"]').forEach(btn => {
                     btn.addEventListener('click', handleCustomerApproval);
@@ -1154,7 +1080,6 @@
                 });
 
             }, error => {
-                console.error("Error fetching customer bookings: ", error);
                 trackingCardsContainer.innerHTML = '<p style="text-align:center;color:var(--danger)">حدث خطأ أثناء تحميل الحجوزات.</p>';
             });
     }
@@ -1169,7 +1094,7 @@
             .then(snapshot => {
                 logElement.innerHTML = '';
                 if (snapshot.empty) {
-                    logElement.innerHTML = '<p>لا توجد إشعارات حاليًا من الفني.</p>';
+                    logElement.innerHTML = '<p>لا توجد إشعارات حاليًا.</p>';
                     return;
                 }
                 
@@ -1178,16 +1103,9 @@
                     let typeClass = 'info';
                     let icon = '💬';
 
-                    if (log.type === 'Alert') {
-                        typeClass = 'alert';
-                        icon = '⚠️';
-                    } else if (log.type === 'Completion') {
-                        typeClass = 'approval';
-                        icon = '✅';
-                    } else if (log.type === 'Customer_Alert_Sent') {
-                        typeClass = 'alert';
-                        icon = '🔔';
-                    }
+                    if (log.type === 'Alert') { typeClass = 'alert'; icon = '⚠️'; } 
+                    else if (log.type === 'Completion') { typeClass = 'approval'; icon = '✅'; } 
+                    else if (log.type === 'Customer_Alert_Sent') { typeClass = 'alert'; icon = '🔔'; }
 
                     const timestamp = log.timestamp ? new Date(log.timestamp.toDate()).toLocaleString('ar-SA', {
                         year: 'numeric', month: 'numeric', day: 'numeric',
@@ -1196,88 +1114,79 @@
 
                     const logItem = document.createElement('div');
                     logItem.className = `log-item ${typeClass}`;
-                    logItem.innerHTML = `${icon} <strong>${timestamp}</strong>: ${log.message} - (${log.user_role || 'النظام'})`;
+                    logItem.innerHTML = `${icon} <strong>${timestamp}</strong>: ${log.message}`;
                     logElement.appendChild(logItem);
                 });
-            })
-            .catch(error => console.error("Error fetching activity log: ", error));
+            });
     }
     
-    // معالجة موافقة العميل على الأعمال الإضافية
     async function handleCustomerApproval(e) {
         const bookingId = e.target.dataset.bookingId;
         e.target.disabled = true;
 
         try {
             await bookingsCollection.doc(bookingId).update({
-                status: 'In_Progress', // العودة إلى قيد العمل
-                is_alert_pending: false, // إزالة التنبيه
-                progress_percentage: 1, // بدء العمل رسمياً
-                manager_approval_notes: firebase.firestore.FieldValue.delete() // حذف الملاحظات
+                status: 'In_Progress', 
+                is_alert_pending: false, 
+                progress_percentage: 1, 
+                manager_approval_notes: firebase.firestore.FieldValue.delete() 
             });
 
             await activityLogCollection.add({
                 booking_id: bookingId,
                 user_role: 'Customer',
-                type: 'Completion', // نوع النجاح
-                message: `وافق العميل ${currentUserName} على الأعمال الإضافية. تم استئناف العمل.`,
+                type: 'Completion',
+                message: `وافق العميل على الأعمال الإضافية.`,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            showToast('تمت الموافقة بنجاح. سيتم استئناف العمل على سيارتك.', 'success');
-            // لا حاجة لـ fetchCustomerBookings، onSnapshot ستقوم بالتحديث تلقائياً
+            showToast('تمت الموافقة بنجاح.', 'success');
         } catch (error) {
-            showToast('خطأ في معالجة الموافقة: ' + error.message, 'error');
+            showToast('خطأ: ' + error.message, 'error');
             e.target.disabled = false;
         }
     }
 
-    // معالجة رفض العميل للأعمال الإضافية
     async function handleCustomerRejection(e) {
         const bookingId = e.target.dataset.bookingId;
         e.target.disabled = true;
 
-        const confirmation = confirm('هل أنت متأكد من رفض الأعمال الإضافية؟ سيتم إكمال العمل الأصلي فقط أو يمكنك تحديد موعد تسليم.');
-        if (!confirmation) {
+        if (!confirm('هل أنت متأكد من رفض الأعمال الإضافية؟')) {
             e.target.disabled = false;
             return;
         }
 
         try {
             await bookingsCollection.doc(bookingId).update({
-                status: 'Paused', // تجميد مؤقت لحين قرار الإدارة أو تحديد التسليم
-                is_alert_pending: false, // إزالة التنبيه
-                manager_approval_notes: 'العميل رفض الأعمال الإضافية. بانتظار قرار الإدارة أو تحديد موعد تسليم.',
+                status: 'Paused',
+                is_alert_pending: false,
+                manager_approval_notes: 'العميل رفض الأعمال الإضافية.',
             });
 
             await activityLogCollection.add({
                 booking_id: bookingId,
                 user_role: 'Customer',
                 type: 'Alert',
-                message: `رفض العميل ${currentUserName} الأعمال الإضافية. تم تجميد العمل الأصلي مؤقتاً لحين مراجعة الإدارة.`,
+                message: `رفض العميل الأعمال الإضافية.`,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            showToast('تم تسجيل رفضك. ستقوم الإدارة بمراجعة الأمر.', 'warning');
+            showToast('تم الرفض.', 'warning');
         } catch (error) {
-            showToast('خطأ في معالجة الرفض: ' + error.message, 'error');
+            showToast('خطأ: ' + error.message, 'error');
             e.target.disabled = false;
         }
     }
 
-
-    // ========= جلب البيانات المحفوظة (الاسم ونوع السيارة والموديل) =========
     async function loadSavedData(userId) {
         const nameInput = document.getElementById('name');
         try {
-            // جلب الاسم ورقم الجوال من Firestore
             const doc = await usersCollection.doc(userId).get();
             if (doc.exists) {
                 const userData = doc.data();
                 nameInput.value = userData.name || '';
-                phoneInput.value = userData.phone || ''; // رقم الجوال مسجل تلقائياً ولا يمكن تعديله
+                phoneInput.value = userData.phone || '';
 
-                // جلب آخر حجز لتعبئة بيانات السيارة
                 const lastBookingSnap = await bookingsCollection
                     .where('customer_id', '==', userId)
                     .orderBy('createdAt', 'desc')
@@ -1289,65 +1198,46 @@
                     document.getElementById('carType').value = lastBooking.car_type || '';
                     document.getElementById('carModel').value = lastBooking.car_model || '';
                     
-                    // تعبئة لوحة السيارة
                     if (lastBooking.plate_type === 'Foreign') {
                         document.getElementById('plateTypeForeign').checked = true;
-                        document.getElementById('plateTypeForeign').dispatchEvent(new Event('change')); // لتحديث الواجهة
+                        document.getElementById('plateTypeForeign').dispatchEvent(new Event('change'));
                         foreignPlate.value = lastBooking.car_plate_data;
                     } else {
                         document.getElementById('plateTypeSaudi').checked = true;
                         document.getElementById('plateTypeSaudi').dispatchEvent(new Event('change'));
-                        
                         const [lettersPart, numbers] = lastBooking.car_plate_data.split(' - ');
-                        const lettersArray = lettersPart.trim().split(/\s+/); // Split by one or more spaces
-
-                        // محاولة تعبئة الـ 3 حقول للحروف
-                        if (lettersArray.length === 3) {
-                            plateLetter1.value = lettersArray[0];
-                            plateLetter2.value = lettersArray[1];
-                            plateLetter3.value = lettersArray[2];
-                        } else {
-                            // معالجة للبيانات القديمة التي قد تكون بدون مسافات (مثل أبج)
-                            const cleanLetters = lettersPart.replace(/\s/g, '');
-                            if (cleanLetters.length >= 3) {
-                                plateLetter1.value = cleanLetters[0];
-                                plateLetter2.value = cleanLetters[1];
-                                plateLetter3.value = cleanLetters[2];
-                            }
+                        const cleanLetters = lettersPart.replace(/\s/g, '');
+                        if (cleanLetters.length >= 3) {
+                            plateLetter1.value = cleanLetters[0];
+                            plateLetter2.value = cleanLetters[1];
+                            plateLetter3.value = cleanLetters[2];
                         }
                         plateNumbers.value = numbers.trim();
                     }
-
                     savedDataMessage.style.display = 'block';
                 }
             }
-        } catch (error) {
-            console.error("Error loading saved data: ", error);
-        }
+        } catch (error) { console.error(error); }
     }
 
-
-    // ========= تحديث واجهة المصادقة =========
     function updateUIForAuthentication(loggedIn, name, phone) {
         if (loggedIn) {
-            // حالة تسجيل الدخول
             authButton.style.display = 'none';
             logoutButton.style.display = 'block';
             document.getElementById('heroTitle').textContent = `أهلاً بك، ${name}`;
             document.getElementById('heroSubtitle').textContent = `يمكنك تتبع سير عمل سيارتك أو حجز موعد جديد.`;
             authMessage.style.display = 'none';
-            phoneInput.value = phone || ''; // تعبئة رقم الجوال
+            phoneInput.value = phone || '';
             submitBookingBtn.disabled = !timeSelect.value;
             submitBookingBtn.textContent = 'تأكيد الحجز';
             customerTrackingSection.style.display = 'block';
             loadSavedData(currentUserId);
             fetchCustomerBookings(currentUserId);
         } else {
-            // حالة عدم تسجيل الدخول
             authButton.style.display = 'block';
             logoutButton.style.display = 'none';
             document.getElementById('heroTitle').textContent = `حجوزات صيانة السيارات`;
-            document.getElementById('heroSubtitle').textContent = `أحجز موعدك بسهولة لصيانة سيارتك في مركز تقني المحركات بصناعية أبها الجديدة`;
+            document.getElementById('heroSubtitle').textContent = `أحجز موعدك بسهولة`;
             authMessage.style.display = 'block';
             phoneInput.value = '';
             submitBookingBtn.disabled = true;
@@ -1364,33 +1254,25 @@
         updateUIForAuthentication(loggedIn, name, phone);
     }
 
-    // ========= التهيئة الأولية =========
     function init() {
-        // تحديد أقل تاريخ مسموح به (اليوم)
         const today = new Date();
         today.setDate(today.getDate());
         dateInput.min = today.toISOString().split('T')[0];
-
-        // الاستماع لتحديثات التواريخ المغلقة
         initializeClosedDatesListener();
 
-        // التحقق من حالة المستخدم المخزنة محلياً
         const loggedIn = localStorage.getItem('userLoggedIn') === 'true';
         const userId = localStorage.getItem('currentUserId');
 
         if (loggedIn && userId) {
-            // إذا كان مسجل الدخول، جلب بياناته من Firestore
             usersCollection.doc(userId).get().then(doc => {
                 if (doc.exists) {
                     const userData = doc.data();
                     initAuthenticationState(true, userId, userData.name, userData.phone);
                 } else {
-                    // مسجل محلياً لكن غير موجود في Firestore
                     localStorage.removeItem('userLoggedIn');
                     initAuthenticationState(false, null, null, null);
                 }
             }).catch(error => {
-                console.error("Error fetching user data:", error);
                 initAuthenticationState(false, null, null, null);
             });
         } else {
