@@ -1,351 +1,520 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engine Tech - Technician Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>مركز تقني المحركات - حجوزات الصيانة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <style>
-        /* جميع الأنماط تبقى كما هي بدون تغيير */
+        /* ========= نفس الأنماط السابقة (بدون تغيير) ========= */
         :root {
             --primary: #2c5aa0;
             --secondary: #f8a41c;
-            --light: #f4f6f9;
+            --light: #f8f9fa;
             --dark: #343a40;
             --success: #28a745;
             --danger: #dc3545;
+            --warning: #ffc107;
             --info: #17a2b8;
+            --footer-bg: #2d2d2d;
+            --footer-text: #b0b0b0;
+            --footer-heading: #ffffff;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        body {
-            background-color: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
-            direction: ltr;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            margin: 0;
-        }
-
-        .nav-buttons button {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
-
-        .nav-buttons button:hover {
-            background-color: #c82333;
-        }
-
-        /* Task Card Styling */
-        .tasks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .task-card {
-            background: white;
-            border-left: 5px solid var(--primary);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
-        }
-        
-        .task-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .task-card h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            border-bottom: 2px solid var(--secondary);
-            padding-bottom: 5px;
-            font-size: 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .task-card p {
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-        }
-        
-        .status-badge {
-            padding: 5px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: white;
-            text-transform: capitalize;
-        }
-
-        /* Progress Bar */
-        .progress-bar-container {
-            background: #e9ecef;
-            border-radius: 5px;
-            margin: 15px 0 10px;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            height: 20px;
-            background: var(--success);
-            text-align: center;
-            line-height: 20px;
-            color: white;
-            font-weight: bold;
-            transition: width 0.5s ease-in-out;
-            font-size: 0.8rem;
-        }
-
-        .action-button {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        
-        .action-button:hover {
-            background-color: #e69500;
-        }
-
-        /* Modals (Login, Update Task) */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: relative;
-        }
-
-        .modal-content h3 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--secondary);
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        input[type="text"], input[type="tel"], input[type="password"], input[type="number"], select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
-        
-        .btn-submit {
-            background-color: var(--success);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-        }
-        
-        .btn-submit:hover {
-            background-color: #1e7e34;
-        }
-
-        .btn-cancel {
-            background-color: #6c757d;
-            margin-left: 10px;
-        }
-
-        .btn-cancel:hover {
-            background-color: #5a6268;
-        }
-
-        .technician-dashboard {
-            display: none; /* Hidden until login */
-        }
-        
-        .hello-message {
-            font-size: 1.2rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .toast {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--dark);
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 3000;
-        }
-        .toast.success { background-color: var(--success); }
-        .toast.error { background-color: var(--danger); }
-        
-        @media (max-width: 768px) {
-             .tasks-grid {
-                 grid-template-columns: 1fr;
-             }
-        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif;}
+        body{background:#f5f5f5;color:var(--dark);line-height:1.6}
+        .container{max-width:1200px;margin:0 auto;padding:20px}
+        header{background:linear-gradient(135deg,var(--primary),#1e3a8a);color:white;padding:1rem 0;box-shadow:0 4px 6px rgba(0,0,0,.1);position:relative}
+        .header-content{display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center}
+        .logo h1{font-size:1.8rem;margin-right:15px}
+        .nav-buttons{display:flex;justify-content:space-between;align-items:center;gap:10px}
+        .nav-buttons button{background:var(--secondary);color:white;border:none;padding:10px 15px;border-radius:5px;cursor:pointer;font-size:.9rem;font-weight:600;transition:all .3s}
+        .nav-buttons button:hover{background:#e69500}
+        .notification-bell{position:relative;background:var(--secondary);color:white;border:none;padding:10px;border-radius:50%;cursor:pointer;font-size:1.1rem;transition:all .3s;width:45px;height:45px;display:flex;align-items:center;justify-content:center}
+        .notification-bell:hover{background:#e69500;transform:scale(1.1)}
+        .notification-badge{position:absolute;top:-2px;right:-2px;background:var(--danger);color:white;border-radius:50%;width:18px;height:18px;font-size:.65rem;display:flex;align-items:center;justify-content:center;font-weight:bold;border:2px solid white}
+        .hero{background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),url('https://images.unsplash.com/photo-1621135802920-133df287f89c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center/cover;height:400px;display:flex;align-items:center;justify-content:center;text-align:center;color:white;position:relative}
+        .hero-content{position:relative;z-index:1}
+        .hero h2{font-size:2.5rem;margin-bottom:20px}
+        .hero p{font-size:1.2rem;max-width:700px;margin:0 auto}
+        .booking-section,.tracking-section,.services-section{background:white;padding:40px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.1);margin:40px 0}
+        .tracking-section{display:none}
+        .section-title{text-align:center;margin-bottom:30px;color:var(--primary);position:relative;padding-bottom:15px}
+        .section-title::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100px;height:3px;background:var(--secondary)}
+        .form-group{margin-bottom:20px}
+        label{display:block;margin-bottom:8px;font-weight:600}
+        input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:5px;font-size:1rem}
+        input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(44,90,160,.2)}
+        .form-row{display:flex;gap:20px}
+        .form-row .form-group{flex:1}
+        .btn{display:inline-block;background:var(--primary);color:white;padding:12px 25px;border:none;border-radius:5px;cursor:pointer;font-size:1rem;font-weight:600;transition:all .3s}
+        .btn:hover{background:#1e3a8a;transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.1)}
+        .btn-secondary{background:var(--secondary)}
+        .btn-secondary:hover{background:#e69500}
+        .btn-danger{background:var(--danger);color:white}
+        .btn-danger:hover{background:#c82333}
+        .btn-info{background:var(--info);color:white}
+        .btn-info:hover{background:#138496}
+        .work-hours{background:var(--light);padding:15px;border-radius:5px;margin:15px 0;text-align:center}
+        .tracking-card{background:#f8f9fa;border-left:5px solid var(--primary);padding:20px;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 5px rgba(0,0,0,.05)}
+        .tracking-card.complete{border-left-color:var(--success)}
+        .tracking-card.paused{border-left-color:var(--warning)}
+        .tracking-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:10px;border-bottom:1px dashed #ddd}
+        .tracking-header h3{color:var(--primary);font-size:1.5rem;display:flex;align-items:center;gap:10px}
+        .status-badge{padding:5px 10px;border-radius:5px;font-weight:bold;color:white;font-size:.9rem}
+        .status-badge.in_progress{background:var(--info)}
+        .status-badge.received{background:var(--primary)}
+        .status-badge.paused{background:var(--warning);color:var(--dark)}
+        .status-badge.complete{background:var(--success)}
+        .status-badge.pending_approval{background:var(--danger)}
+        .progress-bar-container{background:#e9ecef;border-radius:5px;margin:15px 0;overflow:hidden}
+        .progress-bar{height:25px;background:var(--success);text-align:center;line-height:25px;color:white;font-weight:bold;transition:width .5s ease-in-out;min-width:15px}
+        .tracking-details p{margin-bottom:8px}
+        .tracking-log{margin-top:20px;padding:15px;background:white;border:1px solid #eee;border-radius:5px;max-height:200px;overflow-y:auto}
+        .log-item{border-right:3px solid #ddd;padding-right:10px;margin-bottom:10px;font-size:.9rem}
+        .log-item.alert{border-right-color:var(--danger);font-weight:bold;color:var(--danger)}
+        .log-item.info{border-right-color:var(--info)}
+        .log-item.approval{border-right-color:var(--success);color:var(--success)}
+        .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:30px}
+        .service-card{background:white;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.05);overflow:hidden;border:1px solid #eee;transition:transform .3s}
+        .service-card:hover{transform:translateY(-5px);box-shadow:0 6px 18px rgba(0,0,0,.1)}
+        .service-icon{font-size:3rem;padding:20px 20px 0;text-align:right;color:var(--secondary)}
+        .service-content{padding:20px}
+        .service-content h3{color:var(--primary);margin-top:0;margin-bottom:10px;font-size:1.3rem;border-bottom:2px solid var(--secondary);padding-bottom:5px}
+        .warranty-badge{display:inline-block;background:#f0f8ff;color:var(--dark);padding:5px 10px;border-radius:5px;font-size:.85rem;font-weight:500;margin-top:15px}
+        .warranty-badge i{margin-left:5px;color:var(--success)}
+        .warranty-badge[style*="background: var(--primary);"]{color:white !important}
+        .warranty-badge[style*="background: var(--primary);"] i{color:white}
+        footer{background:var(--footer-bg);color:var(--footer-text);padding:40px 0 10px;font-size:.95rem}
+        .footer-content{display:flex;justify-content:space-between;gap:30px;padding-bottom:20px;border-bottom:1px solid #444}
+        .footer-section{flex:1;min-width:250px}
+        .footer-section h3{color:var(--footer-heading);margin-bottom:20px;font-size:1.3rem}
+        .footer-section p,.footer-section a{color:var(--footer-text);text-decoration:none;margin-bottom:10px;display:block}
+        .footer-section a:hover{color:var(--secondary);text-decoration:underline}
+        .contact-info-footer i{margin-left:8px;color:var(--secondary)}
+        .work-hours-footer{list-style:none}
+        .work-hours-footer li{margin-bottom:10px}
+        .footer-bottom{text-align:center;padding-top:20px;font-size:.8rem}
+        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:2000;justify-content:center;align-items:center}
+        .modal-content{background:white;padding:30px;border-radius:10px;max-width:450px;width:90%;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.3);position:relative}
+        .modal-content h3{color:var(--primary);margin-bottom:20px}
+        .auth-switch{margin-top:15px;cursor:pointer;color:var(--primary);text-decoration:underline;font-size:.9rem}
+        .auth-form{display:none}
+        .auth-form.active{display:block}
+        .toast{display:none;position:fixed;bottom:20px;right:20px;background-color:var(--dark);color:white;padding:15px;border-radius:5px;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:3000}
+        .toast.success{background-color:var(--success)}
+        .toast.error{background-color:var(--danger)}
+        .toast.warning{background-color:var(--warning);color:var(--dark)}
+        .toast.info{background-color:var(--info)}
+        .saved-data-info{background:#e8f5e8;border:1px solid #4caf50;border-radius:5px;padding:10px;margin-bottom:15px;font-size:.9rem;color:#2e7d32}
+        .saved-data-info i{margin-left:5px}
+        @media(max-width:992px){.footer-content{flex-wrap:wrap}.footer-section{flex-basis:45%}}
+        @media(max-width:768px){.header-content{flex-direction:column;text-align:center;gap:15px}.form-row{flex-direction:column;gap:0}.hero h2{font-size:2rem}.tracking-header{flex-direction:column;align-items:flex-start;gap:10px}.footer-content{flex-direction:column}}
     </style>
 </head>
 <body>
-    
-    <div class="modal" id="techLoginModal" style="display: flex;">
-        <div class="modal-content">
-            <h3>Technician Login</h3>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginPhone">Phone Number</label>
-                    <input type="tel" id="loginPhone" required placeholder="+9665XXXXXXXX" pattern="\+9665[0-9]{8}">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit" class="btn-submit"><i class="fas fa-sign-in-alt"></i> Login</button>
-            </form>
-            <p style="margin-top: 15px; font-size: 0.85rem; color: #6c757d;">*Contact Admin if you forgot your password.</p>
+
+<header>
+    <div class="container header-content">
+        <div class="logo"><h1>مركز تقني المحركات</h1></div>
+        <div class="nav-buttons">
+            <button id="authButton"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول / تسجيل جديد</button>
+            <button id="logoutButton" style="display:none;background:var(--danger)"><i class="fas fa-sign-out-alt"></i> خروج</button>
+            <button class="notification-bell" id="notificationBell" title="إشعارات التتبع"><i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge" style="display:none">0</span>
+            </button>
         </div>
     </div>
+</header>
 
-    <div class="technician-dashboard" id="dashboardContent">
-        <header>
-            <div class="header-content">
-                <div class="logo">
-                    <h1>Engine Tech Technician Panel</h1>
-                </div>
-                <div class="nav-buttons">
-                    <button id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                </div>
-            </div>
-        </header>
-
-        <div class="container">
-            <h2 id="welcomeMessage" class="hello-message">Hello, Technician!</h2>
-            <h3>Your Assigned Tasks</h3>
-            
-            <div class="tasks-grid" id="tasksGrid">
-                <div style="text-align: center;">Loading tasks...</div>
-            </div>
-            
-        </div>
+<section class="hero">
+    <div class="hero-content">
+        <h2 id="heroTitle">حجوزات صيانة السيارات</h2>
+        <p id="heroSubtitle">أحجز موعدك بسهولة لصيانة سيارتك في مركز تقني المحركات بصناعية أبها الجديدة</p>
     </div>
+</section>
 
-    <div class="modal" id="updateModal">
-        <div class="modal-content">
-            <h3 id="updateModalTitle">Update Task Progress</h3>
-            <form id="updateForm">
-                <input type="hidden" id="updateTaskId">
+<div class="container">
+    <section class="tracking-section" id="customerTrackingSection">
+        <h2 class="section-title">حجوزاتي قيد العمل</h2>
+        <div id="trackingCardsContainer">
+            <p style="text-align:center;color:#666">لم يتم العثور على حجوزات نشطة.</p>
+        </div>
+    </section>
+
+    <section class="booking-section" id="bookingSection">
+        <h2 class="section-title">أحجز موعدك الآن</h2>
+        <div class="work-hours">
+            <h3><i class="fas fa-clock"></i> أوقات العمل</h3>
+            <p>من يوم <strong>السبت إلى الخميس</strong>، من الساعة <strong>8:00 صباحاً حتى 1:00 ظهراً</strong>، ومن <strong>3:00 مساءً حتى 7:00 مساءً</strong></p>
+        </div>
+
+        <form id="bookingForm">
+            <div id="authMessage" class="work-hours" style="background:var(--warning);color:var(--dark);margin-bottom:20px">
+                يرجى <strong class="auth-switch" data-target="login">تسجيل الدخول</strong> أو <strong class="auth-switch" data-target="register">تسجيل حساب جديد</strong> لإكمال الحجز.
+            </div>
+
+            <div id="savedDataMessage" class="saved-data-info" style="display:none">
+                <i class="fas fa-info-circle"></i> تم تعبئة البيانات الأساسية تلقائياً من الحجوزات السابقة. يمكنك تعديلها إذا لزم الأمر.
+            </div>
+
+            <div class="form-row">
                 <div class="form-group">
-                    <label for="updateProgress">Progress (%)</label>
-                    <input type="number" id="updateProgress" min="0" max="100" required>
+                    <label for="name">الاسم الكامل (ثلاثي على الأقل)</label>
+                    <input type="text" id="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="updateStatus">Status</label>
-                    <select id="updateStatus" required>
-                        <option value="in_progress">In Progress (قيد العمل)</option>
-                        <option value="pending_approval">Pending Approval (بانتظار موافقة العميل)</option>
-                        <option value="paused">Paused (متوقفة مؤقتاً)</option>
-                        <option value="complete">Complete (مكتملة)</option>
+                    <label for="phone">رقم الجوال (المسجل)</label>
+                    <input type="tel" id="phone" required placeholder="05XXXXXXXX" pattern="05[0-9]{8}" disabled>
+                    <small style="color:var(--danger)">سيتم استخدام رقمك المسجل تلقائيًا.</small>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="carType">نوع السيارة</label>
+                <select id="carType" required>
+                    <option value="">اختر نوع السيارة</option>
+                    <option value="sedan">سيدان</option>
+                    <option value="suv">دفع رباعي</option>
+                    <option value="other">أخرى</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="carModel">موديل السيارة</label>
+                    <input type="text" id="carModel" required placeholder="مثال: كامري 2023">
+                </div>
+                <div class="form-group">
+                    <label for="serviceType">نوع الخدمة</label>
+                    <select id="serviceType" required>
+                        <option value="">اختر نوع الخدمة</option>
+                        <option value="oil">زيت وسيفون</option>
+                        <option value="fabric">غيار أقمشة</option>
+                        <option value="gearbox">غيار زيت الجيربوكس</option>
+                        <option value="computer">فحص كمبيوتر</option>
+                        <option value="electricity">فحص كهرباء</option>
+                        <option value="engine_check">فحص محرك</option>
+                        <option value="sounds">فحص أصوات</option>
+                        <option value="hydraulic">أنظمة هيدروليك</option>
+                        <option value="engine_filter">تصفية محرك</option>
+                        <option value="other_repair">أخرى / إصلاح عام</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="technicianNotes">Notes (Visible to Customer)</label>
-                    <textarea id="technicianNotes" rows="3" placeholder="Provide a brief update for the customer..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>معلومات لوحة السيارة</label>
+                <div style="display:flex;gap:15px;margin-bottom:10px;align-items:center">
+                    <label style="display:flex;align-items:center;gap:5px">
+                        <input type="radio" name="plateType" value="saudi" id="plateTypeSaudi" checked style="width:auto"> لوحة سعودية
+                    </label>
+                    <label style="display:flex;align-items:center;gap:5px">
+                        <input type="radio" name="plateType" value="foreign" id="plateTypeForeign" style="width:auto"> لوحة أجنبية
+                    </label>
                 </div>
-                <button type="submit" class="btn-submit"><i class="fas fa-upload"></i> Update Task</button>
-                <button type="button" class="btn-cancel" onclick="document.getElementById('updateModal').style.display='none'">Cancel</button>
-            </form>
+
+                <div id="saudiPlateInputs">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>الحروف (3 أحرف عربية)</label>
+                            <div style="display:flex;gap:5px;justify-content:space-between">
+                                <input type="text" id="plateLetter1" class="plate-letter-input" maxlength="1" required placeholder="أ" style="text-align: center; flex: 1;">
+                                <input type="text" id="plateLetter2" class="plate-letter-input" maxlength="1" required placeholder="ب" style="text-align: center; flex: 1;">
+                                <input type="text" id="plateLetter3" class="plate-letter-input" maxlength="1" required placeholder="ج" style="text-align: center; flex: 1;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="plateNumbers">الأرقام (1 - 4 أرقام)</label>
+                            <input type="text" id="plateNumbers" pattern="[0-9]{1,4}" required placeholder="مثال: 1234">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="foreignPlateInput" style="display:none">
+                    <label for="foreignPlate">ادخل اللوحة الأجنبية بالصيغة الكاملة</label>
+                    <input type="text" id="foreignPlate" required disabled placeholder="مثال: Dubai 70000">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="date">تاريخ الموعد</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">وقت الموعد</label>
+                    <select id="time" required disabled>
+                        <option value="">اختر الوقت</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">ملاحظات إضافية (اختياري)</label>
+                <textarea id="notes" rows="3" placeholder="اذكر هنا أي ملاحظات أو تفاصيل إضافية حول المشكلة."></textarea>
+            </div>
+
+            <button type="submit" class="btn" id="submitBookingBtn" disabled><i class="fas fa-calendar-check"></i> تأكيد الحجز المبدئي</button>
+        </form>
+
+        <div id="bookingMessage" class="work-hours" style="display:none;margin-top:20px"></div>
+    </section>
+
+    <section class="services-section">
+        <h2 class="section-title">خدمات المركز</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🛠️</div>
+                <div class="service-content">
+                    <h3>خدمات الميكانيكا العامة</h3>
+                    <p>صيانة شاملة للمحركات وأنظمة الفرامل والتعليق وغيرها من أعمال الميكانيكا العامة.</p>
+                    <div class="warranty-badge" style="background:var(--primary); color:#fff;">
+                        <i class="fas fa-medal"></i> ضمان الملحقات والتركيب
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🎨</div>
+                <div class="service-content">
+                    <h3>السمكرة والدهان</h3>
+                    <p>إصلاح حوادث السيارات وإعادة دهانها بأفضل جودة وتناسق للألوان.</p>
+                    <div class="warranty-badge" style="background:var(--primary); color:#fff;">
+                        <i class="fas fa-medal"></i> ضمان دهان 10 سنوات
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔨</div>
+                <div class="service-content">
+                    <h3>تعديل على البارد (PDR)</h3>
+                    <p>إصلاح الانبعاجات الصغيرة دون الحاجة للسمكرة أو الدهان، مع المحافظة على طلاء المصنع.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> ضمان الجودة
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">⚡</div>
+                <div class="service-content">
+                    <h3>فحص الكهرباء والهايبرد</h3>
+                    <p>فحص شامل للبطارية والنظام الكهربائي للسيارة، بالإضافة إلى <strong>تشخيص وصيانة أنظمة سيارات الهايبرد</strong>.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> خدمة متخصصة
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">💻</div>
+                <div class="service-content">
+                    <h3>فحص الكمبيوتر</h3>
+                    <p>تشخيص أعطال السيارات باستخدام أحدث أجهزة الفحص الإلكتروني.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> دقة التشخيص
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔬</div>
+                <div class="service-content">
+                    <h3>فحص المحرك</h3>
+                    <p>فحص دقيق وشامل لأداء المحرك وكفائته لتحديد أي مشكلات داخلية أو ميكانيكية.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> تقرير مفصل
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🔊</div>
+                <div class="service-content">
+                    <h3>فحص الأصوات</h3>
+                    <p>فحص وتشخيص الأصوات غير الطبيعية أسفل السيارة وإصلاحها.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> إصلاح المشاكل الخفية
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">⚙️</div>
+                <div class="service-content">
+                    <h3>أنظمة الهيدروليك</h3>
+                    <p>مراجعة برمجة ووزن وإصلاحات أنظمة الهيدروليك باحترافية عالية.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> خبراء الهيدروليك
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔥</div>
+                <div class="service-content">
+                    <h3>تصفية المحرك</h3>
+                    <p>تنظيف وتغيير القطع الاستهلاكية للمحرك لزيادة الكفاءة وتقليل استهلاك الوقود.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> كفاءة أعلى
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<footer>
+    <div class="container footer-content">
+        <div class="footer-section">
+            <h3>مركز تقني المحركات</h3>
+            <p>مركز متخصص في صيانة السيارات بأحدث التقنيات وقطع الغيار الأصلية. نحن ملتزمون بالجودة والشفافية.</p>
+        </div>
+        <div class="footer-section">
+            <h3>روابط سريعة</h3>
+            <a href="#bookingSection">حجز موعد</a>
+            <a href="#customerTrackingSection">تتبع الحجز</a>
+            <a href=".services-section">خدماتنا</a>
+            <a href="https://www.enginetechnician.net/" target="_blank">الموقع الإلكتروني</a>
+        </div>
+        <div class="footer-section">
+            <h3>تواصل معنا</h3>
+            <div class="contact-info-footer">
+                <a href="https://maps.app.goo.gl/fXY9BfeKDcjuwzNHA" target="_blank"><i class="fas fa-map-marker-alt"></i> صناعية أبها الجديدة، شارع 3</a>
+                <p><i class="fas fa-phone"></i> <a href="tel:+966530694999">+966 530694999</a></p>
+                <p><i class="fab fa-whatsapp" style="color:#25D366;"></i> +966 530694999</p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:mailus@enginetechnician.net">mailus@enginetechnician.net</a></p>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3>ساعات العمل</h3>
+            <ul class="work-hours-footer">
+                <li>السبت - الخميس: 8:00 ص - 1:00 م</li>
+                <li>السبت - الخميس: 3:00 م - 7:00 م</li>
+                <li>الجمعة: إجازة</li>
+            </ul>
         </div>
     </div>
+    <div class="footer-bottom">
+        <p>&copy; 2006 مركز تقني المحركات. جميع الحقوق محفوظة.</p>
+    </div>
+</footer>
 
-    <div class="toast" id="toast"></div>
+<div id="customerAuthModal" class="modal">
+    <div class="modal-content">
+        <h3 id="authTitle">تسجيل الدخول</h3>
 
+        <form id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <label for="loginPhone">رقم الجوال</label>
+                <input type="tel" id="loginPhone" required placeholder="05XXXXXXXX" pattern="05[0-9]{8}">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">كلمة السر</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn">دخول</button>
+            <p class="auth-switch" data-target="register">ليس لديك حساب؟ <strong>سجل الآن</strong></p>
+            <p class="auth-switch" data-target="recover">هل نسيت كلمة السر؟</p>
+        </form>
+
+        <form id="registerForm" class="auth-form">
+            <div class="form-group">
+                <label for="registerName">الاسم الكامل</label>
+                <input type="text" id="registerName" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPhone">رقم الجوال</label>
+                <input type="tel" id="registerPhone" required placeholder="05XXXXXXXX" pattern="05[0-9]{8}">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">كلمة السر</label>
+                <input type="password" id="registerPassword" required>
+            </div>
+            <div class="form-group">
+                <label for="securityQuestion">سؤال الأمان (لاستعادة كلمة السر)</label>
+                <select id="securityQuestion" required>
+                    <option value="">اختر سؤال الأمان</option>
+                    <option value="birth_city">مدينة المولد</option>
+                    <option value="first_pet">اسم أول حيوان أليف</option>
+                    <option value="mother_name">الاسم الأوسط لوالدتك</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="securityAnswer">الإجابة</label>
+                <input type="text" id="securityAnswer" required placeholder="أدخل إجابتك">
+            </div>
+            <button type="submit" class="btn btn-secondary">تسجيل حساب</button>
+            <p class="auth-switch" data-target="login">لديك حساب بالفعل؟ <strong>سجل الدخول</strong></p>
+        </form>
+
+        <form id="recoverForm" class="auth-form">
+            <div class="form-group">
+                <label for="recoverPhone">رقم الجوال المسجل</label>
+                <input type="tel" id="recoverPhone" required placeholder="05XXXXXXXX" pattern="05[0-9]{8}">
+            </div>
+            <div class="form-group" id="recoverQuestionGroup" style="display:none">
+                <label id="recoverQuestionLabel" for="recoverAnswer">الإجابة على سؤال الأمان:</label>
+                <input type="text" id="recoverAnswer" required disabled>
+            </div>
+            <div class="form-group" id="newPasswordGroup" style="display:none">
+                <label for="newPassword">كلمة السر الجديدة</label>
+                <input type="password" id="newPassword" required disabled>
+            </div>
+            <button type="button" class="btn" id="checkSecurityBtn">التحقق من رقم الجوال</button>
+            <button type="submit" class="btn btn-danger" id="resetPasswordBtn" style="display:none">تغيير كلمة السر</button>
+            <p class="auth-switch" data-target="login">تذكرت كلمة السر؟ <strong>سجل الدخول</strong></p>
+        </form>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script>
-    // 1. Firebase Initialization
-    // 🛑 يجب استبدال هذا التكوين بمعلومات مشروعك الحقيقية
+    // ========= عناصر الواجهة =========
+    const customerAuthModal = document.getElementById('customerAuthModal');
+    const authButton = document.getElementById('authButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const authTitle = document.getElementById('authTitle');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const recoverForm = document.getElementById('recoverForm');
+    const bookingForm = document.getElementById('bookingForm');
+    const dateInput = document.getElementById('date');
+    const timeSelect = document.getElementById('time');
+    const submitBookingBtn = document.getElementById('submitBookingBtn');
+    const authMessage = document.getElementById('authMessage');
+    const phoneInput = document.getElementById('phone');
+    const savedDataMessage = document.getElementById('savedDataMessage');
+    // عناصر اللوحة الجديدة
+    const plateLetter1 = document.getElementById('plateLetter1');
+    const plateLetter2 = document.getElementById('plateLetter2');
+    const plateLetter3 = document.getElementById('plateLetter3');
+    const plateNumbers = document.getElementById('plateNumbers');
+    const foreignPlate = document.getElementById('foreignPlate');
+    const saudiPlateInputs = document.getElementById('saudiPlateInputs');
+    const foreignPlateInput = document.getElementById('foreignPlateInput');
+    const recoverQuestionGroup = document.getElementById('recoverQuestionGroup');
+    const newPasswordGroup = document.getElementById('newPasswordGroup');
+    const checkSecurityBtn = document.getElementById('checkSecurityBtn');
+    const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+    const recoverPhoneInput = document.getElementById('recoverPhone');
+    const customerTrackingSection = document.getElementById('customerTrackingSection');
+    const trackingCardsContainer = document.getElementById('trackingCardsContainer');
+
+    let userIsAuthenticated = false;
+    let currentUserId = null;
+    let currentUserName = null;
+
+    // ========= Firebase Config (نفس الإعدادات) =========
     const firebaseConfig = {
         apiKey: "AIzaSyAVweTlVbnd92xtTQcZwWo5sH7hiIDPlds",
         authDomain: "car-service-booking-edfda.firebaseapp.com",
@@ -355,251 +524,882 @@
         appId: "1:910485632535:web:b16fc6f6ee94bb64da0e52",
         measurementId: "G-XHZVFM91HP"
     };
-
-    if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.firestore();
     const auth = firebase.auth();
+    const db = firebase.firestore();
     const bookingsCollection = db.collection('bookings');
+    const closedDatesCollection = db.collection('closedDates');
+    const usersCollection = db.collection('users');
     const techniciansCollection = db.collection('technicians');
+    const activityLogCollection = db.collection('activityLog');
 
-    // 2. Global Variables
-    let currentTechnicianId = null;
-    let currentTechnicianName = null;
-    
-    // 3. DOM Elements
-    const loginForm = document.getElementById('loginForm');
-    const loginPhoneInput = document.getElementById('loginPhone');
-    const loginPasswordInput = document.getElementById('loginPassword');
-    const techLoginModal = document.getElementById('techLoginModal');
-    const dashboardContent = document.getElementById('dashboardContent');
-    const logoutButton = document.getElementById('logoutButton');
-    const welcomeMessage = document.getElementById('welcomeMessage');
-    const tasksGrid = document.getElementById('tasksGrid');
-    
-    const updateModal = document.getElementById('updateModal');
-    const updateForm = document.getElementById('updateForm');
-    const updateTaskIdInput = document.getElementById('updateTaskId');
-    const updateProgressInput = document.getElementById('updateProgress');
-    const updateStatusSelect = document.getElementById('updateStatus');
-    const technicianNotesInput = document.getElementById('technicianNotes');
+    // ========= دالات مساعدة (Utility Functions) =========
+    // Function to convert phone to proxy email for Firebase Auth
+    function phoneToProxyEmail(phone) {
+        // يزيل جميع الأحرف غير الرقمية ويضيف نطاقًا فريدًا للعملاء
+        const sanitizedPhone = phone.replace(/[^\d+]/g, ''); 
+        // نطاق clientdomain.com لتمييز العملاء عن الفنيين/المديرين
+        return `${sanitizedPhone}@clientdomain.com`; 
+    }
 
-
-    // 4. Utility Functions
-    function showToast(message, type = 'info') {
+    // ========= وظائف الإشعارات (Toast) =========
+    function showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.className = `toast ${type}`;
         toast.style.display = 'block';
-        setTimeout(() => {
-            toast.style.display = 'none';
-        }, 4000);
-    }
-    
-     // Function to convert phone to proxy email for Firebase Auth
-    function phoneToProxyEmail(phone) {
-        // Removes all non-numeric characters and adds a domain
-        const sanitizedPhone = phone.replace(/[^\d+]/g, '');
-        return `${sanitizedPhone}@admintech.com`; // Unique domain for admin/tech
-    }
-    
-    // Function to show/hide Dashboard
-    function showDashboard() {
-        techLoginModal.style.display = 'none';
-        dashboardContent.style.display = 'block';
-        welcomeMessage.textContent = `Hello, ${currentTechnicianName} (Tech ID: ${currentTechnicianId})!`;
-        fetchAssignedTasks();
+        setTimeout(() => toast.style.display = 'none', 5000);
     }
 
-    function hideDashboard() {
-        techLoginModal.style.display = 'flex';
-        dashboardContent.style.display = 'none';
+    // ========= التبديل بين نماذج المصادقة =========
+    function switchAuthForm(target) {
+        loginForm.classList.remove('active');
+        registerForm.classList.remove('active');
+        recoverForm.classList.remove('active');
+
+        // إعادة ضبط نموذج استعادة كلمة المرور
+        document.getElementById('recoverAnswer').value = '';
+        document.getElementById('newPassword').value = '';
+        recoverQuestionGroup.style.display = 'none';
+        newPasswordGroup.style.display = 'none';
+        resetPasswordBtn.style.display = 'none';
+        checkSecurityBtn.style.display = 'block';
+        document.getElementById('recoverAnswer').disabled = true;
+        document.getElementById('newPassword').disabled = true;
+
+
+        if (target === 'login') {
+            authTitle.textContent = 'تسجيل الدخول';
+            loginForm.classList.add('active');
+        } else if (target === 'register') {
+            authTitle.textContent = 'تسجيل حساب جديد';
+            registerForm.classList.add('active');
+        } else if (target === 'recover') {
+            authTitle.textContent = 'استعادة كلمة السر';
+            recoverForm.classList.add('active');
+        }
     }
 
-    // 5. Authentication Logic (Firebase Auth Proxy)
-    
-    // 🛑 وظيفة الدخول (Technician Login) - تستخدم البريد الوهمي مع Firebase Auth
-    loginForm.addEventListener('submit', async function(e) {
+    // Event listeners for auth switches
+    document.querySelectorAll('.auth-switch').forEach(switcher => {
+        switcher.addEventListener('click', (e) => {
+            const target = e.target.getAttribute('data-target') || e.target.parentNode.getAttribute('data-target');
+            if (target) {
+                switchAuthForm(target);
+            }
+        });
+    });
+
+    // Open/Close Modal
+    authButton.addEventListener('click', () => {
+        customerAuthModal.style.display = 'flex';
+        switchAuthForm('login'); // Default to login
+    });
+
+    customerAuthModal.addEventListener('click', (e) => {
+        if (e.target === customerAuthModal) {
+            customerAuthModal.style.display = 'none';
+        }
+    });
+
+    // Logout
+    logoutButton.addEventListener('click', async () => {
+        try {
+            await auth.signOut();
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('currentUserId');
+            localStorage.removeItem('currentUserName');
+            localStorage.removeItem('userPhone'); // إزالة رقم الجوال من التخزين المحلي
+            initAuthenticationState(false, null, null, null);
+            showToast('تم تسجيل الخروج بنجاح.', 'info');
+        } catch (error) {
+            showToast('خطأ في تسجيل الخروج: ' + error.message, 'error');
+        }
+    });
+
+    // ========= التسجيل والدخول (باستخدام Firebase Auth) =========
+
+    // التسجيل
+    registerForm.addEventListener('submit', async e => {
         e.preventDefault();
+        const name = document.getElementById('registerName').value;
+        const phone = document.getElementById('registerPhone').value;
+        const password = document.getElementById('registerPassword').value;
+        const question = document.getElementById('securityQuestion').value;
+        const answer = document.getElementById('securityAnswer').value;
         
-        const phone = loginPhoneInput.value;
-        const password = loginPasswordInput.value;
-        
-        if (!phone || !password) {
-            showToast('Please enter phone and password.', 'error');
+        // 1. تحقق من عدم وجود رقم الجوال مسبقاً في Firestore
+        const userSnap = await usersCollection.where('phone', '==', phone).get();
+        if (!userSnap.empty) {
+            showToast('رقم الجوال مسجل مسبقاً. يرجى تسجيل الدخول.', 'warning');
             return;
         }
 
         const proxyEmail = phoneToProxyEmail(phone);
-        
+
         try {
-            showToast('Logging in...', 'info');
+            // 2. إنشاء مستخدم في Firebase Authentication باستخدام الإيميل الوكيل وكلمة السر
+            const userCredential = await auth.createUserWithEmailAndPassword(proxyEmail, password);
+            const user = userCredential.user;
+
+            // 3. تخزين باقي البيانات في Firestore
+            await usersCollection.doc(user.uid).set({
+                name,
+                phone,
+                security_question: question,
+                security_answer: answer.toLowerCase().trim(), // تخزين الإجابة كنص عادي للمطابقة لاحقاً
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
             
-            // 🛑 استخدام signInWithEmailAndPassword مع البريد الوهمي
+            // 4. تسجيل الخروج من Firebase Auth مؤقتاً لعدم تداخل الحالات
+            await auth.signOut();
+            
+            showToast('تم التسجيل بنجاح. يمكنك الآن تسجيل الدخول.', 'success');
+            switchAuthForm('login');
+
+        } catch (error) {
+            // معالجة الأخطاء
+            let errorMessage = 'خطأ في التسجيل';
+            if (error.code === 'auth/email-already-in-use') {
+                errorMessage = 'رقم الجوال مسجل مسبقاً.'; // لن يحدث نظرياً بسبب التحقق الأول
+            } else if (error.code === 'auth/weak-password') {
+                errorMessage = 'كلمة السر ضعيفة (يجب أن تكون 6 أحرف على الأقل).';
+            } else {
+                 errorMessage = 'خطأ في التسجيل: ' + error.message;
+            }
+            showToast(errorMessage, 'error');
+        }
+    });
+
+    // الدخول
+    loginForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const phone = document.getElementById('loginPhone').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        const proxyEmail = phoneToProxyEmail(phone);
+
+        try {
+            // 1. تسجيل الدخول باستخدام Firebase Auth
             const userCredential = await auth.signInWithEmailAndPassword(proxyEmail, password);
             const user = userCredential.user;
-            
-            // تحقق إضافي: التأكد من أن المستخدم موجود في كولكشن 'technicians' ولديه role 'technician'
-            const doc = await techniciansCollection.doc(user.uid).get();
-            
-            if (doc.exists && doc.data().role === 'technician') {
+
+            // 2. جلب بيانات المستخدم من Firestore
+            const doc = await usersCollection.doc(user.uid).get();
+
+            if (doc.exists) {
                 const userData = doc.data();
-                currentTechnicianId = user.uid;
-                currentTechnicianName = userData.name;
-                localStorage.setItem('techLoggedIn', 'true');
-                localStorage.setItem('currentTechnicianId', currentTechnicianId);
-                localStorage.setItem('currentTechnicianName', currentTechnicianName);
                 
-                showToast(`Welcome back, ${currentTechnicianName}.`, 'success');
-                showDashboard();
+                // 3. حفظ بيانات الجلسة والتحديث
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('currentUserId', user.uid);
+                localStorage.setItem('currentUserName', userData.name);
+                localStorage.setItem('userPhone', userData.phone);
+                
+                customerAuthModal.style.display = 'none';
+                initAuthenticationState(true, user.uid, userData.name, userData.phone);
+                showToast(`أهلاً بك يا ${userData.name}! تم تسجيل الدخول بنجاح.`, 'success');
             } else {
-                // ليس لديه دور 'technician' أو غير موجود في Firestore
+                // حالة نادرة (المستخدم في Auth لكن ليس في Firestore)
                 await auth.signOut();
-                showToast('Access denied: User is not a technician.', 'error');
+                showToast('خطأ: بيانات الحساب مفقودة. يرجى إعادة التسجيل.', 'error');
             }
 
         } catch (error) {
-            console.error(error);
-            showToast('Login failed: Invalid Phone or Password.', 'error');
+            let errorMessage = 'خطأ في تسجيل الدخول';
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-email') {
+                errorMessage = 'رقم الجوال أو كلمة السر غير صحيحة.';
+            } else {
+                errorMessage = 'خطأ في تسجيل الدخول: ' + error.message;
+            }
+            showToast(errorMessage, 'error');
+        }
+    });
+    
+    // استعادة كلمة السر: التحقق من سؤال الأمان
+    checkSecurityBtn.addEventListener('click', async () => {
+        const phone = recoverPhoneInput.value;
+        if (!phone || phone.length < 9) {
+            showToast('يرجى إدخال رقم جوال صحيح.', 'warning');
+            return;
+        }
+
+        try {
+            const userSnap = await usersCollection.where('phone', '==', phone).get();
+            if (userSnap.empty) {
+                showToast('رقم الجوال غير مسجل.', 'error');
+                return;
+            }
+
+            const userData = userSnap.docs[0].data();
+            const questionText = userData.security_question;
+            const questionMap = {
+                'birth_city': 'ما هي مدينة المولد؟',
+                'first_pet': 'ما هو اسم أول حيوان أليف؟',
+                'mother_name': 'ما هو الاسم الأوسط لوالدتك؟'
+            };
+
+            // تخزين بيانات المستخدم مؤقتاً في النموذج
+            recoverForm.dataset.userId = userSnap.docs[0].id;
+            recoverForm.dataset.securityAnswer = userData.security_answer.toLowerCase().trim();
+
+            document.getElementById('recoverQuestionLabel').textContent = questionMap[questionText] || 'ما هي إجابة سؤال الأمان؟';
+            document.getElementById('recoverAnswer').value = '';
+            document.getElementById('recoverAnswer').disabled = false;
+            recoverQuestionGroup.style.display = 'block';
+            checkSecurityBtn.style.display = 'none';
+            resetPasswordBtn.style.display = 'block';
+
+            showToast('تم العثور على سؤال الأمان، يرجى الإجابة وتعيين كلمة سر جديدة.', 'info');
+
+        } catch (error) {
+            showToast('خطأ في التحقق من الحساب: ' + error.message, 'error');
         }
     });
 
-    // 🛑 وظيفة تسجيل الخروج
-    logoutButton.addEventListener('click', () => {
-        auth.signOut().then(() => {
-            localStorage.removeItem('techLoggedIn');
-            localStorage.removeItem('currentTechnicianId');
-            localStorage.removeItem('currentTechnicianName');
-            currentTechnicianId = null;
-            currentTechnicianName = null;
-            showToast('Logged out successfully.', 'info');
-            hideDashboard();
-        }).catch(error => {
-            showToast('Logout error: ' + error.message, 'error');
-            console.error(error);
+    // استعادة كلمة السر: تعيين كلمة سر جديدة
+    recoverForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const userId = recoverForm.dataset.userId;
+        const storedAnswer = recoverForm.dataset.securityAnswer;
+        const providedAnswer = document.getElementById('recoverAnswer').value.toLowerCase().trim();
+        const newPassword = document.getElementById('newPassword').value;
+
+        if (providedAnswer !== storedAnswer) {
+            showToast('إجابة سؤال الأمان غير صحيحة.', 'error');
+            return;
+        }
+        
+        // إذا كانت الإجابة صحيحة، أظهر حقل كلمة السر الجديدة
+        if (newPasswordGroup.style.display === 'none') {
+             newPasswordGroup.style.display = 'block';
+             document.getElementById('newPassword').disabled = false;
+             showToast('الإجابة صحيحة! أدخل كلمة السر الجديدة الآن.', 'success');
+             return;
+        }
+
+        if (newPassword.length < 6) {
+             showToast('كلمة السر يجب أن تكون 6 أحرف على الأقل.', 'warning');
+             return;
+        }
+
+        try {
+            // 1. تغيير كلمة السر في Firebase Auth
+            const phone = recoverPhoneInput.value;
+            const proxyEmail = phoneToProxyEmail(phone);
+            
+            // أرسل إيميل إعادة التعيين باستخدام الإيميل الوكيل
+            await auth.sendPasswordResetEmail(proxyEmail);
+
+            showToast('تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك الوكيل (رقمك). يرجى التواصل مع الدعم الفني.', 'info');
+            switchAuthForm('login');
+            
+        } catch (error) {
+             let errorMessage = 'خطأ في إعادة تعيين كلمة السر: ' + error.message;
+             if (error.code === 'auth/user-not-found') {
+                errorMessage = 'رقم الجوال غير مسجل.';
+            } 
+            showToast(errorMessage, 'error');
+        }
+    });
+
+    // ========= منطق الحجوزات (الأوقات، الإرسال، التتبع) =========
+    const WORK_HOURS = {
+        morningStart: 8,
+        morningEnd: 13,
+        eveningStart: 15,
+        eveningEnd: 19
+    };
+    let closedDatesCache = [];
+    let closedTimesCache = [];
+
+    function initializeClosedDatesListener() {
+        closedDatesCollection.onSnapshot(snapshot => {
+            closedDatesCache = snapshot.docs.map(doc => doc.data().date);
+            if (dateInput.value) dateInput.dispatchEvent(new Event('change'));
+        }, error => console.error("Error fetching closed dates: ", error));
+    }
+
+    dateInput.addEventListener('change', async () => {
+        const selectedDate = dateInput.value;
+        timeSelect.innerHTML = '<option value="">جارٍ التحقق من الأوقات...</option>';
+        timeSelect.disabled = true;
+        submitBookingBtn.disabled = true;
+
+        if (!selectedDate) return;
+
+        // التحقق من التاريخ المغلق
+        if (closedDatesCache.includes(selectedDate)) {
+            timeSelect.innerHTML = '<option value="">التاريخ مغلق بالكامل.</option>';
+            showToast('هذا التاريخ مغلق للصيانة أو عطلة رسمية.', 'warning');
+            return;
+        }
+
+        try {
+            // جلب الحجوزات القائمة لليوم المحدد
+            const snapshot = await bookingsCollection.where('date', '==', selectedDate).get();
+            const bookedTimes = snapshot.docs.map(doc => doc.data().time);
+
+            // حساب عدد الحجوزات لكل وقت
+            const timeCounts = bookedTimes.reduce((acc, time) => {
+                acc[time] = (acc[time] || 0) + 1;
+                return acc;
+            }, {});
+
+            // تحديد الأوقات الممتلئة (3 حجوزات كحد أقصى)
+            const fullyBookedTimes = Object.keys(timeCounts).filter(time => timeCounts[time] >= 3);
+            closedTimesCache = fullyBookedTimes;
+
+            const availableTimes = [];
+            const dayOfWeek = new Date(selectedDate).getDay();
+
+            // التحقق من يوم الجمعة (5)
+            if (dayOfWeek === 5) { // الجمعة هو اليوم الخامس (Saturday=0, Friday=5)
+                timeSelect.innerHTML = '<option value="">لا توجد أوقات متاحة في هذا اليوم.</option>';
+                return;
+            }
+
+            const workPeriods = [
+                { start: WORK_HOURS.morningStart, end: WORK_HOURS.morningEnd }, // 8 إلى 12
+                { start: WORK_HOURS.eveningStart, end: WORK_HOURS.eveningEnd }  // 3 إلى 6
+            ];
+
+            // توليد الأوقات المتاحة
+            workPeriods.forEach(period => {
+                for (let hour = period.start; hour < period.end; hour++) {
+                    // أوقات الساعة بالتحديد (مثل 8:00)
+                    let timeValue = `${hour.toString().padStart(2, '0')}:00`;
+                    if (!fullyBookedTimes.includes(timeValue)) {
+                        availableTimes.push({ value: timeValue, text: timeValue });
+                    }
+                }
+            });
+
+            // تحديث قائمة الأوقات
+            timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
+            if (availableTimes.length > 0) {
+                availableTimes.sort((a, b) => a.value.localeCompare(b.value));
+                availableTimes.forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time.value;
+                    option.textContent = time.text;
+                    timeSelect.appendChild(option);
+                });
+                timeSelect.disabled = false;
+            } else {
+                timeSelect.innerHTML = '<option value="">جميع المواعيد محجوزة لهذا اليوم.</option>';
+            }
+
+        } catch (error) {
+            console.error("Error fetching booked times: ", error);
+            timeSelect.innerHTML = '<option value="">حدث خطأ في تحميل الأوقات.</option>';
+        }
+    });
+    
+    // تفعيل زر الحجز عند اختيار الوقت
+    timeSelect.addEventListener('change', () => {
+        submitBookingBtn.disabled = !userIsAuthenticated || !timeSelect.value;
+    });
+
+    // تغيير نمط إدخال لوحة السيارة
+    document.querySelectorAll('input[name="plateType"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'saudi') {
+                saudiPlateInputs.style.display = 'block';
+                foreignPlateInput.style.display = 'none';
+                plateLetter1.required = true;
+                plateLetter2.required = true;
+                plateLetter3.required = true;
+                plateNumbers.required = true;
+                foreignPlate.required = false;
+                foreignPlate.disabled = true;
+            } else {
+                saudiPlateInputs.style.display = 'none';
+                foreignPlateInput.style.display = 'block';
+                plateLetter1.required = false;
+                plateLetter2.required = false;
+                plateLetter3.required = false;
+                plateNumbers.required = false;
+                foreignPlate.required = true;
+                foreignPlate.disabled = false;
+            }
+        });
+    });
+    
+    // منطق جديد للحروف: تقييد بحرف عربي واحد والنقل التلقائي
+    [plateLetter1, plateLetter2, plateLetter3].forEach((input, index, array) => {
+        input.addEventListener('input', (e) => {
+            // Force Arabic input (or empty) and convert to uppercase
+            const arabicRegex = /[\u0600-\u06FF]/;
+            let value = e.target.value.toUpperCase().trim().slice(0, 1);
+            if (value && !arabicRegex.test(value)) {
+                value = ''; // Clear if not Arabic
+            }
+            e.target.value = value;
+            
+            // Auto-focus to the next input
+            if (value && index < array.length - 1) {
+                array[index + 1].focus();
+            }
+        });
+        
+        input.addEventListener('keydown', (e) => {
+            // Auto-focus to the previous input on backspace if current is empty
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                array[index - 1].focus();
+            }
         });
     });
 
+    // إرسال الحجز
+    bookingForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        submitBookingBtn.disabled = true;
+        
+        if (!userIsAuthenticated) {
+            showToast('يرجى تسجيل الدخول قبل تأكيد الحجز.', 'warning');
+            submitBookingBtn.disabled = false;
+            return;
+        }
 
-    // 6. Manage Tasks (Existing Logic)
-    // ...
-    function openUpdateModal(taskId, progress, status) {
-        // ... (Existing logic remains the same)
-    }
+        let plateData;
+        const plateType = document.querySelector('input[name="plateType"]:checked').value;
 
-    updateForm.addEventListener('submit', async function(e) {
-        // ... (Existing logic remains the same)
-    });
-    
-    // Close modal when clicking outside
-    updateModal.addEventListener('click', function(e) {
-        if (e.target === updateModal) {
-            updateModal.style.display = 'none';
+        if (plateType === 'saudi') {
+            const letter1 = plateLetter1.value.toUpperCase().trim();
+            const letter2 = plateLetter2.value.toUpperCase().trim();
+            const letter3 = plateLetter3.value.toUpperCase().trim();
+            const numbers = plateNumbers.value.trim();
+
+            const letters = `${letter1}${letter2}${letter3}`;
+            const formattedLetters = `${letter1} ${letter2} ${letter3}`; 
+
+            // التحقق من تنسيق اللوحة السعودية (3 أحرف عربية فقط و 1-4 أرقام)
+            const saudiPlateRegex = /^[ء-ي]{3}$/;
+            if (!saudiPlateRegex.test(letters) || numbers.length < 1 || numbers.length > 4) {
+                showToast('تنسيق لوحة السيارة السعودية غير صحيح. يرجى إدخال 3 أحرف عربية و 1-4 أرقام.', 'error');
+                submitBookingBtn.disabled = false;
+                return;
+            }
+            
+            plateData = {
+                plate_type: 'Saudi',
+                car_plate_data: `${formattedLetters} - ${numbers}`
+            };
+        } else {
+            const foreignPlateValue = foreignPlate.value.trim();
+            if (foreignPlateValue === "") {
+                showToast('يرجى إدخال صيغة اللوحة الأجنبية.', 'error');
+                submitBookingBtn.disabled = false;
+                return;
+            }
+            plateData = {
+                plate_type: 'Foreign',
+                car_plate_data: foreignPlateValue
+            };
+        }
+
+        const bookingData = {
+            customer_id: currentUserId,
+            customer_name: currentUserName,
+            customer_phone: phoneInput.value,
+            car_type: document.getElementById('carType').value,
+            car_model: document.getElementById('carModel').value,
+            service_type: document.getElementById('serviceType').value,
+            date: dateInput.value,
+            time: timeSelect.value,
+            notes: document.getElementById('notes').value,
+            ...plateData,
+            status: 'Received', // تم تغيير الحالة الأولية إلى Received بعد التحقق من تسجيل الدخول
+            technician_id: null,
+            technician_name: null,
+            progress_percentage: 0,
+            estimated_completion_time: null,
+            is_alert_pending: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+            await bookingsCollection.add(bookingData);
+            showToast('تم إرسال طلب الحجز بنجاح. سنقوم بمراجعة طلبك.', 'success');
+            
+            // إعادة ضبط النموذج
+            bookingForm.reset();
+            timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
+            timeSelect.disabled = true;
+            dateInput.dispatchEvent(new Event('change'));
+            submitBookingBtn.disabled = true; 
+
+            // تحديث قائمة الحجوزات النشطة
+            fetchCustomerBookings(currentUserId);
+
+        } catch (error) {
+            showToast('خطأ في إرسال الحجز: ' + error.message, 'error');
+            submitBookingBtn.disabled = false;
         }
     });
 
 
-    // 7. Fetch Assigned Tasks (Existing Logic)
-    function fetchAssignedTasks() {
-        if (!currentTechnicianId) return;
-        
-        bookingsCollection.where('technicianId', '==', currentTechnicianId)
-            .where('status', 'in', ['received', 'in_progress', 'pending_approval', 'paused'])
-            .orderBy('createdAt', 'desc')
+    // ========= تتبع الحجوزات =========
+    function fetchCustomerBookings(userId) {
+        // عرض قسم التتبع
+        customerTrackingSection.style.display = 'block';
+        trackingCardsContainer.innerHTML = '<p style="text-align:center;color:var(--info);"><i class="fas fa-spinner fa-spin"></i> جارٍ تحميل الحجوزات النشطة...</p>';
+        let hasActiveBookings = false;
+        let pendingAlertCount = 0;
+
+        bookingsCollection
+            .where('customer_id', '==', userId)
+            .where('status', '!=', 'Delivered')
+            .orderBy('createdAt', 'desc') 
             .onSnapshot(snapshot => {
-                tasksGrid.innerHTML = '';
+                trackingCardsContainer.innerHTML = '';
+                hasActiveBookings = false;
+                pendingAlertCount = 0;
+
                 if (snapshot.empty) {
-                    tasksGrid.innerHTML = '<p style="text-align: center; color: #6c757d;">You have no active assigned tasks.</p>';
+                    trackingCardsContainer.innerHTML = '<p style="text-align:center;color:#666">لم يتم العثور على حجوزات نشطة.</p>';
+                    document.getElementById('notificationBadge').style.display = 'none';
                     return;
                 }
 
                 snapshot.forEach(doc => {
+                    hasActiveBookings = true;
                     const booking = doc.data();
                     const id = doc.id;
-                    tasksGrid.appendChild(createTaskCard(id, booking));
+                    booking.id = id;
+
+                    // إظهار تنبيه للعميل في حالة وجود تنبيه pending_approval أو is_alert_pending
+                    if (booking.is_alert_pending || booking.status === 'Pending_Approval') {
+                        pendingAlertCount++;
+                    }
+
+                    const statusMap = {
+                        'Received': { text: 'قيد الاستلام', class: 'received' },
+                        'In_Progress': { text: 'قيد العمل', class: 'in_progress' },
+                        'Paused': { text: 'متوقفة مؤقتاً', class: 'paused' },
+                        'Pending_Approval': { text: 'بانتظار الموافقة', class: 'pending_approval' },
+                        'Complete': { text: 'العمل اكتمل', class: 'complete' }
+                    };
+
+                    const status = booking.status || 'Received';
+                    const statusInfo = statusMap[status] || statusMap['Received'];
+                    const statusText = statusInfo.text;
+                    const statusClass = statusInfo.class;
+                    const progress = booking.progress_percentage || 0;
+                    const technicianName = booking.technician_name || 'لم يتم التعيين بعد';
+                    const ect = booking.estimated_completion_time ? 
+                                `<strong>التسليم المتوقع:</strong> ${booking.estimated_completion_time}` : 
+                                `<strong>التسليم المتوقع:</strong> يحدد لاحقاً`;
+
+                    // زر الموافقة إذا كانت الحالة بانتظار الموافقة
+                    let approvalButton = '';
+                    if (status === 'Pending_Approval') {
+                        approvalButton = `
+                            <div style="margin-top:15px;padding-top:15px;border-top:1px dashed #eee;">
+                                <p style="color:var(--danger);font-weight:bold;margin-bottom:10px;">
+                                    <i class="fas fa-exclamation-triangle"></i> يوجد طلب أعمال إضافية بانتظار موافقتك.
+                                </p>
+                                <p style="color:var(--dark);margin-bottom:10px;">
+                                    <strong>ملاحظات المركز:</strong> ${booking.manager_approval_notes || 'لا توجد ملاحظات.'}
+                                </p>
+                                <button class="btn btn-success" data-action="approve" data-booking-id="${id}" style="margin-left:10px;">
+                                    <i class="fas fa-check-circle"></i> موافقة على الأعمال
+                                </button>
+                                <button class="btn btn-danger" data-action="reject" data-booking-id="${id}">
+                                    <i class="fas fa-times-circle"></i> رفض الأعمال
+                                </button>
+                            </div>
+                        `;
+                    }
+                    
+                    const cardHtml = document.createElement('div');
+                    cardHtml.className = `tracking-card ${statusClass}`;
+                    cardHtml.innerHTML = `
+                        <div class="tracking-header">
+                            <h3><i class="fas fa-car"></i> لوحة ${booking.car_plate_data}</h3>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="tracking-details">
+                            <p><strong>الخدمة:</strong> ${booking.service_type}</p>
+                            <p><strong>الفني:</strong> ${technicianName}</p>
+                            <p>${ect}</p>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width:${progress}%">${progress}% إنجاز</div>
+                            </div>
+                            ${approvalButton}
+                            <h4><i class="fas fa-comment-dots"></i> سجل إشعارات العمل:</h4>
+                            <div class="tracking-log" id="log-${booking.id}">جاري تحميل الإشعارات...</div>
+                        </div>
+                    `;
+                    trackingCardsContainer.appendChild(cardHtml);
+                    fetchActivityLog(booking.id);
                 });
+                
+                // تحديث عداد الإشعارات
+                const notificationBadge = document.getElementById('notificationBadge');
+                if (pendingAlertCount > 0) {
+                    notificationBadge.textContent = pendingAlertCount;
+                    notificationBadge.style.display = 'flex';
+                } else {
+                    notificationBadge.style.display = 'none';
+                }
+
+
+                document.querySelectorAll('[data-action="approve"]').forEach(btn => {
+                    btn.addEventListener('click', handleCustomerApproval);
+                });
+                document.querySelectorAll('[data-action="reject"]').forEach(btn => {
+                    btn.addEventListener('click', handleCustomerRejection);
+                });
+
             }, error => {
-                console.error("Error fetching tasks:", error);
-                tasksGrid.innerHTML = '<p style="text-align: center; color: var(--danger);">Error loading tasks. Please try again.</p>';
+                console.error("Error fetching customer bookings: ", error);
+                trackingCardsContainer.innerHTML = '<p style="text-align:center;color:var(--danger)">حدث خطأ أثناء تحميل الحجوزات.</p>';
             });
     }
 
-    function createTaskCard(id, booking) {
-        // (The function body remains the same)
-        const card = document.createElement('div');
-        card.className = 'task-card';
+    function fetchActivityLog(bookingId) {
+        const logElement = document.getElementById(`log-${bookingId}`);
+        activityLogCollection
+            .where('booking_id', '==', bookingId)
+            .orderBy('timestamp', 'desc')
+            .limit(10)
+            .get()
+            .then(snapshot => {
+                logElement.innerHTML = '';
+                if (snapshot.empty) {
+                    logElement.innerHTML = '<p>لا توجد إشعارات حاليًا من الفني.</p>';
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const log = doc.data();
+                    let typeClass = 'info';
+                    let icon = '💬';
 
-        let statusText;
-        let badgeClass;
-        switch(booking.status) {
-            case 'received': statusText = 'Received'; badgeClass = 'bg-info'; break;
-            case 'in_progress': statusText = 'In Progress'; badgeClass = 'bg-primary'; break;
-            case 'paused': statusText = 'Paused'; badgeClass = 'bg-warning text-dark'; break;
-            case 'pending_approval': statusText = 'Pending Approval'; badgeClass = 'bg-danger'; break;
-            case 'complete': statusText = 'Complete'; badgeClass = 'bg-success'; break;
-            default: statusText = 'Unknown'; badgeClass = 'bg-secondary';
+                    if (log.type === 'Alert') {
+                        typeClass = 'alert';
+                        icon = '⚠️';
+                    } else if (log.type === 'Completion') {
+                        typeClass = 'approval';
+                        icon = '✅';
+                    } else if (log.type === 'Customer_Alert_Sent') {
+                        typeClass = 'alert';
+                        icon = '🔔';
+                    }
+
+                    const timestamp = log.timestamp ? new Date(log.timestamp.toDate()).toLocaleString('ar-SA', {
+                        year: 'numeric', month: 'numeric', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    }) : '';
+
+                    const logItem = document.createElement('div');
+                    logItem.className = `log-item ${typeClass}`;
+                    logItem.innerHTML = `${icon} <strong>${timestamp}</strong>: ${log.message} - (${log.user_role || 'النظام'})`;
+                    logElement.appendChild(logItem);
+                });
+            })
+            .catch(error => console.error("Error fetching activity log: ", error));
+    }
+    
+    // معالجة موافقة العميل على الأعمال الإضافية
+    async function handleCustomerApproval(e) {
+        const bookingId = e.target.dataset.bookingId;
+        e.target.disabled = true;
+
+        try {
+            await bookingsCollection.doc(bookingId).update({
+                status: 'In_Progress', // العودة إلى قيد العمل
+                is_alert_pending: false, // إزالة التنبيه
+                progress_percentage: 1, // بدء العمل رسمياً
+                manager_approval_notes: firebase.firestore.FieldValue.delete() // حذف الملاحظات
+            });
+
+            await activityLogCollection.add({
+                booking_id: bookingId,
+                user_role: 'Customer',
+                type: 'Completion', // نوع النجاح
+                message: `وافق العميل ${currentUserName} على الأعمال الإضافية. تم استئناف العمل.`,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            showToast('تمت الموافقة بنجاح. سيتم استئناف العمل على سيارتك.', 'success');
+            // لا حاجة لـ fetchCustomerBookings، onSnapshot ستقوم بالتحديث تلقائياً
+        } catch (error) {
+            showToast('خطأ في معالجة الموافقة: ' + error.message, 'error');
+            e.target.disabled = false;
         }
-        
-        // ... (remaining card creation logic)
+    }
 
-        card.innerHTML = `
-            <h3 style="direction: rtl;">
-                ${booking.plateNumber}
-                <span class="status-badge ${badgeClass.split(' ')[0]}" style="background-color: var(--${badgeClass.split('-')[1] || 'primary'});">${statusText}</span>
-            </h3>
-            <p><strong>Customer:</strong> ${booking.customerName}</p>
-            <p><strong>Phone:</strong> ${booking.customerPhone}</p>
-            <p><strong>Service:</strong> ${booking.serviceType}</p>
-            <p><strong>Car:</strong> ${booking.carModel} (${booking.carType})</p>
-            <p><strong>Booking:</strong> ${booking.date} at ${booking.time}</p>
-            
-            <div class="progress-bar-container">
-                <div class="progress-bar" style="width: ${booking.progress || 0}%; background: ${booking.progress === 100 ? 'var(--success)' : 'var(--info)'};">
-                    ${booking.progress || 0}% Done
-                </div>
-            </div>
+    // معالجة رفض العميل للأعمال الإضافية
+    async function handleCustomerRejection(e) {
+        const bookingId = e.target.dataset.bookingId;
+        e.target.disabled = true;
 
-            <button class="action-button" onclick="openUpdateModal('${id}', ${booking.progress || 0}, '${booking.status}')">
-                <i class="fas fa-edit"></i> Update Progress
-            </button>
-        `;
+        const confirmation = confirm('هل أنت متأكد من رفض الأعمال الإضافية؟ سيتم إكمال العمل الأصلي فقط أو يمكنك تحديد موعد تسليم.');
+        if (!confirmation) {
+            e.target.disabled = false;
+            return;
+        }
 
-        return card;
+        try {
+            await bookingsCollection.doc(bookingId).update({
+                status: 'Paused', // تجميد مؤقت لحين قرار الإدارة أو تحديد التسليم
+                is_alert_pending: false, // إزالة التنبيه
+                manager_approval_notes: 'العميل رفض الأعمال الإضافية. بانتظار قرار الإدارة أو تحديد موعد تسليم.',
+            });
+
+            await activityLogCollection.add({
+                booking_id: bookingId,
+                user_role: 'Customer',
+                type: 'Alert',
+                message: `رفض العميل ${currentUserName} الأعمال الإضافية. تم تجميد العمل الأصلي مؤقتاً لحين مراجعة الإدارة.`,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            showToast('تم تسجيل رفضك. ستقوم الإدارة بمراجعة الأمر.', 'warning');
+        } catch (error) {
+            showToast('خطأ في معالجة الرفض: ' + error.message, 'error');
+            e.target.disabled = false;
+        }
     }
 
 
-    // 8. Initialization
-    function init() {
-        // 🛑 تحقق من حالة المصادقة باستخدام Firebase Auth Listener
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                // المستخدم مسجل الدخول
-                const doc = await techniciansCollection.doc(user.uid).get();
-                
-                if (doc.exists && doc.data().role === 'technician') {
-                    const userData = doc.data();
-                    currentTechnicianId = user.uid;
-                    currentTechnicianName = userData.name;
-                    localStorage.setItem('techLoggedIn', 'true');
-                    localStorage.setItem('currentTechnicianId', currentTechnicianId);
-                    localStorage.setItem('currentTechnicianName', currentTechnicianName);
-                    showDashboard();
-                } else {
-                    // ليس فني/بيانات مفقودة
-                    await auth.signOut();
-                    localStorage.removeItem('techLoggedIn');
-                    hideDashboard();
+    // ========= جلب البيانات المحفوظة (الاسم ونوع السيارة والموديل) =========
+    async function loadSavedData(userId) {
+        const nameInput = document.getElementById('name');
+        try {
+            // جلب الاسم ورقم الجوال من Firestore
+            const doc = await usersCollection.doc(userId).get();
+            if (doc.exists) {
+                const userData = doc.data();
+                nameInput.value = userData.name || '';
+                phoneInput.value = userData.phone || ''; // رقم الجوال مسجل تلقائياً ولا يمكن تعديله
+
+                // جلب آخر حجز لتعبئة بيانات السيارة
+                const lastBookingSnap = await bookingsCollection
+                    .where('customer_id', '==', userId)
+                    .orderBy('createdAt', 'desc')
+                    .limit(1)
+                    .get();
+
+                if (!lastBookingSnap.empty) {
+                    const lastBooking = lastBookingSnap.docs[0].data();
+                    document.getElementById('carType').value = lastBooking.car_type || '';
+                    document.getElementById('carModel').value = lastBooking.car_model || '';
+                    
+                    // تعبئة لوحة السيارة
+                    if (lastBooking.plate_type === 'Foreign') {
+                        document.getElementById('plateTypeForeign').checked = true;
+                        document.getElementById('plateTypeForeign').dispatchEvent(new Event('change')); // لتحديث الواجهة
+                        foreignPlate.value = lastBooking.car_plate_data;
+                    } else {
+                        document.getElementById('plateTypeSaudi').checked = true;
+                        document.getElementById('plateTypeSaudi').dispatchEvent(new Event('change'));
+                        
+                        const [lettersPart, numbers] = lastBooking.car_plate_data.split(' - ');
+                        const lettersArray = lettersPart.trim().split(/\s+/); // Split by one or more spaces
+
+                        // محاولة تعبئة الـ 3 حقول للحروف
+                        if (lettersArray.length === 3) {
+                            plateLetter1.value = lettersArray[0];
+                            plateLetter2.value = lettersArray[1];
+                            plateLetter3.value = lettersArray[2];
+                        } else {
+                            // معالجة للبيانات القديمة التي قد تكون بدون مسافات (مثل أبج)
+                            const cleanLetters = lettersPart.replace(/\s/g, '');
+                            if (cleanLetters.length >= 3) {
+                                plateLetter1.value = cleanLetters[0];
+                                plateLetter2.value = cleanLetters[1];
+                                plateLetter3.value = cleanLetters[2];
+                            }
+                        }
+                        plateNumbers.value = numbers.trim();
+                    }
+
+                    savedDataMessage.style.display = 'block';
                 }
-            } else {
-                // غير مسجل الدخول
-                localStorage.removeItem('techLoggedIn');
-                hideDashboard();
             }
-        });
+        } catch (error) {
+            console.error("Error loading saved data: ", error);
+        }
+    }
+
+
+    // ========= تحديث واجهة المصادقة =========
+    function updateUIForAuthentication(loggedIn, name, phone) {
+        if (loggedIn) {
+            // حالة تسجيل الدخول
+            authButton.style.display = 'none';
+            logoutButton.style.display = 'block';
+            document.getElementById('heroTitle').textContent = `أهلاً بك، ${name}`;
+            document.getElementById('heroSubtitle').textContent = `يمكنك تتبع سير عمل سيارتك أو حجز موعد جديد.`;
+            authMessage.style.display = 'none';
+            phoneInput.value = phone || ''; // تعبئة رقم الجوال
+            submitBookingBtn.disabled = !timeSelect.value;
+            submitBookingBtn.textContent = 'تأكيد الحجز';
+            customerTrackingSection.style.display = 'block';
+            loadSavedData(currentUserId);
+            fetchCustomerBookings(currentUserId);
+        } else {
+            // حالة عدم تسجيل الدخول
+            authButton.style.display = 'block';
+            logoutButton.style.display = 'none';
+            document.getElementById('heroTitle').textContent = `حجوزات صيانة السيارات`;
+            document.getElementById('heroSubtitle').textContent = `أحجز موعدك بسهولة لصيانة سيارتك في مركز تقني المحركات بصناعية أبها الجديدة`;
+            authMessage.style.display = 'block';
+            phoneInput.value = '';
+            submitBookingBtn.disabled = true;
+            submitBookingBtn.textContent = 'تأكيد الحجز المبدئي';
+            customerTrackingSection.style.display = 'none';
+            savedDataMessage.style.display = 'none';
+        }
+    }
+
+    function initAuthenticationState(loggedIn, id, name, phone) {
+        userIsAuthenticated = loggedIn;
+        currentUserId = id;
+        currentUserName = name;
+        updateUIForAuthentication(loggedIn, name, phone);
+    }
+
+    // ========= التهيئة الأولية =========
+    function init() {
+        // تحديد أقل تاريخ مسموح به (اليوم)
+        const today = new Date();
+        today.setDate(today.getDate());
+        dateInput.min = today.toISOString().split('T')[0];
+
+        // الاستماع لتحديثات التواريخ المغلقة
+        initializeClosedDatesListener();
+
+        // التحقق من حالة المستخدم المخزنة محلياً
+        const loggedIn = localStorage.getItem('userLoggedIn') === 'true';
+        const userId = localStorage.getItem('currentUserId');
+
+        if (loggedIn && userId) {
+            // إذا كان مسجل الدخول، جلب بياناته من Firestore
+            usersCollection.doc(userId).get().then(doc => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    initAuthenticationState(true, userId, userData.name, userData.phone);
+                } else {
+                    // مسجل محلياً لكن غير موجود في Firestore
+                    localStorage.removeItem('userLoggedIn');
+                    initAuthenticationState(false, null, null, null);
+                }
+            }).catch(error => {
+                console.error("Error fetching user data:", error);
+                initAuthenticationState(false, null, null, null);
+            });
+        } else {
+            initAuthenticationState(false, null, null, null);
+        }
     }
 
     init();
 </script>
+
 </body>
 </html>
