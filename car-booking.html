@@ -10,8 +10,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
-
     <style>
         /* ========= نفس الأنماط السابقة (بدون تغيير) ========= */
         :root {
@@ -34,7 +32,7 @@
         .header-content{display:flex;justify-content:space-between;align-items:center}
         .logo{display:flex;align-items:center}
         .logo h1{font-size:1.8rem;margin-right:15px}
-        .nav-buttons{display:flex;align-items:center;gap:10px}
+        .nav-buttons{display:flex;justify-content:space-between;align-items:center;gap:10px}
         .nav-buttons button{background:var(--secondary);color:white;border:none;padding:10px 15px;border-radius:5px;cursor:pointer;font-size:.9rem;font-weight:600;transition:all .3s}
         .nav-buttons button:hover{background:#e69500}
         .notification-bell{position:relative;background:var(--secondary);color:white;border:none;padding:10px;border-radius:50%;cursor:pointer;font-size:1.1rem;transition:all .3s;width:45px;height:45px;display:flex;align-items:center;justify-content:center}
@@ -223,11 +221,15 @@
 
                 <div id="saudiPlateInputs">
                     <div class="form-row">
-                        <div class="form-group" style="flex:0.4">
-                            <label for="plateLetters">الحروف (3 أحرف)</label>
-                            <input type="text" id="plateLetters" maxlength="5" required placeholder="مثال: أ ب ج">
+                        <div class="form-group">
+                            <label>الحروف (3 أحرف عربية)</label>
+                            <div style="display:flex;gap:5px;justify-content:space-between">
+                                <input type="text" id="plateLetter1" class="plate-letter-input" maxlength="1" required placeholder="أ" style="text-align: center; flex: 1;">
+                                <input type="text" id="plateLetter2" class="plate-letter-input" maxlength="1" required placeholder="ب" style="text-align: center; flex: 1;">
+                                <input type="text" id="plateLetter3" class="plate-letter-input" maxlength="1" required placeholder="ج" style="text-align: center; flex: 1;">
+                            </div>
                         </div>
-                        <div class="form-group" style="flex:0.6">
+                        <div class="form-group">
                             <label for="plateNumbers">الأرقام (1 - 4 أرقام)</label>
                             <input type="text" id="plateNumbers" pattern="[0-9]{1,4}" required placeholder="مثال: 1234">
                         </div>
@@ -267,117 +269,149 @@
     <section class="services-section">
         <h2 class="section-title">خدمات المركز</h2>
         <div class="services-grid">
-            <!-- خدمة الميكانيكا العامة -->
             <div class="service-card">
                 <div class="service-icon">🛠️</div>
                 <div class="service-content">
                     <h3>خدمات الميكانيكا العامة</h3>
                     <p>صيانة شاملة للمحركات وأنظمة الفرامل والتعليق وغيرها من أعمال الميكانيكا العامة.</p>
-                    <!-- تم إزالة الضمان هنا -->
+                    <div class="warranty-badge" style="background:var(--primary); color:#fff;">
+                        <i class="fas fa-medal"></i> ضمان الملحقات والتركيب
+                    </div>
                 </div>
             </div>
 
-            <!-- خدمة السمكرة والدهان -->
             <div class="service-card">
                 <div class="service-icon">🎨</div>
                 <div class="service-content">
                     <h3>السمكرة والدهان</h3>
                     <p>إصلاح حوادث السيارات وإعادة دهانها بأفضل جودة وتناسق للألوان.</p>
-                    <!-- تم تغيير لون النص إلى أبيض ليظهر على الخلفية الزرقاء -->
                     <div class="warranty-badge" style="background:var(--primary); color:#fff;">
                         <i class="fas fa-medal"></i> ضمان دهان 10 سنوات
                     </div>
                 </div>
             </div>
 
-            <!-- باقي الخدمات كما هي -->
             <div class="service-card">
                 <div class="service-icon">🔨</div>
                 <div class="service-content">
                     <h3>تعديل على البارد (PDR)</h3>
                     <p>إصلاح الانبعاجات الصغيرة دون الحاجة للسمكرة أو الدهان، مع المحافظة على طلاء المصنع.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> ضمان الجودة
+                    </div>
                 </div>
             </div>
+            
             <div class="service-card">
                 <div class="service-icon">⚡</div>
                 <div class="service-content">
                     <h3>فحص الكهرباء والهايبرد</h3>
                     <p>فحص شامل للبطارية والنظام الكهربائي للسيارة، بالإضافة إلى <strong>تشخيص وصيانة أنظمة سيارات الهايبرد</strong>.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> خدمة متخصصة
+                    </div>
                 </div>
             </div>
+
             <div class="service-card">
                 <div class="service-icon">💻</div>
                 <div class="service-content">
                     <h3>فحص الكمبيوتر</h3>
                     <p>تشخيص أعطال السيارات باستخدام أحدث أجهزة الفحص الإلكتروني.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> دقة التشخيص
+                    </div>
                 </div>
             </div>
+
             <div class="service-card">
                 <div class="service-icon">🔬</div>
                 <div class="service-content">
                     <h3>فحص المحرك</h3>
                     <p>فحص دقيق وشامل لأداء المحرك وكفائته لتحديد أي مشكلات داخلية أو ميكانيكية.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> تقرير مفصل
+                    </div>
                 </div>
             </div>
+            
             <div class="service-card">
                 <div class="service-icon">🔊</div>
                 <div class="service-content">
                     <h3>فحص الأصوات</h3>
                     <p>فحص وتشخيص الأصوات غير الطبيعية أسفل السيارة وإصلاحها.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> إصلاح المشاكل الخفية
+                    </div>
                 </div>
             </div>
+
             <div class="service-card">
                 <div class="service-icon">⚙️</div>
                 <div class="service-content">
                     <h3>أنظمة الهيدروليك</h3>
                     <p>مراجعة برمجة ووزن وإصلاحات أنظمة الهيدروليك باحترافية عالية.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> خبراء الهيدروليك
+                    </div>
                 </div>
             </div>
+
             <div class="service-card">
                 <div class="service-icon">🔥</div>
                 <div class="service-content">
                     <h3>تصفية المحرك</h3>
-                    <p>نظافة البخاخات والحساسات الأساسية وغيار قطع أخرى مهمة في عملية حرق المحرك حتى يستعيد عزمه المطلوب.</p>
-                    <button class="btn btn-info details-btn" onclick="window.open('https://tinyurl.com/yshwfzv6','_blank')"><i class="fas fa-info-circle"></i> انقر هنا للتفاصيل</button>
+                    <p>تنظيف وتغيير القطع الاستهلاكية للمحرك لزيادة الكفاءة وتقليل استهلاك الوقود.</p>
+                    <div class="warranty-badge">
+                        <i class="fas fa-check-circle"></i> كفاءة أعلى
+                    </div>
                 </div>
             </div>
+
         </div>
     </section>
 </div>
 
 <footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>مركز تقني المحركات</h3>
-                <p>الوجهة الأولى لصيانة وإصلاح السيارات باستخدام أحدث التقنيات.</p>
-                <p style="margin-top:15px"><a href="http://www.enginetechnician.net" target="_blank" class="highlight-link" style="color:var(--secondary)"><i class="fas fa-globe"></i> www.enginetechnician.net</a></p>
-            </div>
-            <div class="footer-section">
-                <h3>اتصل بنا</h3>
-                <p class="contact-info-footer"><i class="fas fa-phone"></i> <a href="tel:+966530694999" style="color:var(--footer-text);text-decoration:none">0530694999</a></p>
-                <p class="contact-info-footer"><i class="fas fa-clock"></i> السبت - الخميس: 8 ص - 1 م | 3 م - 7 م</p>
-                <p class="contact-info-footer"><i class="fas fa-map-marker-alt"></i> صناعية أبها الجديدة</p>
-                <a href="https://maps.app.goo.gl/wRj4BRsLU5mxJbB78" target="_blank" class="highlight-link" style="font-weight:bold;color:var(--secondary)"><i class="fas fa-location-arrow"></i> انقر هنا للوصول إلى موقع المركز على الخريطة</a>
-            </div>
-            <div class="footer-section">
-                <h3>ساعات العمل</h3>
-                <ul class="work-hours-footer">
-                    <li><i class="fas fa-calendar-times" style="color:var(--danger)"></i> الجمعة مغلق</li>
-                    <li><i class="fas fa-calendar-day" style="color:var(--danger)"></i> العطلات الرسمية مغلق</li>
-                </ul>
+    <div class="container footer-content">
+        <div class="footer-section">
+            <h3>مركز تقني المحركات</h3>
+            <p>مركز متخصص في صيانة السيارات بأحدث التقنيات وقطع الغيار الأصلية. نحن ملتزمون بالجودة والشفافية.</p>
+        </div>
+        <div class="footer-section">
+            <h3>روابط سريعة</h3>
+            <a href="#bookingSection">حجز موعد</a>
+            <a href="#customerTrackingSection">تتبع الحجز</a>
+            <a href=".services-section">خدماتنا</a>
+            <a href="https://www.enginetechnician.net/" target="_blank">الموقع الإلكتروني</a>
+        </div>
+        <div class="footer-section">
+            <h3>تواصل معنا</h3>
+            <div class="contact-info-footer">
+                <a href="https://maps.app.goo.gl/fXY9BfeKDcjuwzNHA" target="_blank"><i class="fas fa-map-marker-alt"></i> صناعية أبها الجديدة، شارع 3</a>
+                <p><i class="fas fa-phone"></i> <a href="tel:+966530694999">+966 530694999</a></p>
+                <p><i class="fab fa-whatsapp" style="color:#25D366;"></i> +966 530694999</p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:mailus@enginetechnician.net">mailus@enginetechnician.net</a></p>
             </div>
         </div>
-        <div class="container footer-bottom">
-            <p>جميع الحقوق محفوظة. © 2026 مركز تقني المحركات. | <a href="#top" style="color:#777">العودة للأعلى</a></p>
+        <div class="footer-section">
+            <h3>ساعات العمل</h3>
+            <ul class="work-hours-footer">
+                <li>السبت - الخميس: 8:00 ص - 1:00 م</li>
+                <li>السبت - الخميس: 3:00 م - 7:00 م</li>
+                <li>الجمعة: إجازة</li>
+            </ul>
         </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2006 مركز تقني المحركات. جميع الحقوق محفوظة.</p>
     </div>
 </footer>
 
-<!-- ======== نافذة المصادقة ======== -->
-<div class="modal" id="customerAuthModal">
+<div id="customerAuthModal" class="modal">
     <div class="modal-content">
         <h3 id="authTitle">تسجيل الدخول</h3>
+
         <form id="loginForm" class="auth-form active">
             <div class="form-group">
                 <label for="loginPhone">رقم الجوال</label>
@@ -427,75 +461,54 @@
                 <label for="recoverPhone">رقم الجوال المسجل</label>
                 <input type="tel" id="recoverPhone" required placeholder="05XXXXXXXX" pattern="05[0-9]{8}">
             </div>
-            <div class="form-group">
-                <label for="recoverQuestion">سؤال الأمان</label>
-                <select id="recoverQuestion" required disabled>
-                    <option value="">سيتم جلب السؤال تلقائيًا</option>
-                </select>
-            </div>
-            <div class="form-group" id="recoverAnswerGroup" style="display:none">
-                <label for="recoverAnswer">الإجابة</label>
-                <input type="text" id="recoverAnswer" required placeholder="أدخل إجابة سؤال الأمان">
+            <div class="form-group" id="recoverQuestionGroup" style="display:none">
+                <label id="recoverQuestionLabel" for="recoverAnswer">الإجابة على سؤال الأمان:</label>
+                <input type="text" id="recoverAnswer" required disabled>
             </div>
             <div class="form-group" id="newPasswordGroup" style="display:none">
                 <label for="newPassword">كلمة السر الجديدة</label>
-                <input type="password" id="newPassword" required>
+                <input type="password" id="newPassword" required disabled>
             </div>
             <button type="button" class="btn" id="checkSecurityBtn">التحقق من رقم الجوال</button>
-            <button type="submit" class="btn btn-danger" id="resetPasswordBtn" style="display:none">تعيين كلمة سر جديدة</button>
-            <p class="auth-switch" data-target="login">العودة إلى <strong>تسجيل الدخول</strong></p>
+            <button type="submit" class="btn btn-danger" id="resetPasswordBtn" style="display:none">تغيير كلمة السر</button>
+            <p class="auth-switch" data-target="login">تذكرت كلمة السر؟ <strong>سجل الدخول</strong></p>
         </form>
-
-        <button class="close-modal-btn btn-danger" style="position:absolute;top:10px;left:10px;padding:5px 10px;font-size:.8rem" onclick="document.getElementById('customerAuthModal').style.display='none'">
-            <i class="fas fa-times"></i> إغلاق
-        </button>
     </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div id="toast" class="toast"></div>
 
 <script>
-    // ========= نفس المتغيرات العامة والإعدادات السابقة (بدون تغيير) =========
+    // ========= عناصر الواجهة =========
+    const customerAuthModal = document.getElementById('customerAuthModal');
     const authButton = document.getElementById('authButton');
     const logoutButton = document.getElementById('logoutButton');
-    const customerAuthModal = document.getElementById('customerAuthModal');
     const authTitle = document.getElementById('authTitle');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const recoverForm = document.getElementById('recoverForm');
-    const authSwitchButtons = document.querySelectorAll('.auth-switch');
-
-    const bookingSection = document.getElementById('bookingSection');
-    const customerTrackingSection = document.getElementById('customerTrackingSection');
-    const trackingCardsContainer = document.getElementById('trackingCardsContainer');
-
-    const notificationBell = document.getElementById('notificationBell');
-    const notificationBadge = document.getElementById('notificationBadge');
-
     const bookingForm = document.getElementById('bookingForm');
     const dateInput = document.getElementById('date');
     const timeSelect = document.getElementById('time');
-    const serviceTypeSelect = document.getElementById('serviceType');
-    const bookingMessage = document.getElementById('bookingMessage');
     const submitBookingBtn = document.getElementById('submitBookingBtn');
-    const phoneInput = document.getElementById('phone');
     const authMessage = document.getElementById('authMessage');
+    const phoneInput = document.getElementById('phone');
     const savedDataMessage = document.getElementById('savedDataMessage');
-
-    const plateTypeSaudi = document.getElementById('plateTypeSaudi');
-    const plateTypeForeign = document.getElementById('plateTypeForeign');
-    const saudiPlateInputs = document.getElementById('saudiPlateInputs');
-    const plateLetters = document.getElementById('plateLetters');
+    // عناصر اللوحة الجديدة
+    const plateLetter1 = document.getElementById('plateLetter1');
+    const plateLetter2 = document.getElementById('plateLetter2');
+    const plateLetter3 = document.getElementById('plateLetter3');
     const plateNumbers = document.getElementById('plateNumbers');
-    const foreignPlateInput = document.getElementById('foreignPlateInput');
     const foreignPlate = document.getElementById('foreignPlate');
-
-    const recoverQuestionSelect = document.getElementById('recoverQuestion');
-    const recoverAnswerGroup = document.getElementById('recoverAnswerGroup');
+    const saudiPlateInputs = document.getElementById('saudiPlateInputs');
+    const foreignPlateInput = document.getElementById('foreignPlateInput');
+    const recoverQuestionGroup = document.getElementById('recoverQuestionGroup');
     const newPasswordGroup = document.getElementById('newPasswordGroup');
     const checkSecurityBtn = document.getElementById('checkSecurityBtn');
     const resetPasswordBtn = document.getElementById('resetPasswordBtn');
     const recoverPhoneInput = document.getElementById('recoverPhone');
+    const customerTrackingSection = document.getElementById('customerTrackingSection');
+    const trackingCardsContainer = document.getElementById('trackingCardsContainer');
 
     let userIsAuthenticated = false;
     let currentUserId = null;
@@ -520,6 +533,15 @@
     const techniciansCollection = db.collection('technicians');
     const activityLogCollection = db.collection('activityLog');
 
+    // ========= دالات مساعدة (Utility Functions) =========
+    // Function to convert phone to proxy email for Firebase Auth
+    function phoneToProxyEmail(phone) {
+        // يزيل جميع الأحرف غير الرقمية ويضيف نطاقًا فريدًا للعملاء
+        const sanitizedPhone = phone.replace(/[^\d+]/g, ''); 
+        // نطاق clientdomain.com لتمييز العملاء عن الفنيين/المديرين
+        return `${sanitizedPhone}@clientdomain.com`; 
+    }
+
     // ========= وظائف الإشعارات (Toast) =========
     function showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
@@ -534,6 +556,18 @@
         loginForm.classList.remove('active');
         registerForm.classList.remove('active');
         recoverForm.classList.remove('active');
+
+        // إعادة ضبط نموذج استعادة كلمة المرور
+        document.getElementById('recoverAnswer').value = '';
+        document.getElementById('newPassword').value = '';
+        recoverQuestionGroup.style.display = 'none';
+        newPasswordGroup.style.display = 'none';
+        resetPasswordBtn.style.display = 'none';
+        checkSecurityBtn.style.display = 'block';
+        document.getElementById('recoverAnswer').disabled = true;
+        document.getElementById('newPassword').disabled = true;
+
+
         if (target === 'login') {
             authTitle.textContent = 'تسجيل الدخول';
             loginForm.classList.add('active');
@@ -543,57 +577,49 @@
         } else if (target === 'recover') {
             authTitle.textContent = 'استعادة كلمة السر';
             recoverForm.classList.add('active');
-            recoverQuestionSelect.value = '';
-            recoverQuestionSelect.disabled = true;
-            recoverAnswerGroup.style.display = 'none';
-            newPasswordGroup.style.display = 'none';
-            checkSecurityBtn.style.display = 'block';
-            resetPasswordBtn.style.display = 'none';
-            recoverForm.reset();
         }
     }
-    authSwitchButtons.forEach(btn => {
-        btn.addEventListener('click', () => switchAuthForm(btn.dataset.target));
-    });
-    authButton.addEventListener('click', () => {
-        customerAuthModal.style.display = 'flex';
-        switchAuthForm('login');
-    });
-    logoutButton.addEventListener('click', () => {
-        localStorage.removeItem('userLoggedIn');
-        localStorage.removeItem('currentUserId');
-        localStorage.removeItem('currentUserName');
-        window.location.reload();
-        showToast('تم تسجيل الخروج بنجاح.', 'info');
-    });
-    customerAuthModal.addEventListener('click', e => {
-        if (e.target === customerAuthModal) customerAuthModal.style.display = 'none';
-    });
 
-    // ========= التنسيق التلقائي لحقل «حروف اللوحة السعودية» =========
-    plateLetters.addEventListener('input', function () {
-        let val = this.value.replace(/\s/g, ''); // إزالة كل المسافات
-        if (val.length > 3) val = val.slice(0, 3); // أقصى حد 3 أحرف
-        const formatted = val.split('').join(' '); // إضافة مسافة بين الحروف
-        this.value = formatted;
-    });
-
-    // ========= منطق لوحة السيارة (تبديل المدخلات) =========
-    document.querySelectorAll('input[name="plateType"]').forEach(radio => {
-        radio.addEventListener('change', function () {
-            const isSaudi = this.value === 'saudi';
-            saudiPlateInputs.style.display = isSaudi ? 'flex' : 'none';
-            foreignPlateInput.style.display = isSaudi ? 'none' : 'block';
-            plateLetters.required = isSaudi;
-            plateNumbers.required = isSaudi;
-            plateLetters.disabled = !isSaudi;
-            plateNumbers.disabled = !isSaudi;
-            foreignPlate.required = !isSaudi;
-            foreignPlate.disabled = isSaudi;
+    // Event listeners for auth switches
+    document.querySelectorAll('.auth-switch').forEach(switcher => {
+        switcher.addEventListener('click', (e) => {
+            const target = e.target.getAttribute('data-target') || e.target.parentNode.getAttribute('data-target');
+            if (target) {
+                switchAuthForm(target);
+            }
         });
     });
 
-    // ========= نفس منطق التسجيل، الدخول، استعادة كلمة السر =========
+    // Open/Close Modal
+    authButton.addEventListener('click', () => {
+        customerAuthModal.style.display = 'flex';
+        switchAuthForm('login'); // Default to login
+    });
+
+    customerAuthModal.addEventListener('click', (e) => {
+        if (e.target === customerAuthModal) {
+            customerAuthModal.style.display = 'none';
+        }
+    });
+
+    // Logout
+    logoutButton.addEventListener('click', async () => {
+        try {
+            await auth.signOut();
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('currentUserId');
+            localStorage.removeItem('currentUserName');
+            localStorage.removeItem('userPhone'); // إزالة رقم الجوال من التخزين المحلي
+            initAuthenticationState(false, null, null, null);
+            showToast('تم تسجيل الخروج بنجاح.', 'info');
+        } catch (error) {
+            showToast('خطأ في تسجيل الخروج: ' + error.message, 'error');
+        }
+    });
+
+    // ========= التسجيل والدخول (باستخدام Firebase Auth) =========
+
+    // التسجيل
     registerForm.addEventListener('submit', async e => {
         e.preventDefault();
         const name = document.getElementById('registerName').value;
@@ -601,124 +627,188 @@
         const password = document.getElementById('registerPassword').value;
         const question = document.getElementById('securityQuestion').value;
         const answer = document.getElementById('securityAnswer').value;
-
+        
+        // 1. تحقق من عدم وجود رقم الجوال مسبقاً في Firestore
         const userSnap = await usersCollection.where('phone', '==', phone).get();
         if (!userSnap.empty) {
             showToast('رقم الجوال مسجل مسبقاً. يرجى تسجيل الدخول.', 'warning');
             return;
         }
+
+        const proxyEmail = phoneToProxyEmail(phone);
+
         try {
-            await usersCollection.add({
+            // 2. إنشاء مستخدم في Firebase Authentication باستخدام الإيميل الوكيل وكلمة السر
+            const userCredential = await auth.createUserWithEmailAndPassword(proxyEmail, password);
+            const user = userCredential.user;
+
+            // 3. تخزين باقي البيانات في Firestore
+            await usersCollection.doc(user.uid).set({
                 name,
                 phone,
-                password: sha256(password),
                 security_question: question,
-                security_answer: sha256(answer.toLowerCase().trim()),
+                security_answer: answer.toLowerCase().trim(), // تخزين الإجابة كنص عادي للمطابقة لاحقاً
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
+            
+            // 4. تسجيل الخروج من Firebase Auth مؤقتاً لعدم تداخل الحالات
+            await auth.signOut();
+            
             showToast('تم التسجيل بنجاح. يمكنك الآن تسجيل الدخول.', 'success');
             switchAuthForm('login');
+
         } catch (error) {
-            showToast('خطأ في التسجيل: ' + error.message, 'error');
+            // معالجة الأخطاء
+            let errorMessage = 'خطأ في التسجيل';
+            if (error.code === 'auth/email-already-in-use') {
+                errorMessage = 'رقم الجوال مسجل مسبقاً.'; // لن يحدث نظرياً بسبب التحقق الأول
+            } else if (error.code === 'auth/weak-password') {
+                errorMessage = 'كلمة السر ضعيفة (يجب أن تكون 6 أحرف على الأقل).';
+            } else {
+                 errorMessage = 'خطأ في التسجيل: ' + error.message;
+            }
+            showToast(errorMessage, 'error');
         }
     });
 
+    // الدخول
     loginForm.addEventListener('submit', async e => {
         e.preventDefault();
         const phone = document.getElementById('loginPhone').value;
         const password = document.getElementById('loginPassword').value;
+        
+        const proxyEmail = phoneToProxyEmail(phone);
 
         try {
-            const userSnap = await usersCollection.where('phone', '==', phone).get();
-            if (userSnap.empty) {
-                showToast('رقم الجوال غير موجود.', 'error');
-                return;
-            }
-            const userData = userSnap.docs[0].data();
-            const userId = userSnap.docs[0].id;
+            // 1. تسجيل الدخول باستخدام Firebase Auth
+            const userCredential = await auth.signInWithEmailAndPassword(proxyEmail, password);
+            const user = userCredential.user;
 
-            if (userData.password === sha256(password)) {
+            // 2. جلب بيانات المستخدم من Firestore
+            const doc = await usersCollection.doc(user.uid).get();
+
+            if (doc.exists) {
+                const userData = doc.data();
+                
+                // 3. حفظ بيانات الجلسة والتحديث
                 localStorage.setItem('userLoggedIn', 'true');
-                localStorage.setItem('currentUserId', userId);
+                localStorage.setItem('currentUserId', user.uid);
                 localStorage.setItem('currentUserName', userData.name);
-
+                localStorage.setItem('userPhone', userData.phone);
+                
                 customerAuthModal.style.display = 'none';
-                initAuthenticationState(true, userId, userData.name, userData.phone);
+                initAuthenticationState(true, user.uid, userData.name, userData.phone);
                 showToast(`أهلاً بك يا ${userData.name}! تم تسجيل الدخول بنجاح.`, 'success');
             } else {
-                showToast('كلمة السر غير صحيحة.', 'error');
+                // حالة نادرة (المستخدم في Auth لكن ليس في Firestore)
+                await auth.signOut();
+                showToast('خطأ: بيانات الحساب مفقودة. يرجى إعادة التسجيل.', 'error');
             }
+
         } catch (error) {
-            showToast('خطأ في تسجيل الدخول: ' + error.message, 'error');
+            let errorMessage = 'خطأ في تسجيل الدخول';
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-email') {
+                errorMessage = 'رقم الجوال أو كلمة السر غير صحيحة.';
+            } else {
+                errorMessage = 'خطأ في تسجيل الدخول: ' + error.message;
+            }
+            showToast(errorMessage, 'error');
         }
     });
-
-    // ========= استعادة كلمة السر (نفس المنطق) =========
+    
+    // استعادة كلمة السر: التحقق من سؤال الأمان
     checkSecurityBtn.addEventListener('click', async () => {
         const phone = recoverPhoneInput.value;
-        if (!phone) {
-            showToast('يرجى إدخال رقم الجوال.', 'warning');
+        if (!phone || phone.length < 9) {
+            showToast('يرجى إدخال رقم جوال صحيح.', 'warning');
             return;
         }
+
         try {
             const userSnap = await usersCollection.where('phone', '==', phone).get();
             if (userSnap.empty) {
                 showToast('رقم الجوال غير مسجل.', 'error');
                 return;
             }
+
             const userData = userSnap.docs[0].data();
-            recoverPhoneInput.disabled = true;
-
+            const questionText = userData.security_question;
             const questionMap = {
-                'birth_city': 'مدينة المولد',
-                'first_pet': 'اسم أول حيوان أليف',
-                'mother_name': 'الاسم الأوسط لوالدتك'
+                'birth_city': 'ما هي مدينة المولد؟',
+                'first_pet': 'ما هو اسم أول حيوان أليف؟',
+                'mother_name': 'ما هو الاسم الأوسط لوالدتك؟'
             };
-            recoverQuestionSelect.innerHTML = '';
-            const option = document.createElement('option');
-            option.value = userData.security_question;
-            option.textContent = questionMap[userData.security_question] || 'سؤال الأمان';
-            recoverQuestionSelect.appendChild(option);
-            recoverQuestionSelect.value = userData.security_question;
 
-            recoverAnswerGroup.style.display = 'block';
+            // تخزين بيانات المستخدم مؤقتاً في النموذج
+            recoverForm.dataset.userId = userSnap.docs[0].id;
+            recoverForm.dataset.securityAnswer = userData.security_answer.toLowerCase().trim();
+
+            document.getElementById('recoverQuestionLabel').textContent = questionMap[questionText] || 'ما هي إجابة سؤال الأمان؟';
+            document.getElementById('recoverAnswer').value = '';
+            document.getElementById('recoverAnswer').disabled = false;
+            recoverQuestionGroup.style.display = 'block';
             checkSecurityBtn.style.display = 'none';
             resetPasswordBtn.style.display = 'block';
-            showToast('تم جلب سؤال الأمان. يرجى الإجابة.', 'info');
+
+            showToast('تم العثور على سؤال الأمان، يرجى الإجابة وتعيين كلمة سر جديدة.', 'info');
+
         } catch (error) {
-            showToast('خطأ: ' + error.message, 'error');
+            showToast('خطأ في التحقق من الحساب: ' + error.message, 'error');
         }
     });
 
+    // استعادة كلمة السر: تعيين كلمة سر جديدة
     recoverForm.addEventListener('submit', async e => {
         e.preventDefault();
-        const phone = recoverPhoneInput.value;
-        const answer = document.getElementById('recoverAnswer').value;
+        const userId = recoverForm.dataset.userId;
+        const storedAnswer = recoverForm.dataset.securityAnswer;
+        const providedAnswer = document.getElementById('recoverAnswer').value.toLowerCase().trim();
         const newPassword = document.getElementById('newPassword').value;
 
-        try {
-            const userSnap = await usersCollection.where('phone', '==', phone).get();
-            const userDoc = userSnap.docs[0];
-            const userData = userDoc.data();
+        if (providedAnswer !== storedAnswer) {
+            showToast('إجابة سؤال الأمان غير صحيحة.', 'error');
+            return;
+        }
+        
+        // إذا كانت الإجابة صحيحة، أظهر حقل كلمة السر الجديدة
+        if (newPasswordGroup.style.display === 'none') {
+             newPasswordGroup.style.display = 'block';
+             document.getElementById('newPassword').disabled = false;
+             showToast('الإجابة صحيحة! أدخل كلمة السر الجديدة الآن.', 'success');
+             return;
+        }
 
-            if (userData.security_answer === sha256(answer.toLowerCase().trim())) {
-                await usersCollection.doc(userDoc.id).update({
-                    password: sha256(newPassword)
-                });
-                showToast('تم تحديث كلمة السر بنجاح. يمكنك الآن تسجيل الدخول.', 'success');
-                switchAuthForm('login');
-            } else {
-                showToast('إجابة سؤال الأمان غير صحيحة.', 'error');
-            }
+        if (newPassword.length < 6) {
+             showToast('كلمة السر يجب أن تكون 6 أحرف على الأقل.', 'warning');
+             return;
+        }
+
+        try {
+            // 1. تغيير كلمة السر في Firebase Auth
+            const phone = recoverPhoneInput.value;
+            const proxyEmail = phoneToProxyEmail(phone);
+            
+            // أرسل إيميل إعادة التعيين باستخدام الإيميل الوكيل
+            await auth.sendPasswordResetEmail(proxyEmail);
+
+            showToast('تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك الوكيل (رقمك). يرجى التواصل مع الدعم الفني.', 'info');
+            switchAuthForm('login');
+            
         } catch (error) {
-            showToast('خطأ في تعيين كلمة السر: ' + error.message, 'error');
+             let errorMessage = 'خطأ في إعادة تعيين كلمة السر: ' + error.message;
+             if (error.code === 'auth/user-not-found') {
+                errorMessage = 'رقم الجوال غير مسجل.';
+            } 
+            showToast(errorMessage, 'error');
         }
     });
 
-    // ========= نفس منطق الحجوزات (الأوقات، الإرسال، التتبع) =========
+    // ========= منطق الحجوزات (الأوقات، الإرسال، التتبع) =========
     const WORK_HOURS = {
-        morningStart: 8, morningEnd: 13,
-        eveningStart: 15, eveningEnd: 19
+        morningStart: 8,
+        morningEnd: 13,
+        eveningStart: 15,
+        eveningEnd: 19
     };
     let closedDatesCache = [];
     let closedTimesCache = [];
@@ -735,85 +825,167 @@
         timeSelect.innerHTML = '<option value="">جارٍ التحقق من الأوقات...</option>';
         timeSelect.disabled = true;
         submitBookingBtn.disabled = true;
+
         if (!selectedDate) return;
+
+        // التحقق من التاريخ المغلق
         if (closedDatesCache.includes(selectedDate)) {
             timeSelect.innerHTML = '<option value="">التاريخ مغلق بالكامل.</option>';
             showToast('هذا التاريخ مغلق للصيانة أو عطلة رسمية.', 'warning');
             return;
         }
+
         try {
+            // جلب الحجوزات القائمة لليوم المحدد
             const snapshot = await bookingsCollection.where('date', '==', selectedDate).get();
             const bookedTimes = snapshot.docs.map(doc => doc.data().time);
+
+            // حساب عدد الحجوزات لكل وقت
             const timeCounts = bookedTimes.reduce((acc, time) => {
                 acc[time] = (acc[time] || 0) + 1;
                 return acc;
             }, {});
+
+            // تحديد الأوقات الممتلئة (3 حجوزات كحد أقصى)
             const fullyBookedTimes = Object.keys(timeCounts).filter(time => timeCounts[time] >= 3);
             closedTimesCache = fullyBookedTimes;
+
             const availableTimes = [];
             const dayOfWeek = new Date(selectedDate).getDay();
-            if (dayOfWeek === 5) {
+
+            // التحقق من يوم الجمعة (5)
+            if (dayOfWeek === 5) { // الجمعة هو اليوم الخامس (Saturday=0, Friday=5)
                 timeSelect.innerHTML = '<option value="">لا توجد أوقات متاحة في هذا اليوم.</option>';
                 return;
             }
+
             const workPeriods = [
-                { start: WORK_HOURS.morningStart, end: WORK_HOURS.morningEnd },
-                { start: WORK_HOURS.eveningStart, end: WORK_HOURS.eveningEnd }
+                { start: WORK_HOURS.morningStart, end: WORK_HOURS.morningEnd }, // 8 إلى 12
+                { start: WORK_HOURS.eveningStart, end: WORK_HOURS.eveningEnd }  // 3 إلى 6
             ];
+
+            // توليد الأوقات المتاحة
             workPeriods.forEach(period => {
                 for (let hour = period.start; hour < period.end; hour++) {
-                    const time1 = `${String(hour).padStart(2, '0')}:00`;
-                    const time2 = `${String(hour).padStart(2, '0')}:30`;
-                    if (!closedTimesCache.includes(time1)) availableTimes.push(time1);
-                    if (!closedTimesCache.includes(time2)) availableTimes.push(time2);
+                    // أوقات الساعة بالتحديد (مثل 8:00)
+                    let timeValue = `${hour.toString().padStart(2, '0')}:00`;
+                    if (!fullyBookedTimes.includes(timeValue)) {
+                        availableTimes.push({ value: timeValue, text: timeValue });
+                    }
                 }
             });
+
+            // تحديث قائمة الأوقات
             timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
             if (availableTimes.length > 0) {
+                availableTimes.sort((a, b) => a.value.localeCompare(b.value));
                 availableTimes.forEach(time => {
                     const option = document.createElement('option');
-                    option.value = time;
-                    option.textContent = time;
+                    option.value = time.value;
+                    option.textContent = time.text;
                     timeSelect.appendChild(option);
                 });
                 timeSelect.disabled = false;
             } else {
-                timeSelect.innerHTML = '<option value="">لا توجد أوقات متاحة في هذا اليوم.</option>';
+                timeSelect.innerHTML = '<option value="">جميع المواعيد محجوزة لهذا اليوم.</option>';
             }
+
         } catch (error) {
-            showToast('خطأ في جلب الأوقات: ' + error.message, 'error');
-            timeSelect.innerHTML = '<option value="">حدث خطأ، يرجى المحاولة لاحقاً.</option>';
+            console.error("Error fetching booked times: ", error);
+            timeSelect.innerHTML = '<option value="">حدث خطأ في تحميل الأوقات.</option>';
         }
     });
-
+    
+    // تفعيل زر الحجز عند اختيار الوقت
     timeSelect.addEventListener('change', () => {
         submitBookingBtn.disabled = !userIsAuthenticated || !timeSelect.value;
     });
 
-    // ========= إرسال الحجز مع التحقق من صيغة اللوحة السعودية =========
+    // تغيير نمط إدخال لوحة السيارة
+    document.querySelectorAll('input[name="plateType"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'saudi') {
+                saudiPlateInputs.style.display = 'block';
+                foreignPlateInput.style.display = 'none';
+                plateLetter1.required = true;
+                plateLetter2.required = true;
+                plateLetter3.required = true;
+                plateNumbers.required = true;
+                foreignPlate.required = false;
+                foreignPlate.disabled = true;
+            } else {
+                saudiPlateInputs.style.display = 'none';
+                foreignPlateInput.style.display = 'block';
+                plateLetter1.required = false;
+                plateLetter2.required = false;
+                plateLetter3.required = false;
+                plateNumbers.required = false;
+                foreignPlate.required = true;
+                foreignPlate.disabled = false;
+            }
+        });
+    });
+    
+    // منطق جديد للحروف: تقييد بحرف عربي واحد والنقل التلقائي
+    [plateLetter1, plateLetter2, plateLetter3].forEach((input, index, array) => {
+        input.addEventListener('input', (e) => {
+            // Force Arabic input (or empty) and convert to uppercase
+            const arabicRegex = /[\u0600-\u06FF]/;
+            let value = e.target.value.toUpperCase().trim().slice(0, 1);
+            if (value && !arabicRegex.test(value)) {
+                value = ''; // Clear if not Arabic
+            }
+            e.target.value = value;
+            
+            // Auto-focus to the next input
+            if (value && index < array.length - 1) {
+                array[index + 1].focus();
+            }
+        });
+        
+        input.addEventListener('keydown', (e) => {
+            // Auto-focus to the previous input on backspace if current is empty
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                array[index - 1].focus();
+            }
+        });
+    });
+
+    // إرسال الحجز
     bookingForm.addEventListener('submit', async e => {
         e.preventDefault();
+        submitBookingBtn.disabled = true;
+        
         if (!userIsAuthenticated) {
-            showToast('يجب تسجيل الدخول أولاً لإكمال الحجز.', 'error');
-            customerAuthModal.style.display = 'flex';
-            switchAuthForm('login');
+            showToast('يرجى تسجيل الدخول قبل تأكيد الحجز.', 'warning');
+            submitBookingBtn.disabled = false;
             return;
         }
-        submitBookingBtn.disabled = true;
 
-        // جمع بيانات اللوحة
-        let plateData = {};
+        let plateData;
         const plateType = document.querySelector('input[name="plateType"]:checked').value;
+
         if (plateType === 'saudi') {
-            const letters = plateLetters.value.trim();
+            const letter1 = plateLetter1.value.toUpperCase().trim();
+            const letter2 = plateLetter2.value.toUpperCase().trim();
+            const letter3 = plateLetter3.value.toUpperCase().trim();
             const numbers = plateNumbers.value.trim();
-            const cleanedLetters = letters.replace(/\s/g, '');
-            if (!/^[أ-ي]{3}$/.test(cleanedLetters) || !/^([أ-ي]\s){2}[أ-ي]$/.test(letters) || !/^[0-9]{1,4}$/.test(numbers)) {
-                showToast('تنسيق لوحة السيارة السعودية غير صحيح. يرجى إدخال 3 أحرف عربية مفصولة بمسافات.', 'error');
+
+            const letters = `${letter1}${letter2}${letter3}`;
+            const formattedLetters = `${letter1} ${letter2} ${letter3}`; 
+
+            // التحقق من تنسيق اللوحة السعودية (3 أحرف عربية فقط و 1-4 أرقام)
+            const saudiPlateRegex = /^[ء-ي]{3}$/;
+            if (!saudiPlateRegex.test(letters) || numbers.length < 1 || numbers.length > 4) {
+                showToast('تنسيق لوحة السيارة السعودية غير صحيح. يرجى إدخال 3 أحرف عربية و 1-4 أرقام.', 'error');
                 submitBookingBtn.disabled = false;
                 return;
             }
-            plateData = { plate_type: 'Saudi', car_plate_data: `${letters} - ${numbers}` };
+            
+            plateData = {
+                plate_type: 'Saudi',
+                car_plate_data: `${formattedLetters} - ${numbers}`
+            };
         } else {
             const foreignPlateValue = foreignPlate.value.trim();
             if (foreignPlateValue === "") {
@@ -821,7 +993,10 @@
                 submitBookingBtn.disabled = false;
                 return;
             }
-            plateData = { plate_type: 'Foreign', car_plate_data: foreignPlateValue };
+            plateData = {
+                plate_type: 'Foreign',
+                car_plate_data: foreignPlateValue
+            };
         }
 
         const bookingData = {
@@ -835,7 +1010,7 @@
             time: timeSelect.value,
             notes: document.getElementById('notes').value,
             ...plateData,
-            status: 'Pending',
+            status: 'Received', // تم تغيير الحالة الأولية إلى Received بعد التحقق من تسجيل الدخول
             technician_id: null,
             technician_name: null,
             progress_percentage: 0,
@@ -846,97 +1021,142 @@
 
         try {
             await bookingsCollection.add(bookingData);
-            showToast('تم إرسال طلب الحجز بنجاح. سيتم تأكيده لاحقاً.', 'success');
+            showToast('تم إرسال طلب الحجز بنجاح. سنقوم بمراجعة طلبك.', 'success');
+            
+            // إعادة ضبط النموذج
             bookingForm.reset();
             timeSelect.innerHTML = '<option value="">اختر الوقت</option>';
             timeSelect.disabled = true;
             dateInput.dispatchEvent(new Event('change'));
-            submitBookingBtn.disabled = false;
+            submitBookingBtn.disabled = true; 
+
+            // تحديث قائمة الحجوزات النشطة
             fetchCustomerBookings(currentUserId);
+
         } catch (error) {
             showToast('خطأ في إرسال الحجز: ' + error.message, 'error');
             submitBookingBtn.disabled = false;
         }
     });
 
-    // ========= تتبع الحجوزات (نفس المنطق) =========
+
+    // ========= تتبع الحجوزات =========
     function fetchCustomerBookings(userId) {
+        // عرض قسم التتبع
+        customerTrackingSection.style.display = 'block';
+        trackingCardsContainer.innerHTML = '<p style="text-align:center;color:var(--info);"><i class="fas fa-spinner fa-spin"></i> جارٍ تحميل الحجوزات النشطة...</p>';
+        let hasActiveBookings = false;
+        let pendingAlertCount = 0;
+
         bookingsCollection
             .where('customer_id', '==', userId)
             .where('status', '!=', 'Delivered')
-            .orderBy('status')
-            .orderBy('date', 'desc')
-            .limit(5)
+            .orderBy('createdAt', 'desc') 
             .onSnapshot(snapshot => {
-                const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderTrackingCards(bookings);
-                updateNotificationBadge(bookings);
+                trackingCardsContainer.innerHTML = '';
+                hasActiveBookings = false;
+                pendingAlertCount = 0;
+
+                if (snapshot.empty) {
+                    trackingCardsContainer.innerHTML = '<p style="text-align:center;color:#666">لم يتم العثور على حجوزات نشطة.</p>';
+                    document.getElementById('notificationBadge').style.display = 'none';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    hasActiveBookings = true;
+                    const booking = doc.data();
+                    const id = doc.id;
+                    booking.id = id;
+
+                    // إظهار تنبيه للعميل في حالة وجود تنبيه pending_approval أو is_alert_pending
+                    if (booking.is_alert_pending || booking.status === 'Pending_Approval') {
+                        pendingAlertCount++;
+                    }
+
+                    const statusMap = {
+                        'Received': { text: 'قيد الاستلام', class: 'received' },
+                        'In_Progress': { text: 'قيد العمل', class: 'in_progress' },
+                        'Paused': { text: 'متوقفة مؤقتاً', class: 'paused' },
+                        'Pending_Approval': { text: 'بانتظار الموافقة', class: 'pending_approval' },
+                        'Complete': { text: 'العمل اكتمل', class: 'complete' }
+                    };
+
+                    const status = booking.status || 'Received';
+                    const statusInfo = statusMap[status] || statusMap['Received'];
+                    const statusText = statusInfo.text;
+                    const statusClass = statusInfo.class;
+                    const progress = booking.progress_percentage || 0;
+                    const technicianName = booking.technician_name || 'لم يتم التعيين بعد';
+                    const ect = booking.estimated_completion_time ? 
+                                `<strong>التسليم المتوقع:</strong> ${booking.estimated_completion_time}` : 
+                                `<strong>التسليم المتوقع:</strong> يحدد لاحقاً`;
+
+                    // زر الموافقة إذا كانت الحالة بانتظار الموافقة
+                    let approvalButton = '';
+                    if (status === 'Pending_Approval') {
+                        approvalButton = `
+                            <div style="margin-top:15px;padding-top:15px;border-top:1px dashed #eee;">
+                                <p style="color:var(--danger);font-weight:bold;margin-bottom:10px;">
+                                    <i class="fas fa-exclamation-triangle"></i> يوجد طلب أعمال إضافية بانتظار موافقتك.
+                                </p>
+                                <p style="color:var(--dark);margin-bottom:10px;">
+                                    <strong>ملاحظات المركز:</strong> ${booking.manager_approval_notes || 'لا توجد ملاحظات.'}
+                                </p>
+                                <button class="btn btn-success" data-action="approve" data-booking-id="${id}" style="margin-left:10px;">
+                                    <i class="fas fa-check-circle"></i> موافقة على الأعمال
+                                </button>
+                                <button class="btn btn-danger" data-action="reject" data-booking-id="${id}">
+                                    <i class="fas fa-times-circle"></i> رفض الأعمال
+                                </button>
+                            </div>
+                        `;
+                    }
+                    
+                    const cardHtml = document.createElement('div');
+                    cardHtml.className = `tracking-card ${statusClass}`;
+                    cardHtml.innerHTML = `
+                        <div class="tracking-header">
+                            <h3><i class="fas fa-car"></i> لوحة ${booking.car_plate_data}</h3>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="tracking-details">
+                            <p><strong>الخدمة:</strong> ${booking.service_type}</p>
+                            <p><strong>الفني:</strong> ${technicianName}</p>
+                            <p>${ect}</p>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width:${progress}%">${progress}% إنجاز</div>
+                            </div>
+                            ${approvalButton}
+                            <h4><i class="fas fa-comment-dots"></i> سجل إشعارات العمل:</h4>
+                            <div class="tracking-log" id="log-${booking.id}">جاري تحميل الإشعارات...</div>
+                        </div>
+                    `;
+                    trackingCardsContainer.appendChild(cardHtml);
+                    fetchActivityLog(booking.id);
+                });
+                
+                // تحديث عداد الإشعارات
+                const notificationBadge = document.getElementById('notificationBadge');
+                if (pendingAlertCount > 0) {
+                    notificationBadge.textContent = pendingAlertCount;
+                    notificationBadge.style.display = 'flex';
+                } else {
+                    notificationBadge.style.display = 'none';
+                }
+
+
+                document.querySelectorAll('[data-action="approve"]').forEach(btn => {
+                    btn.addEventListener('click', handleCustomerApproval);
+                });
+                document.querySelectorAll('[data-action="reject"]').forEach(btn => {
+                    btn.addEventListener('click', handleCustomerRejection);
+                });
+
             }, error => {
                 console.error("Error fetching customer bookings: ", error);
-                trackingCardsContainer.innerHTML = '<p style="text-align:center;color:var(--danger)">حدث خطأ في جلب بيانات الحجز.</p>';
+                trackingCardsContainer.innerHTML = '<p style="text-align:center;color:var(--danger)">حدث خطأ أثناء تحميل الحجوزات.</p>';
             });
-    }
-
-    function updateNotificationBadge(bookings) {
-        const alertCount = bookings.filter(b => b.is_alert_pending === true).length;
-        notificationBadge.textContent = alertCount;
-        notificationBadge.style.display = alertCount > 0 ? 'flex' : 'none';
-    }
-
-    function renderTrackingCards(bookings) {
-        trackingCardsContainer.innerHTML = '';
-        if (bookings.length === 0) {
-            trackingCardsContainer.innerHTML = '<p style="text-align:center;color:#666">لم يتم العثور على حجوزات نشطة.</p>';
-            return;
-        }
-        bookings.forEach(booking => {
-            const statusClass = booking.status.toLowerCase().replace(/_/g, '');
-            const statusTextMap = {
-                'pending': 'بانتظار التأكيد',
-                'confirmed': 'تم التأكيد (بانتظار الاستلام)',
-                'received': 'تم الاستلام',
-                'in_progress': 'العمل جارٍ',
-                'paused': 'متوقف مؤقتاً',
-                'pendingapproval': 'بانتظار موافقتك',
-                'complete': 'اكتمل العمل (جاهز للاستلام)'
-            };
-            const statusText = statusTextMap[statusClass] || booking.status;
-            const progress = booking.progress_percentage || 0;
-            const technicianName = booking.technician_name || 'قيد التخصيص';
-            const ect = booking.estimated_completion_time ?
-                `الوقت المقدر للانتهاء: ${new Date(booking.estimated_completion_time).toLocaleString('ar-SA', { hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'short' })}` :
-                'سيتم التحديد لاحقاً';
-
-            let approvalButton = '';
-            if (booking.is_alert_pending || statusClass === 'pendingapproval') {
-                approvalButton = `<button class="btn btn-danger btn-sm" data-booking-id="${booking.id}" data-action="approve" style="margin-right:15px"><i class="fas fa-check-circle"></i> مراجعة الإضافات والموافقة</button>`;
-            }
-
-            const cardHtml = document.createElement('div');
-            cardHtml.className = `tracking-card ${statusClass}`;
-            cardHtml.innerHTML = `
-                <div class="tracking-header">
-                    <h3><i class="fas fa-car"></i> لوحة ${booking.car_plate_data}</h3>
-                    <span class="status-badge ${statusClass}">${statusText}</span>
-                </div>
-                <div class="tracking-details">
-                    <p><strong>الخدمة:</strong> ${booking.service_type}</p>
-                    <p><strong>الفني:</strong> ${technicianName}</p>
-                    <p><strong>الحالة:</strong> ${ect}</p>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width:${progress}%">${progress}% إنجاز</div>
-                    </div>
-                    ${approvalButton}
-                    <h4><i class="fas fa-comment-dots"></i> سجل إشعارات العمل:</h4>
-                    <div class="tracking-log" id="log-${booking.id}">جاري تحميل الإشعارات...</div>
-                </div>
-            `;
-            trackingCardsContainer.appendChild(cardHtml);
-            fetchActivityLog(booking.id);
-        });
-        document.querySelectorAll('[data-action="approve"]').forEach(btn => {
-            btn.addEventListener('click', handleCustomerApproval);
-        });
     }
 
     function fetchActivityLog(bookingId) {
@@ -952,115 +1172,186 @@
                     logElement.innerHTML = '<p>لا توجد إشعارات حاليًا من الفني.</p>';
                     return;
                 }
+                
                 snapshot.forEach(doc => {
                     const log = doc.data();
                     let typeClass = 'info';
-                    if (log.type.includes('Alert') || log.type.includes('Paused')) typeClass = 'alert';
-                    else if (log.type.includes('Approval')) typeClass = 'approval';
-                    const time = log.timestamp ? log.timestamp.toDate().toLocaleTimeString('ar-SA', { hour: 'numeric', minute: '2-digit' }) : '';
-                    const p = document.createElement('p');
-                    p.className = `log-item ${typeClass}`;
-                    p.innerHTML = `<strong>(${time})</strong>: ${log.message}`;
-                    logElement.appendChild(p);
+                    let icon = '💬';
+
+                    if (log.type === 'Alert') {
+                        typeClass = 'alert';
+                        icon = '⚠️';
+                    } else if (log.type === 'Completion') {
+                        typeClass = 'approval';
+                        icon = '✅';
+                    } else if (log.type === 'Customer_Alert_Sent') {
+                        typeClass = 'alert';
+                        icon = '🔔';
+                    }
+
+                    const timestamp = log.timestamp ? new Date(log.timestamp.toDate()).toLocaleString('ar-SA', {
+                        year: 'numeric', month: 'numeric', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    }) : '';
+
+                    const logItem = document.createElement('div');
+                    logItem.className = `log-item ${typeClass}`;
+                    logItem.innerHTML = `${icon} <strong>${timestamp}</strong>: ${log.message} - (${log.user_role || 'النظام'})`;
+                    logElement.appendChild(logItem);
                 });
             })
-            .catch(error => {
-                console.error("Error fetching activity log: ", error);
-                logElement.innerHTML = '<p>حدث خطأ في جلب سجل النشاط.</p>';
-            });
+            .catch(error => console.error("Error fetching activity log: ", error));
     }
-
+    
+    // معالجة موافقة العميل على الأعمال الإضافية
     async function handleCustomerApproval(e) {
         const bookingId = e.target.dataset.bookingId;
-        if (confirm("هل توافق على الأعمال الإضافية التي أشار إليها الفني؟ (الموافقة ستسمح للفني بالاستمرار في العمل)")) {
-            try {
-                await bookingsCollection.doc(bookingId).update({
-                    status: 'In_Progress',
-                    is_alert_pending: false,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                await activityLogCollection.add({
-                    booking_id: bookingId,
-                    user_role: 'Customer',
-                    type: 'Approval_Received',
-                    message: `العميل ${currentUserName} وافق على الأعمال الإضافية.`,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showToast('تم إرسال موافقتك بنجاح. سيتم استئناف العمل.', 'success');
-            } catch (error) {
-                showToast('خطأ في إرسال الموافقة: ' + error.message, 'error');
-            }
-        } else {
-            showToast('تم رفض الأعمال الإضافية. يرجى التواصل مع المركز.', 'warning');
+        e.target.disabled = true;
+
+        try {
+            await bookingsCollection.doc(bookingId).update({
+                status: 'In_Progress', // العودة إلى قيد العمل
+                is_alert_pending: false, // إزالة التنبيه
+                progress_percentage: 1, // بدء العمل رسمياً
+                manager_approval_notes: firebase.firestore.FieldValue.delete() // حذف الملاحظات
+            });
+
+            await activityLogCollection.add({
+                booking_id: bookingId,
+                user_role: 'Customer',
+                type: 'Completion', // نوع النجاح
+                message: `وافق العميل ${currentUserName} على الأعمال الإضافية. تم استئناف العمل.`,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            showToast('تمت الموافقة بنجاح. سيتم استئناف العمل على سيارتك.', 'success');
+            // لا حاجة لـ fetchCustomerBookings، onSnapshot ستقوم بالتحديث تلقائياً
+        } catch (error) {
+            showToast('خطأ في معالجة الموافقة: ' + error.message, 'error');
+            e.target.disabled = false;
         }
     }
 
-    // ========= تحميل البيانات المحفوظة للعميل =========
-    async function loadCustomerSavedData(userId) {
+    // معالجة رفض العميل للأعمال الإضافية
+    async function handleCustomerRejection(e) {
+        const bookingId = e.target.dataset.bookingId;
+        e.target.disabled = true;
+
+        const confirmation = confirm('هل أنت متأكد من رفض الأعمال الإضافية؟ سيتم إكمال العمل الأصلي فقط أو يمكنك تحديد موعد تسليم.');
+        if (!confirmation) {
+            e.target.disabled = false;
+            return;
+        }
+
         try {
-            const snapshot = await bookingsCollection
-                .where('customer_id', '==', userId)
-                .orderBy('createdAt', 'desc')
-                .limit(1)
-                .get();
-            if (!snapshot.empty) {
-                const lastBooking = snapshot.docs[0].data();
-                document.getElementById('name').value = lastBooking.customer_name;
-                document.getElementById('carType').value = lastBooking.car_type;
-                document.getElementById('carModel').value = lastBooking.car_model;
-                if (lastBooking.plate_type === 'Saudi') {
-                    document.getElementById('plateTypeSaudi').checked = true;
-                    const plateParts = lastBooking.car_plate_data.split(' - ');
-                    if (plateParts.length === 2) {
-                        document.getElementById('plateLetters').value = plateParts[0];
-                        document.getElementById('plateNumbers').value = plateParts[1];
+            await bookingsCollection.doc(bookingId).update({
+                status: 'Paused', // تجميد مؤقت لحين قرار الإدارة أو تحديد التسليم
+                is_alert_pending: false, // إزالة التنبيه
+                manager_approval_notes: 'العميل رفض الأعمال الإضافية. بانتظار قرار الإدارة أو تحديد موعد تسليم.',
+            });
+
+            await activityLogCollection.add({
+                booking_id: bookingId,
+                user_role: 'Customer',
+                type: 'Alert',
+                message: `رفض العميل ${currentUserName} الأعمال الإضافية. تم تجميد العمل الأصلي مؤقتاً لحين مراجعة الإدارة.`,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            showToast('تم تسجيل رفضك. ستقوم الإدارة بمراجعة الأمر.', 'warning');
+        } catch (error) {
+            showToast('خطأ في معالجة الرفض: ' + error.message, 'error');
+            e.target.disabled = false;
+        }
+    }
+
+
+    // ========= جلب البيانات المحفوظة (الاسم ونوع السيارة والموديل) =========
+    async function loadSavedData(userId) {
+        const nameInput = document.getElementById('name');
+        try {
+            // جلب الاسم ورقم الجوال من Firestore
+            const doc = await usersCollection.doc(userId).get();
+            if (doc.exists) {
+                const userData = doc.data();
+                nameInput.value = userData.name || '';
+                phoneInput.value = userData.phone || ''; // رقم الجوال مسجل تلقائياً ولا يمكن تعديله
+
+                // جلب آخر حجز لتعبئة بيانات السيارة
+                const lastBookingSnap = await bookingsCollection
+                    .where('customer_id', '==', userId)
+                    .orderBy('createdAt', 'desc')
+                    .limit(1)
+                    .get();
+
+                if (!lastBookingSnap.empty) {
+                    const lastBooking = lastBookingSnap.docs[0].data();
+                    document.getElementById('carType').value = lastBooking.car_type || '';
+                    document.getElementById('carModel').value = lastBooking.car_model || '';
+                    
+                    // تعبئة لوحة السيارة
+                    if (lastBooking.plate_type === 'Foreign') {
+                        document.getElementById('plateTypeForeign').checked = true;
+                        document.getElementById('plateTypeForeign').dispatchEvent(new Event('change')); // لتحديث الواجهة
+                        foreignPlate.value = lastBooking.car_plate_data;
+                    } else {
+                        document.getElementById('plateTypeSaudi').checked = true;
+                        document.getElementById('plateTypeSaudi').dispatchEvent(new Event('change'));
+                        
+                        const [lettersPart, numbers] = lastBooking.car_plate_data.split(' - ');
+                        const lettersArray = lettersPart.trim().split(/\s+/); // Split by one or more spaces
+
+                        // محاولة تعبئة الـ 3 حقول للحروف
+                        if (lettersArray.length === 3) {
+                            plateLetter1.value = lettersArray[0];
+                            plateLetter2.value = lettersArray[1];
+                            plateLetter3.value = lettersArray[2];
+                        } else {
+                            // معالجة للبيانات القديمة التي قد تكون بدون مسافات (مثل أبج)
+                            const cleanLetters = lettersPart.replace(/\s/g, '');
+                            if (cleanLetters.length >= 3) {
+                                plateLetter1.value = cleanLetters[0];
+                                plateLetter2.value = cleanLetters[1];
+                                plateLetter3.value = cleanLetters[2];
+                            }
+                        }
+                        plateNumbers.value = numbers.trim();
                     }
-                    saudiPlateInputs.style.display = 'flex';
-                    foreignPlateInput.style.display = 'none';
-                    plateLetters.disabled = false;
-                    plateNumbers.disabled = false;
-                    foreignPlate.disabled = true;
-                } else {
-                    document.getElementById('plateTypeForeign').checked = true;
-                    document.getElementById('foreignPlate').value = lastBooking.car_plate_data;
-                    saudiPlateInputs.style.display = 'none';
-                    foreignPlateInput.style.display = 'block';
-                    plateLetters.disabled = true;
-                    plateNumbers.disabled = true;
-                    foreignPlate.disabled = false;
+
+                    savedDataMessage.style.display = 'block';
                 }
-                savedDataMessage.style.display = 'block';
-                showToast('تم تعبئة البيانات الأساسية من الحجوزات السابقة.', 'info');
             }
         } catch (error) {
             console.error("Error loading saved data: ", error);
         }
     }
 
+
     // ========= تحديث واجهة المصادقة =========
     function updateUIForAuthentication(loggedIn, name, phone) {
         if (loggedIn) {
+            // حالة تسجيل الدخول
             authButton.style.display = 'none';
             logoutButton.style.display = 'block';
             document.getElementById('heroTitle').textContent = `أهلاً بك، ${name}`;
             document.getElementById('heroSubtitle').textContent = `يمكنك تتبع سير عمل سيارتك أو حجز موعد جديد.`;
             authMessage.style.display = 'none';
-            phoneInput.value = phone;
-            phoneInput.disabled = true;
+            phoneInput.value = phone || ''; // تعبئة رقم الجوال
             submitBookingBtn.disabled = !timeSelect.value;
-            bookingSection.style.display = 'block';
+            submitBookingBtn.textContent = 'تأكيد الحجز';
             customerTrackingSection.style.display = 'block';
-            loadCustomerSavedData(currentUserId);
+            loadSavedData(currentUserId);
             fetchCustomerBookings(currentUserId);
         } else {
+            // حالة عدم تسجيل الدخول
             authButton.style.display = 'block';
             logoutButton.style.display = 'none';
-            document.getElementById('heroTitle').textContent = 'حجوزات صيانة السيارات';
-            document.getElementById('heroSubtitle').textContent = 'أحجز موعدك بسهولة لصيانة سيارتك في مركز تقني المحركات بصناعية أبها الجديدة';
+            document.getElementById('heroTitle').textContent = `حجوزات صيانة السيارات`;
+            document.getElementById('heroSubtitle').textContent = `أحجز موعدك بسهولة لصيانة سيارتك في مركز تقني المحركات بصناعية أبها الجديدة`;
             authMessage.style.display = 'block';
             phoneInput.value = '';
-            phoneInput.disabled = true;
             submitBookingBtn.disabled = true;
+            submitBookingBtn.textContent = 'تأكيد الحجز المبدئي';
             customerTrackingSection.style.display = 'none';
             savedDataMessage.style.display = 'none';
         }
@@ -1075,20 +1366,26 @@
 
     // ========= التهيئة الأولية =========
     function init() {
+        // تحديد أقل تاريخ مسموح به (اليوم)
         const today = new Date();
         today.setDate(today.getDate());
         dateInput.min = today.toISOString().split('T')[0];
+
+        // الاستماع لتحديثات التواريخ المغلقة
         initializeClosedDatesListener();
 
+        // التحقق من حالة المستخدم المخزنة محلياً
         const loggedIn = localStorage.getItem('userLoggedIn') === 'true';
         const userId = localStorage.getItem('currentUserId');
 
         if (loggedIn && userId) {
+            // إذا كان مسجل الدخول، جلب بياناته من Firestore
             usersCollection.doc(userId).get().then(doc => {
                 if (doc.exists) {
                     const userData = doc.data();
                     initAuthenticationState(true, userId, userData.name, userData.phone);
                 } else {
+                    // مسجل محلياً لكن غير موجود في Firestore
                     localStorage.removeItem('userLoggedIn');
                     initAuthenticationState(false, null, null, null);
                 }
