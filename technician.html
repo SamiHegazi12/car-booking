@@ -362,7 +362,8 @@
 const db = firebase.firestore();
     const auth = firebase.auth();
     const bookingsCollection = db.collection('bookings');
-    const techniciansCollection = db.collection('technicians');
+    // Change to 'users' to match the Admin panel
+const techniciansCollection = db.collection('users');
 
     // 2. Global Variables
     let currentTechnicianId = null;
