@@ -20,6 +20,7 @@
             --danger: #d32f2f;
             --success: #388e3c;
             --info: #0288d1;
+            --card-bg: white; /* Added for stats card */
         }
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif;}
         body{background:#f5f5f5;color:var(--dark);line-height:1.6}
@@ -29,6 +30,18 @@
         .logo h1{font-size:1.8rem}
         .nav-buttons button{background:var(--danger);color:white;border:none;padding:10px 15px;border-radius:5px;cursor:pointer;font-size:.9rem;font-weight:600;transition:all .3s}
         .nav-buttons button:hover{background:#b71c1c}
+        
+        /* Stats Grid */
+        .stats-grid {display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 25px;}
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .stat-card h3 {font-size: 2.2rem; color: var(--primary);}
+        .stat-card p {font-size: 0.9rem; color: #777; margin-top: 5px;}
         
         /* Dashboard Grid Layout */
         .dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(400px, 1fr));gap:25px}
@@ -100,18 +113,20 @@
         </span>
     </div>
 
+    <div class="stats-grid">
+        <div class="stat-card" id="totalJobs"><h3>0</h3><p>إجمالي الحجوزات</p></div>
+        <div class="stat-card" id="inProgressJobs"><h3>0</h3><p>مهمة قيد التنفيذ</p></div>
+        <div class="stat-card" id="completedJobs"><h3>0</h3><p>مهام مكتملة/مُسلمة</p></div>
+        <div class="stat-card" id="approvalPending"><h3>0</h3><p>طلبات موافقة معلقة</p></div>
+    </div>
     <div class="dashboard-grid">
         
-        <div class="panel">
-            <h2><i class="fas fa-users-cog"></i> إدارة الفنيين</h2>
-            <button class="btn btn-info btn-block" onclick="openModal('addTechModal')" style="margin-bottom: 15px;">
-                <i class="fas fa-plus"></i> إضافة فني جديد
-            </button>
-            <div id="techniciansList" style="max-height: 300px; overflow-y: auto;">
+        <div class="panel" id="techJobsPanel">
+            <h2><i class="fas fa-users-cog"></i> الفنيون ومهامهم</h2>
+            <div id="techniciansList" style="max-height: 400px; overflow-y: auto;">
                 <p style="text-align: center; color: #666;">جاري تحميل الفنيين...</p>
             </div>
         </div>
-
         <div class="panel">
             <h2><i class="fas fa-calendar-check"></i> الحجوزات الجديدة (بانتظار التعيين)</h2>
             <div id="pendingBookingsList" style="max-height: 400px; overflow-y: auto;">
@@ -140,58 +155,19 @@
                 <button type="submit" class="btn btn-success btn-block"><i class="fas fa-check-circle"></i> تعيين المهمة</button>
             </form>
         </div>
-
+        
+        <div class="panel" id="customerHistoryPanel">
+            <h2><i class="fas fa-history"></i> سجل مواعيد العميل</h2>
+            <div id="customerHistoryList" style="max-height: 250px; overflow-y: auto;">
+                <p style="text-align: center; color: #666; margin-top: 20px;">يظهر سجل العميل بعد اختيار حجز.</p>
+            </div>
+        </div>
         <div class="panel">
             <h2><i class="fas fa-exclamation-triangle"></i> طلبات الموافقة (من الفنيين)</h2>
             <div id="approvalRequestsList">
                 <p style="text-align: center; color: #666;">لا توجد طلبات معلقة.</p>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="modal" id="addTechModal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal('addTechModal')">&times;</span>
-        <h3>إضافة فني جديد</h3>
-        <form id="addTechForm">
-            <div class="form-group">
-                <label>الاسم الكامل</label>
-                <input type="text" id="techName" required placeholder="اسم الفني">
-            </div>
-            <div class="form-group">
-                <label>رقم الجوال (سيستخدم للدخول)</label>
-                <input type="tel" id="techPhone" required placeholder="05xxxxxxxx" pattern="05[0-9]{8}">
-                <small style="color: #666; font-size: 0.8rem;">سيتم تحويله تلقائياً إلى اسم مستخدم للنظام.</small>
-            </div>
-            <div class="form-group">
-                <label>كلمة المرور</label>
-                <input type="text" id="techPass" required placeholder="******" minlength="6">
-            </div>
-            
-            <div class="form-group">
-                <label>التخصصات (تم التحديث بناءً على قائمة الخدمات)</label>
-                <select id="techCapabilities" multiple style="height: 160px;">
-                    <option value="ميكانيكا عامة">ميكانيكا عامة (إصلاح عام)</option>
-                    <option value="كهرباء">كهرباء</option>
-                    <option value="فحص كمبيوتر">فحص كمبيوتر</option>
-                    
-                    <option value="زيت وسيفون">زيت وسيفون</option>
-                    <option value="غيار أقمشة">غيار أقمشة (فرامل)</option>
-                    <option value="غيار زيت الجيربوكس">غيار زيت الجيربوكس</option>
-                    <option value="تصفية محرك">تصفية محرك</option>
-                    
-                    <option value="فحص محرك">فحص محرك</option>
-                    <option value="فحص أصوات">فحص أصوات</option>
-                    <option value="أنظمة هيدروليك">أنظمة هيدروليك</option>
-                    
-                    <option value="سمكرة ودهان">سمكرة ودهان</option>
-                    <option value="تكييف">تكييف</option>
-                </select>
-                <small style="color: var(--info);">اضغط Ctrl (أو Command) لتحديد أكثر من خيار</small>
-            </div>
-            <button type="submit" class="btn btn-success btn-block">إنشاء حساب الفني</button>
-        </form>
     </div>
 </div>
 
@@ -231,10 +207,6 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
     
-    // Initialize Secondary App (For creating technicians without logging out)
-    const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
-    const secondaryAuth = secondaryApp.auth();
-
     // Collections
     const bookingsCollection = db.collection('bookings');
     const usersCollection = db.collection('users');
@@ -265,7 +237,8 @@
                     document.getElementById('loginModal').style.display = 'none';
                     
                     // Load Data
-                    loadTechniciansList();
+                    fetchStatistics(); // NEW: Load statistics
+                    loadTechniciansList(); // UPDATED: Load techs with job counts
                     fetchPendingBookings();
                     fetchApprovalRequests();
                     return;
@@ -296,117 +269,123 @@
     document.getElementById('logoutButton').addEventListener('click', () => {
         auth.signOut();
     });
-
-    // ========= 1. Technician Management =========
     
-    // Load Technicians
-    function loadTechniciansList() {
-        usersCollection.where('role', '==', 'technician').onSnapshot(snapshot => {
-            const list = document.getElementById('techniciansList');
-            const select = document.getElementById('technicianSelect');
-            
-            list.innerHTML = '';
-            select.innerHTML = '<option value="">-- اختر الفني --</option>';
-
-            if (snapshot.empty) {
-                list.innerHTML = '<p style="text-align:center; padding:10px;">لا يوجد فنيين مسجلين.</p>';
-                return;
-            }
+    // ======== NEW: Statistics Logic ========
+    function fetchStatistics() {
+        bookingsCollection.onSnapshot(snapshot => {
+            const total = snapshot.size;
+            let inProgress = 0;
+            let completed = 0;
+            let delivered = 0;
+            let pendingApproval = 0;
 
             snapshot.forEach(doc => {
-                const tech = doc.data();
-                const caps = tech.capabilities ? tech.capabilities.join(', ') : 'عام';
+                const status = doc.data().status;
+                if (status === 'In_Progress' || status === 'Paused' || status === 'Received' || status === 'Confirmed') {
+                    inProgress++;
+                } else if (status === 'Complete') {
+                    completed++;
+                } else if (status === 'Delivered') {
+                    delivered++;
+                }
                 
-                // Add to list
-                const item = document.createElement('div');
-                item.className = 'tech-item';
-                item.innerHTML = `
-                    <div class="tech-info">
-                        <strong><i class="fas fa-user-wrench"></i> ${tech.name}</strong>
-                        <small>${tech.phone} | ${caps}</small>
-                    </div>
-                    <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteTechnician('${doc.id}')">
-                        <i class="fas fa-trash"></i> حذف
-                    </button>
-                `;
-                list.appendChild(item);
+                if (doc.data().approval_pending_manager === true || status === 'Pending_Approval') {
+                    pendingApproval++;
+                }
+            });
 
-                // Add to dropdown
-                const option = document.createElement('option');
-                option.value = doc.id;
-                option.textContent = `${tech.name} (${caps})`;
-                select.appendChild(option);
+            document.getElementById('totalJobs').innerHTML = `<h3>${total}</h3><p>إجمالي الحجوزات</p>`;
+            document.getElementById('inProgressJobs').innerHTML = `<h3 style="color:var(--info)">${inProgress}</h3><p>مهمة قيد التنفيذ/انتظار</p>`;
+            document.getElementById('completedJobs').innerHTML = `<h3 style="color:var(--success)">${completed + delivered}</h3><p>مهام مكتملة/مُسلمة</p>`;
+            document.getElementById('approvalPending').innerHTML = `<h3 style="color:var(--danger)">${pendingApproval}</h3><p>طلبات موافقة معلقة</p>`;
+        });
+    }
+
+    // ======== UPDATED: Technician Jobs List Logic ========
+    
+    function loadTechniciansList() {
+        // 1. Fetch all technicians
+        usersCollection.where('role', '==', 'technician').onSnapshot(techSnapshot => {
+            const techData = {};
+            techSnapshot.forEach(doc => {
+                techData[doc.id] = { ...doc.data(), jobsCount: 0 };
+            });
+
+            // 2. Fetch active bookings (for counts)
+            bookingsCollection.where('status', 'not-in', ['Delivered', 'Canceled']).onSnapshot(bookingSnapshot => {
+                // Reset job counts
+                Object.keys(techData).forEach(id => techData[id].jobsCount = 0);
+                
+                // Tally jobs
+                bookingSnapshot.forEach(doc => {
+                    const techId = doc.data().technician_id;
+                    // Only count if assigned and not delivered/canceled
+                    if (techId && techData[techId] && doc.data().status !== 'Delivered') { 
+                        techData[techId].jobsCount++;
+                    }
+                });
+
+                renderTechniciansList(techData);
+                populateTechnicianSelect(techData);
             });
         });
     }
 
-    // Add Technician (using Secondary App)
-    document.getElementById('addTechForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const btn = e.target.querySelector('button');
-        btn.disabled = true;
-        btn.textContent = 'جاري الإنشاء...';
+    function renderTechniciansList(techData) {
+        const list = document.getElementById('techniciansList');
+        list.innerHTML = '';
+        const sortedTechs = Object.values(techData).sort((a, b) => b.jobsCount - a.jobsCount);
 
-        const name = document.getElementById('techName').value;
-        const phone = document.getElementById('techPhone').value;
-        const pass = document.getElementById('techPass').value;
-        const caps = Array.from(document.getElementById('techCapabilities').selectedOptions).map(o => o.value);
+        if (sortedTechs.length === 0) {
+            list.innerHTML = '<p style="text-align:center; padding:10px;">لا يوجد فنيين مسجلين.</p>';
+            return;
+        }
+
+        sortedTechs.forEach(tech => {
+            const caps = tech.capabilities ? tech.capabilities.join(', ') : 'عام';
+            const item = document.createElement('div');
+            item.className = 'tech-item';
+            const countColor = tech.jobsCount > 3 ? 'var(--danger)' : tech.jobsCount > 0 ? 'var(--secondary)' : '#666';
+
+            item.innerHTML = `
+                <div class="tech-info">
+                    <strong><i class="fas fa-user-wrench"></i> ${tech.name}</strong>
+                    <small>التخصصات: ${caps}</small>
+                </div>
+                <span style="font-weight: bold; color: ${countColor}; font-size: 1.1rem; min-width: 50px; text-align: left;">
+                    ${tech.jobsCount} <i class="fas fa-tools"></i>
+                </span>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    // Function to populate the dropdown for assignment
+    function populateTechnicianSelect(techData) {
+        const select = document.getElementById('technicianSelect');
+        select.innerHTML = '<option value="">-- اختر الفني --</option>';
         
-        // Create Proxy Email: 05xxxxxx@admintech.com
-        const proxyEmail = `${phone.replace(/[^\d]/g, '')}@admintech.com`;
+        Object.keys(techData).forEach(id => {
+            const tech = techData[id];
+            const caps = tech.capabilities ? tech.capabilities.join(', ') : 'عام';
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = `${tech.name} (${caps}) - (${tech.jobsCount} مهمة نشطة)`;
+            select.appendChild(option);
+        });
+    }
 
-        try {
-            // 1. Create in Auth
-            const userCred = await secondaryAuth.createUserWithEmailAndPassword(proxyEmail, pass);
-            
-            // 2. Save to Firestore (users collection)
-            await usersCollection.doc(userCred.user.uid).set({
-                name: name,
-                phone: phone,
-                email: proxyEmail,
-                role: 'technician',
-                capabilities: caps,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                status: 'active'
-            });
 
-            // 3. Sign out secondary
-            await secondaryAuth.signOut();
-
-            alert('تم إضافة الفني بنجاح!');
-            closeModal('addTechModal');
-            document.getElementById('addTechForm').reset();
-        } catch (error) {
-            alert('خطأ: ' + error.message);
-            console.error(error);
-        } finally {
-            btn.disabled = false;
-            btn.textContent = 'إنشاء حساب الفني';
-        }
-    });
-
-    // Delete Technician
-    window.deleteTechnician = async (id) => {
-        if(!confirm('هل أنت متأكد؟ سيمنع هذا الفني من الدخول للنظام.')) return;
-        try {
-            await usersCollection.doc(id).delete();
-            alert('تم حذف سجل الفني.');
-        } catch(e) {
-            alert('خطأ: ' + e.message);
-        }
-    };
-
-    // ========= 2. Pending Bookings & Assignment =========
+    // ========= 2. Pending Bookings & Assignment (Logic unchanged) =========
     
     function fetchPendingBookings() {
         bookingsCollection
-            .where('status', 'in', ['Received', 'Confirmed']) // Fetch both new and confirmed but not assigned
+            .where('status', 'in', ['Received', 'Confirmed']) 
             .orderBy('createdAt', 'desc')
             .onSnapshot(snapshot => {
                 const list = document.getElementById('pendingBookingsList');
                 list.innerHTML = '';
                 
-                // Filter client-side for unassigned if needed, or rely on UI
                 const unassigned = snapshot.docs.filter(doc => !doc.data().technician_id);
 
                 if (unassigned.length === 0) {
@@ -455,6 +434,9 @@
         // Show form
         document.getElementById('bookingIdToAssign').value = id;
         document.getElementById('assignmentForm').style.display = 'block';
+        
+        // NEW: Fetch and show customer history
+        fetchCustomerHistory(data.customer_phone, id);
     }
 
     document.getElementById('assignmentForm').addEventListener('submit', async e => {
@@ -472,7 +454,7 @@
                 technician_id: techId,
                 technician_name: techName,
                 work_card_number: cardNum,
-                status: 'In_Progress', // Move directly to In Progress or Confirmed
+                status: 'In_Progress', 
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
@@ -494,8 +476,47 @@
             alert('خطأ: ' + err.message);
         }
     });
+    
+    // ======== NEW: Customer History Logic ========
+    function fetchCustomerHistory(phone, currentBookingId) {
+        const historyList = document.getElementById('customerHistoryList');
+        historyList.innerHTML = '<p style="text-align: center; color: var(--info);">جاري تحميل السجل...</p>';
 
-    // ========= 3. Approvals Logic =========
+        bookingsCollection
+            .where('customer_phone', '==', phone)
+            .orderBy('createdAt', 'desc')
+            .limit(10) // Limit to last 10 visits for performance
+            .get()
+            .then(snapshot => {
+                historyList.innerHTML = '';
+                const history = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                if (history.length <= 1) { // Will be 1 if it only contains the current booking
+                    historyList.innerHTML = '<p style="text-align: center; color: #666;">لا يوجد سجل زيارات سابقة لهذا العميل.</p>';
+                    return;
+                }
+
+                history.forEach(b => {
+                    if (b.id === currentBookingId) return; // Skip the current booking
+
+                    const statusColor = b.status === 'Delivered' ? 'var(--success)' : b.status === 'Canceled' ? 'var(--danger)' : 'var(--info)';
+                    const item = document.createElement('div');
+                    item.style.padding = '8px';
+                    item.style.borderBottom = '1px dashed #eee';
+                    item.innerHTML = `
+                        <p style="font-weight: 500;">${b.car_plate_data} | ${b.service_type}</p>
+                        <small style="color: #999;">تاريخ: ${b.date} | الحالة: <span style="color: ${statusColor};">${b.status.replace(/_/g, ' ')}</span></small>
+                    `;
+                    historyList.appendChild(item);
+                });
+            })
+            .catch(e => {
+                historyList.innerHTML = '<p style="text-align: center; color: var(--danger);">فشل تحميل سجل العميل.</p>';
+            });
+    }
+    // ===========================================
+
+    // ========= 3. Approvals Logic (Logic unchanged) =========
     
     function fetchApprovalRequests() {
         bookingsCollection
