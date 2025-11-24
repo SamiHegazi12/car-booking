@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engine Tech - Technician Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>مركز تقني المحركات - لوحة تحكم الفني</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -12,407 +12,440 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     
     <style>
-        /* --- KEEPING YOUR EXACT CSS UNTOUCHED --- */
+        /* --- Keep your CSS styles here --- */
         :root { --primary: #2c5aa0; --secondary: #f8a41c; --light: #f4f6f9; --dark: #343a40; --success: #28a745; --danger: #dc3545; --info: #17a2b8; --card-bg: #ffffff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: var(--light); color: var(--dark); min-height: 100vh; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        header { background: var(--dark); color: white; padding: 15px 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--light); color: var(--dark); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: var(--primary); color: white; padding: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,.1); }
         .header-content { display: flex; justify-content: space-between; align-items: center; }
-        .logo h1 { font-size: 1.5rem; color: var(--secondary); margin: 0; }
-        .nav-buttons button { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 500; transition: background 0.3s; }
-        .nav-buttons button:hover { background: #c82333; }
-        #dashboard { display: none; }
-        .welcome-bar { background: var(--primary); color: white; padding: 15px 20px; margin-bottom: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-        .welcome-bar h2 { font-size: 1.8rem; }
-        .task-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
-        .task-card { background: var(--card-bg); border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); transition: all 0.3s; }
-        .task-card:hover { box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
-        .card-header h3 { color: var(--primary); font-size: 1.4rem; }
-        .status-badge { padding: 5px 10px; border-radius: 5px; font-weight: bold; color: white; font-size: 0.8rem; }
-        .status-pending { background: #6c757d; }
-        .status-confirmed { background: var(--info); }
-        .status-received { background: var(--primary); }
-        .status-in_progress { background: var(--success); }
-        .status-paused { background: var(--secondary); }
-        .status-pending_approval { background: var(--danger); }
-        .status-complete { background: #34495e; }
-        .status-delivered { background: #00bcd4; }
-        .card-body p { margin-bottom: 8px; font-size: 0.95rem; }
-        .card-body strong { color: var(--primary); font-weight: 500; }
-        .progress-bar-container { background: #e9ecef; border-radius: 5px; margin: 15px 0; overflow: hidden; }
-        .progress-bar { height: 25px; background: var(--success); text-align: center; line-height: 25px; color: white; font-weight: bold; transition: width 0.5s ease-in-out; font-size: 0.85rem; min-width: 15px; }
-        .card-actions { margin-top: 15px; text-align: right; }
-        .card-actions button { background: var(--secondary); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: 500; transition: all 0.3s; }
-        .card-actions button:hover { background: #e69500; transform: translateY(-1px); }
-        #loginModal { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 10px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        .logo h1 { font-size: 1.5rem; }
+        .nav-buttons button { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: .9rem; font-weight: 600; transition: all .3s; }
+        .nav-buttons button:hover { background: #b71c1c; }
+
+        .welcome-bar { background: #e0f7fa; color: #006064; padding: 15px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .welcome-bar h2 { font-size: 1.4rem; margin: 0; }
+        .tasks-count { background: #006064; color: white; padding: 5px 15px; border-radius: 15px; font-size: 0.9rem; }
+
+        .tasks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .task-card { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; border-right: 5px solid var(--primary); }
+        
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;}
+        .task-header h3 { font-size: 1.1rem; color: var(--primary); }
+        .status-tag { padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: 700; color: white; }
+        .status-tag.Received { background: #ffc107; color: var(--dark); }
+        .status-tag.Confirmed { background: #00bcd4; }
+        .status-tag.In_Progress { background: var(--success); }
+        .status-tag.Paused { background: var(--secondary); }
+        .status-tag.Pending_Approval { background: var(--danger); }
+        .status-tag.Complete { background: #6c757d; }
+        
+        .car-info p { margin: 5px 0; font-size: 0.9rem; }
+        .progress-bar-container { background: #eee; border-radius: 5px; margin: 10px 0; height: 8px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); transition: width 0.4s; }
+        
+        .ect-info { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: #555; margin-top: 10px;}
+
+        .alert-message { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin: 10px 0; border-right: 3px solid #ffc107; font-size: 0.85rem;}
+
+        .update-btn { background: var(--secondary); color: var(--dark); border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: 700; margin-top: 15px; width: 100%; transition: background 0.3s; }
+        .update-btn:hover { background: #ffa000; }
+
+        /* Login Modal Styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; }
         .modal-content h3 { color: var(--primary); margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; margin-bottom: 5px; font-weight: 500; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
-        .modal-content .btn { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; transition: background 0.3s; }
-        .modal-content .btn:hover { background: #1e3a8a; }
-        #updateModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 3000; justify-content: center; align-items: center; }
-        #updateModal .modal-content { max-width: 500px; }
-        .modal-footer { margin-top: 20px; display: flex; justify-content: space-between; }
-        .modal-footer button { padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer; font-weight: 500; }
-        .modal-footer .btn-save { background: var(--success); color: white; }
-        .modal-footer .btn-cancel { background: #ccc; color: var(--dark); }
-        #toast { display: none; position: fixed; bottom: 20px; right: 20px; background-color: var(--dark); color: white; padding: 15px; border-radius: 5px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 4000; }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .btn { display: inline-block; background: var(--primary); color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; width: 100%; }
+
+        /* Update Modal Specific */
+        #updateModal .modal-content { max-width: 600px; text-align: right; }
+        #updateModal h3 { text-align: center; }
+        #progressValue { font-weight: bold; color: var(--primary); margin-right: 5px;}
+        .form-group.row { display: flex; gap: 15px; }
+        .form-group.row > div { flex: 1; }
+
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1001;
+            bottom: 30px;
+            right: 30px;
+            font-size: 17px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .toast.show { visibility: visible; -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @-webkit-keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @-webkit-keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-content">
-            <div class="logo">
-                <h1>ENGINE TECH</h1>
+
+<div class="modal" id="loginModal" style="display: flex;">
+    <div class="modal-content">
+        <h3>تسجيل دخول الفني</h3>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>رقم الجوال</label>
+                <input type="tel" id="loginPhone" required placeholder="مثال: 05xxxxxxxxx">
             </div>
+            <div class="form-group">
+                <label>كلمة السر</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn">دخول</button>
+        </form>
+    </div>
+</div>
+
+<div class="container" id="mainContent" style="display:none">
+    <header>
+        <div class="header-content">
+            <div class="logo"><h1><i class="fas fa-wrench"></i> لوحة الفني</h1></div>
             <div class="nav-buttons">
-                <button id="logoutButton" style="display: none;">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
+                <button id="logoutButton"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
         </div>
     </header>
-
-    <div class="container" id="dashboard">
-        <div class="welcome-bar">
-            <h2 id="welcomeMessage">Welcome, Technician!</h2>
-            <p>Your Assigned Tasks: <span id="taskCount">0</span></p>
-        </div>
-
-        <div class="task-grid" id="assignedTasksContainer">
-            <p style="text-align: center; grid-column: 1 / -1; color: #666;">No active tasks assigned yet.</p>
-        </div>
-    </div>
     
-    <div id="loginModal">
-        <div class="modal-content">
-            <h3>Technician Login</h3>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginPhone">Phone Number / Email</label>
-                    <input type="text" id="loginPhone" required placeholder="05XXXXXXXX or Email">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit" class="btn">Login</button>
-            </form>
-            <p style="margin-top: 15px; font-size: 0.9rem; color: #777;">** Use the account created in Admin Panel **</p>
-        </div>
+    <div class="welcome-bar">
+        <h2 id="welcomeMessage">مرحباً!</h2>
+        <span class="tasks-count" id="assignedTasksCount">مهامك المعينة: 0</span>
     </div>
 
-    <div id="updateModal">
-        <div class="modal-content">
-            <h3>Update Task Status</h3>
-            <h4 id="updateCarPlate" style="color: var(--secondary); margin-bottom: 20px;"></h4>
-            <form id="updateForm">
-                <input type="hidden" id="bookingIdInput">
-
-                <div class="form-group">
-                    <label for="updateStatus">Current Status</label>
-                    <select id="updateStatus" required>
-                        <option value="Received">Received</option>
-                        <option value="In_Progress">In Progress</option>
-                        <option value="Paused">Paused</option>
-                        <option value="Pending_Approval">Pending Customer Approval</option>
-                        <option value="Complete">Complete (Ready for Delivery)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="updateProgress">Progress Percentage (%)</label>
-                    <input type="range" id="updateProgress" min="0" max="100" step="5" value="0" oninput="document.getElementById('progressValue').innerText = this.value + '%'">
-                    <p style="text-align: center; margin-top: 5px;">Value: <span id="progressValue">0%</span></p>
-                </div>
-                
-                <div class="form-group">
-                    <label for="updateECT">Estimated Completion Time (ECT)</label>
-                    <input type="datetime-local" id="updateECT" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="updateNote">Note for Customer (Optional Alert)</label>
-                    <textarea id="updateNote" rows="3" placeholder="Enter a note or an update that requires customer attention (e.g., needed extra part, approval required). This will trigger a notification."></textarea>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="submit" class="btn-save"><i class="fas fa-save"></i> Save Updates</button>
-                    <button type="button" class="btn-cancel" onclick="document.getElementById('updateModal').style.display='none'">Cancel</button>
-                </div>
-            </form>
-        </div>
+    <div class="tasks-grid" id="assignedTasksList">
+        <p style="text-align: center; grid-column: 1 / -1; color: #666; padding-top: 50px;">جاري تحميل مهامك...</p>
     </div>
+</div>
 
-    <div id="toast"></div>
+<div class="modal" id="updateModal">
+    <div class="modal-content">
+        <h3 id="modalTitle">تحديث حالة المهمة - <span id="modalPlate"></span></h3>
+        <form id="updateForm">
+            <input type="hidden" id="updateBookingId">
+            <div class="form-group">
+                <label>الحالة الجديدة للمهمة</label>
+                <select id="newStatus" required>
+                    <option value="In_Progress">قيد التنفيذ</option>
+                    <option value="Paused">متوقفة مؤقتاً</option>
+                    <option value="Complete">مكتملة - بانتظار المدير والعميل</option>
+                    <option value="Pending_Approval">بانتظار موافقة المدير (أعمال إضافية)</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <div>
+                    <label>نسبة الإنجاز: <span id="progressValue">0%</span></label>
+                    <input type="range" id="newProgress" min="0" max="100" value="0" step="5" class="slider">
+                </div>
+                <div>
+                    <label>الوقت المقدر للإنجاز الجديد (اختياري)</label>
+                    <input type="text" id="newECT" placeholder="مثال: 3:00 PM Tomorrow">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>ملاحظة للعميل/المدير (مطلوبة عند طلب موافقة)</label>
+                <textarea id="customerNote" rows="3" placeholder="أدخل أي ملاحظة بخصوص الحالة الجديدة..."></textarea>
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-save"></i> حفظ التحديث</button>
+        </form>
+    </div>
+</div>
 
-    <script>
-        // 1. DOM Elements
+<div id="toast" class="toast"></div>
+
+
+<script>
+    // ========= Config (Use your own Firebase Config) =========
+    const firebaseConfig = {
+        apiKey: "AIzaSyAVweTlVbnd92xtTQcZwWo5sH7hiIDPlds",
+        authDomain: "car-service-booking-edfda.firebaseapp.com",
+        projectId: "car-service-booking-edfda",
+        storageBucket: "car-service-booking-edfda.firebasestorage.app",
+        messagingSenderId: "910485632535",
+        appId: "1:910485632535:web:b16fc6f6ee94bb64da0e52",
+        measurementId: "G-XHZVFM91HP"
+    };
+
+    // Initialize App
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    // Collections
+    const bookingsCollection = db.collection('bookings');
+    const usersCollection = db.collection('users');
+    const activityLogCollection = db.collection('activityLog');
+
+    // ========= State =========
+    let currentTechnicianId = null;
+
+    // ========= UI Helpers =========
+    function showToast(message, type = 'info') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'toast show';
+        toast.style.backgroundColor = type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8';
+        setTimeout(() => {
+            toast.className = toast.className.replace('show', '');
+        }, 3000);
+    }
+    
+    // ========= Auth Logic and Role Check (Modified to fix flickering) =========
+    auth.onAuthStateChanged(async user => {
         const loginModal = document.getElementById('loginModal');
-        const loginForm = document.getElementById('loginForm');
-        const dashboard = document.getElementById('dashboard');
-        const logoutButton = document.getElementById('logoutButton');
-        const welcomeMessage = document.getElementById('welcomeMessage');
-        const taskCountElement = document.getElementById('taskCount');
-        const assignedTasksContainer = document.getElementById('assignedTasksContainer');
-        const updateModal = document.getElementById('updateModal');
-        const updateForm = document.getElementById('updateForm');
-        const updateECTInput = document.getElementById('updateECT');
-        const updateProgressRange = document.getElementById('updateProgress');
+        const mainContent = document.getElementById('mainContent');
 
-        // 2. State Variables
-        let currentTechnicianId = null;
-        let currentTechnicianName = null;
-        let updateModalCurrentBookingId = null;
+        if (user) {
+            try {
+                // 1. Fetch user data from Firestore
+                const doc = await usersCollection.doc(user.uid).get();
 
-        // 3. Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyAVweTlVbnd92xtTQcZwWo5sH7hiIDPlds",
-            authDomain: "car-service-booking-edfda.firebaseapp.com",
-            projectId: "car-service-booking-edfda",
-            storageBucket: "car-service-booking-edfda.firebasestorage.app",
-            messagingSenderId: "910485632535",
-            appId: "1:910485632535:web:b16fc6f6ee94bb64da0e52",
-            measurementId: "G-XHZVFM91HP"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+                // 2. Role Check
+                if (doc.exists && doc.data().role === 'technician') {
+                    // SUCCESS: Technician role confirmed
+                    currentTechnicianId = user.uid;
+                    document.getElementById('welcomeMessage').textContent = `مرحباً، ${doc.data().name || 'فني'}!`;
+                    
+                    // Show Main Content and Hide Login Modal
+                    loginModal.style.display = 'none';
+                    mainContent.style.display = 'block'; 
 
-        // 4. Collections
-        const bookingsCollection = db.collection('bookings');
-        const usersCollection = db.collection('users');
-        const activityLogCollection = db.collection('activityLog');
+                    // Start loading tasks
+                    fetchAssignedTasks(currentTechnicianId);
+                    return;
 
-        // 5. Utility
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast ${type}`;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 5000);
-        }
-
-        function formatPlate(data) {
-            if (data.includes('-')) return data.replace('-', ' ');
-            return data;
-        }
-
-        // 6. Auth Logic (Updated for Admin Access)
-        
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                // User is logged in via Firebase Auth
-                try {
-                    // Check user role in 'users' collection
-                    const doc = await usersCollection.doc(user.uid).get();
-                    if (doc.exists) {
-                        const data = doc.data();
-                        
-                        // UPDATED: Added 'admin' to the allowed roles
-                        if (data.role === 'technician' || data.role === 'manager' || data.role === 'admin') {
-                            currentTechnicianId = user.uid;
-                            currentTechnicianName = data.name;
-                            showDashboard();
-                            
-                            // Specific Toast messages for roles
-                            if(data.role === 'manager') {
-                                showToast('Welcome Manager! Viewing as Technician.', 'info');
-                            } else if (data.role === 'admin') {
-                                showToast('Welcome Admin! Viewing as Technician.', 'info');
-                            }
-                        } else {
-                            showToast('Access Denied. Not a technician.', 'error');
-                            auth.signOut();
-                        }
-                    } else {
-                        showToast('User profile not found.', 'error');
-                        auth.signOut();
-                    }
-                } catch (e) {
-                    console.error(e);
+                } else {
+                    // FAILURE: Not a technician (or role is wrong)
+                    alert('تم رفض الوصول. هذا الحساب ليس لديه صلاحيات الفني.');
                     auth.signOut();
                 }
-            } else {
-                hideDashboard();
+            } catch (e) {
+                console.error("Authentication Error:", e);
+                alert('حدث خطأ أثناء التحقق من الصلاحيات.');
+                auth.signOut();
             }
-        });
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const input = document.getElementById('loginPhone').value;
-            const password = document.getElementById('loginPassword').value;
-            let email = input;
-
-            // Logic to handle Phone Number login (convert to proxy email)
-            if (!input.includes('@')) {
-                const cleanPhone = input.replace(/[^\d]/g, '');
-                email = `${cleanPhone}@admintech.com`;
-            }
-
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                // onAuthStateChanged will handle the rest
-            } catch (error) {
-                showToast('Login Failed: ' + error.message, 'error');
-            }
-        });
-
-        logoutButton.addEventListener('click', () => {
-            auth.signOut();
-        });
-        
-        // ** UI Toggles **
-        function showDashboard() {
-            loginModal.style.display = 'none';
-            dashboard.style.display = 'block';
-            logoutButton.style.display = 'block';
-            welcomeMessage.textContent = `Welcome, ${currentTechnicianName}!`;
-            fetchAssignedTasks(currentTechnicianId);
-        }
-
-        function hideDashboard() {
-            loginModal.style.display = 'flex';
-            dashboard.style.display = 'none';
-            logoutButton.style.display = 'none';
-        }
-
-        // 7. Task Management Logic
-
-        function fetchAssignedTasks(techId) {
-            // Note for Admins: This will only show tasks explicitly assigned to your Admin ID.
-            bookingsCollection
-                .where('technician_id', '==', techId)
-                .where('status', '!=', 'Delivered') 
-                .orderBy('date', 'asc') 
-                .onSnapshot(snapshot => {
-                    const tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    renderTasks(tasks);
-                }, error => {
-                    console.error("Error: ", error);
-                });
         }
         
-        function renderTasks(tasks) {
-            assignedTasksContainer.innerHTML = '';
-            taskCountElement.textContent = tasks.length;
+        // Fallback: If no user or signOut was called
+        currentTechnicianId = null;
+        mainContent.style.display = 'none';
+        loginModal.style.display = 'flex';
+    });
 
-            if (tasks.length === 0) {
-                 assignedTasksContainer.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; color: #666;">No active tasks assigned yet.</p>';
-                 return;
-            }
 
-            tasks.forEach(task => {
-                const statusClass = `status-${task.status.toLowerCase().replace(/_/g, '')}`;
-                const statusText = task.status.replace(/_/g, ' ');
-                const progress = task.progress_percentage || 0;
-                const ect = task.estimated_completion_time ? 
-                            new Date(task.estimated_completion_time).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'short' }) : 
-                            'N/A';
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const phone = document.getElementById('loginPhone').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        // Use the proxy email format
+        const email = `${phone}@admintech.com`;
 
-                const cardHtml = document.createElement('div');
-                cardHtml.className = 'task-card';
-                cardHtml.innerHTML = `
-                    <div class="card-header">
-                        <h3><i class="fas fa-car-side"></i> ${formatPlate(task.car_plate_data)}</h3>
-                        <span class="status-badge ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Customer:</strong> ${task.customer_name}</p>
-                        <p><strong>Phone:</strong> <a href="tel:${task.customer_phone}">${task.customer_phone}</a></p>
-                        <p><strong>Service:</strong> ${task.service_type}</p>
-                        <p><strong>Model:</strong> ${task.car_model}</p>
-                        <p><strong>ECT:</strong> <span style="color: ${task.status === 'Complete' ? 'var(--success)' : 'var(--info)'}; font-weight: bold;">${ect}</span></p>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: ${progress}%; background: ${progress === 100 ? 'var(--success)' : 'var(--primary)'};">${progress}% Done</div>
-                        </div>
-                        <p style="font-style: italic; color: #777; margin-top: 10px;"><strong>Notes:</strong> ${task.notes || 'No notes.'}</p>
-                    </div>
-                    <div class="card-actions">
-                        <button onclick="openUpdateModal('${task.id}', '${task.status}', ${progress}, '${task.estimated_completion_time || ''}')"><i class="fas fa-edit"></i> Update Progress</button>
-                        ${task.is_alert_pending ? '<span style="color: var(--danger); font-weight: bold; margin-left: 10px;"><i class="fas fa-exclamation-triangle"></i> Alert!</span>' : ''}
-                    </div>
-                `;
-                assignedTasksContainer.appendChild(cardHtml);
-            });
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+        } catch (error) {
+            alert('خطأ في تسجيل الدخول: ' + error.message);
         }
+    });
 
-        window.openUpdateModal = function(bookingId, status, progress, ect) {
-            updateModalCurrentBookingId = bookingId;
-            document.getElementById('bookingIdInput').value = bookingId;
-            document.getElementById('updateStatus').value = status.replace(/ /g, '_');
-            updateProgressRange.value = progress;
-            document.getElementById('progressValue').innerText = progress + '%';
-            
-            let formattedECT = '';
-            if (ect) {
-                const date = new Date(ect);
-                formattedECT = date.getFullYear() + '-' +
-                                String(date.getMonth() + 1).padStart(2, '0') + '-' +
-                                String(date.getDate()).padStart(2, '0') + 'T' +
-                                String(date.getHours()).padStart(2, '0') + ':' +
-                                String(date.getMinutes()).padStart(2, '0');
-            }
-            updateECTInput.value = formattedECT;
-            const carPlate = assignedTasksContainer.querySelector(`[onclick*="${bookingId}"]`).closest('.task-card').querySelector('h3').textContent;
-            document.getElementById('updateCarPlate').textContent = carPlate;
-            updateModal.style.display = 'flex';
+    document.getElementById('logoutButton').addEventListener('click', () => {
+        auth.signOut();
+    });
+    
+    // Helper function to format status text
+    function formatStatus(status) {
+        switch(status) {
+            case 'Received': return 'تم الاستلام';
+            case 'Confirmed': return 'مؤكدة';
+            case 'In_Progress': return 'قيد التنفيذ';
+            case 'Paused': return 'متوقفة مؤقتاً';
+            case 'Pending_Approval': return 'بانتظار موافقة العميل';
+            case 'Complete': return 'مكتملة';
+            case 'Delivered': return 'مسلمة';
+            default: return status;
         }
-        
-        updateForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const bookingId = document.getElementById('bookingIdInput').value;
-            const newStatus = document.getElementById('updateStatus').value;
-            const newProgress = parseInt(updateProgressRange.value);
-            const newECT = document.getElementById('updateECT').value;
-            const customerNote = document.getElementById('updateNote').value;
-            const ectTimestamp = new Date(newECT).toISOString();
+    }
 
-            try {
-                const updateData = {
-                    status: newStatus,
-                    progress_percentage: newProgress,
-                    estimated_completion_time: ectTimestamp,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
 
-                let logMessage = `Task updated by ${currentTechnicianName}: Status is now ${newStatus.replace(/_/g, ' ')}, ${newProgress}% done.`;
-                let logType = 'Update';
+    // ========= Task Fetching and Rendering =========
+    function fetchAssignedTasks(technicianId) {
+        bookingsCollection
+            .where('technician_id', '==', technicianId)
+            .where('status', 'not-in', ['Delivered', 'Canceled']) // Show active jobs
+            .orderBy('createdAt', 'asc')
+            .onSnapshot(snapshot => {
+                const list = document.getElementById('assignedTasksList');
+                list.innerHTML = '';
+                
+                document.getElementById('assignedTasksCount').textContent = `مهامك المعينة: ${snapshot.size}`;
 
-                if (customerNote || newStatus === 'Pending_Approval') {
-                    updateData.is_alert_pending = true; 
-                    logMessage = customerNote || `Customer approval is pending for new work/update.`;
-                    logType = newStatus === 'Pending_Approval' ? 'Approval_Alert' : 'Info_Alert';
-                } else {
-                     updateData.is_alert_pending = false; 
+                if (snapshot.empty) {
+                    list.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; color: #666; padding-top: 50px;">لا توجد مهام معينة لك حالياً.</p>';
+                    return;
                 }
 
-                await bookingsCollection.doc(bookingId).update(updateData);
-                
-                await activityLogCollection.add({
-                    booking_id: bookingId,
-                    user_role: 'Technician',
-                    technician_id: currentTechnicianId,
-                    type: logType,
-                    message: logMessage,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                snapshot.forEach(doc => {
+                    const b = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'task-card';
+                    
+                    const progress = b.progress || 0;
+                    const statusText = formatStatus(b.status);
+                    
+                    let alertDiv = '';
+                    if (b.is_alert_pending) {
+                        alertDiv = `
+                            <div class="alert-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                ${b.manager_approval_notes || b.technician_notes || 'بانتظار رد المدير/العميل بخصوص الأعمال الإضافية.'}
+                            </div>
+                        `;
+                    } else if (b.status === 'Pending_Approval') {
+                        // This case should be covered by is_alert_pending but as a fallback
+                         alertDiv = `<div class="alert-message" style="background:#fce0e6; color:#a10a24;"><i class="fas fa-hourglass-half"></i> بانتظار موافقة العميل / المدير.</div>`;
+                    }
+                    
+                    div.innerHTML = `
+                        <div class="task-header">
+                            <h3><i class="fas fa-car"></i> ${b.car_plate_data}</h3>
+                            <span class="status-tag ${b.status}">${statusText}</span>
+                        </div>
+                        
+                        <p><strong>العميل:</strong> ${b.customer_name}</p>
+                        <p><strong>الجوال:</strong> ${b.customer_phone}</p>
+                        <p><strong>السيارة:</strong> ${b.car_model} - ${b.service_type}</p>
+                        <p><strong>كرت العمل:</strong> ${b.work_card_number || 'غير محدد'}</p>
+                        
+                        <div class="ect-info">
+                            <span>الوقت المقدر: ${b.ect || 'لم يحدد'}</span>
+                            <span>${progress}% إنجاز</span>
+                        </div>
 
-                showToast('Task updated successfully!', 'success');
-                updateModal.style.display = 'none';
-                updateForm.reset();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        });
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${progress}%;"></div>
+                        </div>
+
+                        ${alertDiv}
+
+                        <button class="update-btn" onclick="openUpdateModal('${doc.id}', '${b.car_plate_data}', '${b.status}', ${progress}, '${b.ect || ''}')">
+                            <i class="fas fa-sync-alt"></i> تحديث التقدم
+                        </button>
+                    `;
+                    list.appendChild(div);
+                });
+            });
+    }
+
+    // ========= Update Modal Logic =========
+    window.openUpdateModal = (id, plate, status, progress, ect) => {
+        document.getElementById('updateBookingId').value = id;
+        document.getElementById('modalPlate').textContent = plate;
         
-        updateModal.addEventListener('click', function(e) {
-            if (e.target === updateModal) updateModal.style.display = 'none';
-        });
-    </script>
+        // Set current values
+        document.getElementById('newStatus').value = status;
+        document.getElementById('newProgress').value = progress;
+        document.getElementById('progressValue').textContent = `${progress}%`;
+        document.getElementById('newECT').value = ect;
+        
+        document.getElementById('updateModal').style.display = 'flex';
+    };
+
+    document.getElementById('newProgress').addEventListener('input', (e) => {
+        document.getElementById('progressValue').textContent = `${e.target.value}%`;
+    });
+
+
+    document.getElementById('updateForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const updateModal = document.getElementById('updateModal');
+        const bookingId = document.getElementById('updateBookingId').value;
+        const newStatus = document.getElementById('newStatus').value;
+        const newProgress = document.getElementById('newProgress').value;
+        const newECT = document.getElementById('newECT').value.trim();
+        const customerNote = document.getElementById('customerNote').value.trim();
+
+        try {
+            const updateData = {
+                status: newStatus,
+                progress: parseInt(newProgress),
+                technician_notes: customerNote || firebase.firestore.FieldValue.delete(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            };
+            
+            if (newECT) {
+                 updateData.ect = newECT;
+            } else {
+                 updateData.ect = firebase.firestore.FieldValue.delete(); // Clear if empty
+            }
+
+            let logMessage = `تم تحديث الحالة إلى: ${formatStatus(newStatus)}، بنسبة إنجاز ${newProgress}%.`;
+            let logType = 'Update';
+
+            // Check if approval is needed or a note is added
+            if (newStatus === 'Pending_Approval') {
+                if (!customerNote) {
+                    showToast('يجب كتابة سبب واضح لطلب الموافقة عند اختيار "بانتظار موافقة المدير"', 'error');
+                    return;
+                }
+                updateData.approval_pending_manager = true; // Flag for Manager
+                updateData.manager_approval_request_reason = customerNote;
+                updateData.technician_notes = firebase.firestore.FieldValue.delete(); // Clear technician notes as it's now a request reason
+                logMessage = `الفني يطلب موافقة المدير: ${customerNote}`;
+                logType = 'Approval_Request';
+            } else {
+                 updateData.approval_pending_manager = false; 
+            }
+            
+            // Check if this status needs customer alert (e.g., status changed or new note)
+             if (customerNote && newStatus !== 'Pending_Approval') {
+                updateData.is_alert_pending = true; // Show customer alert
+                logMessage = `ملاحظة للعميل: ${customerNote}`;
+                logType = 'Info_Alert';
+            } else {
+                updateData.is_alert_pending = false; 
+            }
+
+            // If the job is marked complete, set progress to 100
+            if (newStatus === 'Complete') {
+                updateData.progress = 100;
+            }
+
+            await bookingsCollection.doc(bookingId).update(updateData);
+            
+            await activityLogCollection.add({
+                booking_id: bookingId,
+                user_role: 'Technician',
+                technician_id: currentTechnicianId,
+                type: logType,
+                message: logMessage,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            showToast('تم تحديث المهمة بنجاح!', 'success');
+            updateModal.style.display = 'none';
+            document.getElementById('updateForm').reset();
+        } catch (error) {
+            showToast('خطأ: ' + error.message, 'error');
+        }
+    });
+    
+    // Close modal when clicking outside
+    document.getElementById('updateModal').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('updateModal')) {
+            document.getElementById('updateModal').style.display = 'none';
+        }
+    });
+
+</script>
 </body>
 </html>
