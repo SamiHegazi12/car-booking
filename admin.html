@@ -1,589 +1,404 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم المدير - مركز تقني المحركات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-    <style>
-        :root {
-            --primary: #004d40;
-            --secondary: #ffb300;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --danger: #d32f2f;
-            --success: #388e3c;
-            --info: #0288d1;
-            --card-bg: white; /* Added for stats card */
-        }
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif;}
-        body{background:#f5f5f5;color:var(--dark);line-height:1.6}
-        .container{max-width:1400px;margin:0 auto;padding:20px}
-        header{background:var(--primary);color:white;padding:1rem 0;box-shadow:0 4px 6px rgba(0,0,0,.1);margin-bottom:20px}
-        .header-content{display:flex;justify-content:space-between;align-items:center}
-        .logo h1{font-size:1.8rem}
-        .nav-buttons button{background:var(--danger);color:white;border:none;padding:10px 15px;border-radius:5px;cursor:pointer;font-size:.9rem;font-weight:600;transition:all .3s}
-        .nav-buttons button:hover{background:#b71c1c}
-        
-        /* Stats Grid */
-        .stats-grid {display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 25px;}
-        .stat-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        .stat-card h3 {font-size: 2.2rem; color: var(--primary);}
-        .stat-card p {font-size: 0.9rem; color: #777; margin-top: 5px;}
-        
-        /* Dashboard Grid Layout */
-        .dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(400px, 1fr));gap:25px}
-        
-        .panel{background:white;padding:25px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.05); position: relative;}
-        .panel h2{color:var(--primary);border-bottom:2px solid var(--secondary);padding-bottom:10px;margin-bottom:20px; font-size: 1.3rem;}
-        
-        /* Technician List Styles */
-        .tech-item {display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; transition: background 0.2s;}
-        .tech-item:hover {background: #f9f9f9;}
-        .tech-info strong {display: block; color: var(--primary);}
-        .tech-info small {color: #666;}
-        
-        /* Booking Cards */
-        .booking-card{background:var(--light);border-right:5px solid var(--info);padding:15px;border-radius:5px;margin-bottom:15px;cursor:pointer;transition:transform .2s, box-shadow .2s;}
-        .booking-card:hover{transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1);}
-        .booking-card.selected{border-right-color:var(--secondary);background:#fffde7; border: 1px solid var(--secondary);}
-        
-        /* Forms & Buttons */
-        .form-group{margin-bottom:15px}
-        label{display:block;margin-bottom:5px;font-weight:600}
-        input,select,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:4px}
-        .btn{display: inline-block; background:var(--info);color:white;padding:10px 15px;border:none;border-radius:5px;cursor:pointer;font-weight:600;}
-        .btn-success{background:var(--success)}
-        .btn-danger{background:var(--danger)}
-        .btn-block{width: 100%; text-align: center;}
-
-        /* Modals */
-        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:1000;justify-content:center;align-items:center}
-        .modal-content{background:white;padding:30px;border-radius:10px;width:90%;max-width:500px;position:relative; max-height: 90vh; overflow-y: auto;}
-        .close-modal {position: absolute; left: 20px; top: 20px; font-size: 1.5rem; cursor: pointer; color: #666;}
-        
-        .alert-approval{background:#fff3e0; border-right-color: var(--danger);}
-    </style>
+  <meta charset="UTF-8">
+  <title>لوحة تحكم المدير - مركز تقني المحركات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <style>
+    :root{--primary:#004d40;--secondary:#ffb300;--light:#f8f9fa;--dark:#343a40;--danger:#d32f2f;--success:#388e3c;--info:#0288d1;--card-bg:white}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
+    body{background:#f5f5f5;color:var(--dark);line-height:1.6}
+    .container{max-width:1400px;margin:0 auto;padding:20px}
+    header{background:var(--primary);color:white;padding:1rem 0;box-shadow:0 4px 6px rgba(0,0,0,.1);margin-bottom:20px}
+    .header-content{display:flex;justify-content:space-between;align-items:center}
+    .logo h1{font-size:1.8rem}
+    .nav-buttons button{background:var(--danger);color:white;border:none;padding:10px 15px;border-radius:5px;cursor:pointer;font-size:.9rem;font-weight:600;transition:.3s}
+    .nav-buttons button:hover{background:#b71c1c}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-bottom:25px}
+    .stat-card{background:var(--card-bg);padding:20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,.05);text-align:center}
+    .stat-card h3{font-size:2.2rem;color:var(--primary)}
+    .stat-card p{font-size:.9rem;color:#777;margin-top:5px}
+    .dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:25px}
+    .panel{background:white;padding:25px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.05);position:relative}
+    .panel h2{color:var(--primary);border-bottom:2px solid var(--secondary);padding-bottom:10px;margin-bottom:20px;font-size:1.3rem}
+    .tech-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #eee;transition:background .2s}
+    .tech-item:hover{background:#f9f9f9}
+    .tech-info strong{display:block;color:var(--primary)}
+    .tech-info small{color:#666}
+    .booking-card{background:var(--light);border-right:5px solid var(--info);padding:15px;border-radius:5px;margin-bottom:15px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+    .booking-card:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.1)}
+    .booking-card.selected{border-right-color:var(--secondary);background:#fffde7;border:1px solid var(--secondary)}
+    .form-group{margin-bottom:15px}
+    label{display:block;margin-bottom:5px;font-weight:600}
+    input,select,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:4px}
+    .btn{display:inline-block;background:var(--info);color:white;padding:10px 15px;border:none;border-radius:5px;cursor:pointer;font-weight:600}
+    .btn-success{background:var(--success)}.btn-danger{background:var(--danger)}.btn-block{width:100%;text-align:center}
+    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:1000;justify-content:center;align-items:center}
+    .modal-content{background:white;padding:30px;border-radius:10px;width:90%;max-width:500px;position:relative;max-height:90vh;overflow-y:auto}
+    .close-modal{position:absolute;left:20px;top:20px;font-size:1.5rem;cursor:pointer;color:#666}
+    .alert-approval{background:#fff3e0;border-right-color:var(--danger)}
+    /* flicker-block */
+    #loginModal,#mainContent{display:none}
+  </style>
 </head>
 <body>
 
 <header>
-    <div class="container header-content">
-        <div class="logo"><h1><i class="fas fa-cogs"></i> لوحة تحكم المدير</h1></div>
-        <div class="nav-buttons">
-            <button id="logoutButton"><i class="fas fa-sign-out-alt"></i> خروج</button>
-        </div>
-    </div>
+  <div class="container header-content">
+    <div class="logo"><h1><i class="fas fa-cogs"></i> لوحة تحكم المدير</h1></div>
+    <div class="nav-buttons"><button id="logoutButton"><i class="fas fa-sign-out-alt"></i> خروج</button></div>
+  </div>
 </header>
 
-<div class="modal" id="loginModal" style="display: flex;">
-    <div class="modal-content">
-        <h3>تسجيل دخول المدير</h3>
-        <form id="loginForm">
-            <div class="form-group">
-                <label>البريد الإلكتروني</label>
-                <input type="email" id="loginEmail" required>
-            </div>
-            <div class="form-group">
-                <label>كلمة السر</label>
-                <input type="password" id="loginPassword" required>
-            </div>
-            <button type="submit" class="btn btn-block">دخول</button>
-        </form>
-    </div>
+<!-- Login Modal -->
+<div class="modal" id="loginModal" style="display:flex;">
+  <div class="modal-content">
+    <h3>تسجيل دخول المدير</h3>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="loginEmail" required>
+      </div>
+      <div class="form-group">
+        <label>كلمة السر</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <button type="submit" class="btn btn-block">دخول</button>
+    </form>
+  </div>
 </div>
 
-<div class="container" id="mainContent" style="display:none">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <p id="welcomeMessage" style="font-size:1.2rem; font-weight: bold;"></p>
-        <span style="background: #e0f2f1; color: var(--primary); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">
-            <i class="fas fa-circle" style="color: var(--success); font-size: 0.6rem;"></i> النظام متصل
-        </span>
-    </div>
+<!-- Main Dashboard -->
+<div class="container" id="mainContent">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <p id="welcomeMessage" style="font-size:1.2rem;font-weight:bold"></p>
+    <span style="background:#e0f2f1;color:var(--primary);padding:5px 10px;border-radius:20px;font-size:.9rem"><i class="fas fa-circle" style="color:var(--success);font-size:.6rem"></i> النظام متصل</span>
+  </div>
 
-    <div class="stats-grid">
-        <div class="stat-card" id="totalJobs"><h3>0</h3><p>إجمالي الحجوزات</p></div>
-        <div class="stat-card" id="inProgressJobs"><h3>0</h3><p>مهمة قيد التنفيذ</p></div>
-        <div class="stat-card" id="completedJobs"><h3>0</h3><p>مهام مكتملة/مُسلمة</p></div>
-        <div class="stat-card" id="approvalPending"><h3>0</h3><p>طلبات موافقة معلقة</p></div>
-    </div>
-    <div class="dashboard-grid">
-        
-        <div class="panel" id="techJobsPanel">
-            <h2><i class="fas fa-users-cog"></i> الفنيون ومهامهم</h2>
-            <div id="techniciansList" style="max-height: 400px; overflow-y: auto;">
-                <p style="text-align: center; color: #666;">جاري تحميل الفنيين...</p>
-            </div>
-        </div>
-        <div class="panel">
-            <h2><i class="fas fa-calendar-check"></i> الحجوزات الجديدة (بانتظار التعيين)</h2>
-            <div id="pendingBookingsList" style="max-height: 400px; overflow-y: auto;">
-                <p style="text-align: center;">جاري التحميل...</p>
-            </div>
-        </div>
+  <div class="stats-grid">
+    <div class="stat-card" id="totalJobs"><h3>0</h3><p>إجمالي الحجوزات</p></div>
+    <div class="stat-card" id="inProgressJobs"><h3 style="color:var(--info)">0</h3><p>مهمة قيد التنفيذ/انتظار</p></div>
+    <div class="stat-card" id="completedJobs"><h3 style="color:var(--success)">0</h3><p>مهام مكتملة/مُسلمة</p></div>
+    <div class="stat-card" id="approvalPending"><h3 style="color:var(--danger)">0</h3><p>طلبات موافقة معلقة</p></div>
+  </div>
 
-        <div class="panel" id="assignmentPanel">
-            <h2><i class="fas fa-user-tag"></i> تفاصيل المهمة والتعيين</h2>
-            <div id="selectedBookingDetails" style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 15px; min-height: 100px;">
-                <p style="color:#777; text-align: center; margin-top: 30px;">اختر حجزاً من القائمة لعرض التفاصيل.</p>
-            </div>
-            
-            <form id="assignmentForm" style="display:none">
-                <input type="hidden" id="bookingIdToAssign">
-                <div class="form-group">
-                    <label>اختيار الفني</label>
-                    <select id="technicianSelect" required>
-                        <option value="">-- اختر الفني --</option>
-                        </select>
-                </div>
-                <div class="form-group">
-                    <label>رقم كرت العمل (Job Card)</label>
-                    <input type="text" id="workCardNumber" required placeholder="مثال: A-2024-001">
-                </div>
-                <button type="submit" class="btn btn-success btn-block"><i class="fas fa-check-circle"></i> تعيين المهمة</button>
-            </form>
-        </div>
-        
-        <div class="panel" id="customerHistoryPanel">
-            <h2><i class="fas fa-history"></i> سجل مواعيد العميل</h2>
-            <div id="customerHistoryList" style="max-height: 250px; overflow-y: auto;">
-                <p style="text-align: center; color: #666; margin-top: 20px;">يظهر سجل العميل بعد اختيار حجز.</p>
-            </div>
-        </div>
-        <div class="panel">
-            <h2><i class="fas fa-exclamation-triangle"></i> طلبات الموافقة (من الفنيين)</h2>
-            <div id="approvalRequestsList">
-                <p style="text-align: center; color: #666;">لا توجد طلبات معلقة.</p>
-            </div>
-        </div>
+  <div class="dashboard-grid">
+    <div class="panel" id="techJobsPanel">
+      <h2><i class="fas fa-users-cog"></i> الفنيون ومهامهم</h2>
+      <div id="techniciansList" style="max-height:400px;overflow-y:auto"><p style="text-align:center;color:#666">جاري تحميل الفنيين...</p></div>
     </div>
+    <div class="panel">
+      <h2><i class="fas fa-calendar-check"></i> الحجوزات الجديدة (بانتظار التعيين)</h2>
+      <div id="pendingBookingsList" style="max-height:400px;overflow-y:auto"><p style="text-align:center">جاري التحميل...</p></div>
+    </div>
+    <div class="panel" id="assignmentPanel">
+      <h2><i class="fas fa-user-tag"></i> تفاصيل المهمة والتعيين</h2>
+      <div id="selectedBookingDetails" style="background:#f9f9f9;padding:15px;border-radius:5px;margin-bottom:15px;min-height:100px"><p style="color:#777;text-align:center;margin-top:30px">اختر حجزاً من القائمة لعرض التفاصيل.</p></div>
+      <form id="assignmentForm" style="display:none">
+        <input type="hidden" id="bookingIdToAssign">
+        <div class="form-group">
+          <label>اختيار الفني</label>
+          <select id="technicianSelect" required><option value="">-- اختر الفني --</option></select>
+        </div>
+        <div class="form-group">
+          <label>رقم كرت العمل (Job Card)</label>
+          <input type="text" id="workCardNumber" required placeholder="مثال: A-2025-001">
+        </div>
+        <button type="submit" class="btn btn-success btn-block"><i class="fas fa-check-circle"></i> تعيين المهمة</button>
+      </form>
+    </div>
+    <div class="panel" id="customerHistoryPanel">
+      <h2><i class="fas fa-history"></i> سجل مواعيد العميل</h2>
+      <div id="customerHistoryList" style="max-height:250px;overflow-y:auto"><p style="text-align:center;color:#666;margin-top:20px">يظهر سجل العميل بعد اختيار حجز.</p></div>
+    </div>
+    <div class="panel">
+      <h2><i class="fas fa-exclamation-triangle"></i> طلبات الموافقة (من الفنيين)</h2>
+      <div id="approvalRequestsList"><p style="text-align:center;color:#666">لا توجد طلبات معلقة.</p></div>
+    </div>
+  </div>
 </div>
 
+<!-- Review Modal -->
 <div class="modal" id="reviewModal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal('reviewModal')">&times;</span>
-        <h3>مراجعة طلب الأعمال الإضافية</h3>
-        <div style="background: #ffebee; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
-            <p><strong>العميل:</strong> <span id="reviewClientInfo"></span></p>
-            <p><strong>سبب الطلب:</strong> <span id="reviewReason"></span></p>
-        </div>
-        <form id="reviewForm">
-            <input type="hidden" id="approvalBookingId">
-            <div class="form-group">
-                <label>ملاحظات المدير والتكلفة للعميل</label>
-                <textarea id="managerNotes" rows="4" required placeholder="اكتب هنا التكلفة المقدرة والقطع المطلوبة ليراها العميل..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-success btn-block"><i class="fas fa-paper-plane"></i> إرسال للعميل للموافقة</button>
-        </form>
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('reviewModal')">&times;</span>
+    <h3>مراجعة طلب الأعمال الإضافية</h3>
+    <div style="background:#ffebee;padding:10px;border-radius:5px;margin-bottom:15px">
+      <p><strong>العميل:</strong> <span id="reviewClientInfo"></span></p>
+      <p><strong>سبب الطلب:</strong> <span id="reviewReason"></span></p>
     </div>
+    <form id="reviewForm">
+      <input type="hidden" id="approvalBookingId">
+      <div class="form-group">
+        <label>ملاحظات المدير والتكلفة للعميل</label>
+        <textarea id="managerNotes" rows="4" required placeholder="اكتب هنا التكلفة المقدرة والقطع المطلوبة ليراها العميل..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-success btn-block"><i class="fas fa-paper-plane"></i> إرسال للعميل للموافقة</button>
+    </form>
+  </div>
 </div>
 
 <script>
-    // ========= Config =========
-    const firebaseConfig = {
-        apiKey: "AIzaSyAVweTlVbnd92xtTQcZwWo5sH7hiIDPlds",
-        authDomain: "car-service-booking-edfda.firebaseapp.com",
-        projectId: "car-service-booking-edfda",
-        storageBucket: "car-service-booking-edfda.firebasestorage.app",
-        messagingSenderId: "910485632535",
-        appId: "1:910485632535:web:b16fc6f6ee94bb64da0e52",
-        measurementId: "G-XHZVFM91HP"
-    };
+/* ========= Config (YOURS) ========= */
+const firebaseConfig = {
+  apiKey: "AIzaSyAVweTlVbnd92xtTQcZwWo5sH7hiIDPlds",
+  authDomain: "car-service-booking-edfda.firebaseapp.com",
+  projectId: "car-service-booking-edfda",
+  storageBucket: "car-service-booking-edfda.firebasestorage.app",
+  messagingSenderId: "910485632535",
+  appId: "1:910485632535:web:b16fc6f6ee94bb64da0e52",
+  measurementId: "G-XHZVFM91HP"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const bookingsCollection = db.collection('bookings');
+const usersCollection = db.collection('users');
+const activityLogCollection = db.collection('activityLog');
 
-    // Initialize Main App
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    
-    // Collections
-    const bookingsCollection = db.collection('bookings');
-    const usersCollection = db.collection('users');
-    const activityLogCollection = db.collection('activityLog');
+let currentManagerId = null;
 
-    // ========= State =========
-    let currentManagerId = null;
+/* ========= UI Helpers ========= */
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+window.onclick = function (event) {
+  if (event.target.classList.contains('modal')) event.target.style.display = 'none';
+};
 
-    // ========= UI Helpers =========
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    window.onclick = function(event) {
-        if (event.target.classList.contains('modal')) {
-            event.target.style.display = "none";
-        }
+/* ========= NO-FLICKER AUTH ========= */
+auth.onAuthStateChanged(async user => {
+  if (!user) { // definitely signed out
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('loginModal').style.display = 'flex';
+    currentManagerId = null;
+    return;
+  }
+  try {
+    const snap = await usersCollection.doc(user.uid).get();
+    const role = snap.exists ? snap.data().role : null;
+    if (role === 'manager') { // SUCCESS
+      currentManagerId = user.uid;
+      document.getElementById('welcomeMessage').textContent = `مرحباً، ${snap.data().name}`;
+      document.getElementById('loginModal').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      fetchStatistics(); loadTechniciansList(); fetchPendingBookings(); fetchApprovalRequests();
+      return;
     }
+  } catch (e) { console.error('Auth check error', e); }
+  // ---- wrong role ----
+  alert('هذا الحساب ليس لديه صلاحيات المدير.');
+  await auth.signOut();
+});
 
-    // ========= Auth Logic =========
-    auth.onAuthStateChanged(async user => {
-        if (user) {
-            try {
-                // Verify role in Firestore
-                const doc = await usersCollection.doc(user.uid).get();
-                if (doc.exists && doc.data().role === 'manager') {
-                    currentManagerId = user.uid;
-                    document.getElementById('welcomeMessage').textContent = `مرحباً، ${doc.data().name}`;
-                    document.getElementById('mainContent').style.display = 'block';
-                    document.getElementById('loginModal').style.display = 'none';
-                    
-                    // Load Data
-                    fetchStatistics(); // NEW: Load statistics
-                    loadTechniciansList(); // UPDATED: Load techs with job counts
-                    fetchPendingBookings();
-                    fetchApprovalRequests();
-                    return;
-                } else {
-                    alert('هذا الحساب ليس لديه صلاحيات المدير.');
-                    auth.signOut();
-                }
-            } catch (e) {
-                console.error("Auth Check Error:", e);
-            }
-        }
-        // Show login if not authenticated
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('loginModal').style.display = 'flex';
+/* ========= Login / Logout ========= */
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+  } catch (error) {
+    alert('خطأ في تسجيل الدخول: ' + error.message);
+  }
+});
+document.getElementById('logoutButton').addEventListener('click', () => auth.signOut());
+
+/* ========= Statistics ========= */
+function fetchStatistics() {
+  bookingsCollection.onSnapshot(snapshot => {
+    let total = 0, inProgress = 0, completed = 0, delivered = 0, pendingApproval = 0;
+    snapshot.forEach(doc => {
+      const status = doc.data().status; total++;
+      if (['In_Progress','Paused','Received','Confirmed'].includes(status)) inProgress++;
+      if (status === 'Complete') completed++;
+      if (status === 'Delivered') delivered++;
+      if (doc.data().approval_pending_manager === true || status === 'Pending_Approval') pendingApproval++;
     });
+    document.getElementById('totalJobs').innerHTML = `<h3>${total}</h3><p>إجمالي الحجوزات</p>`;
+    document.getElementById('inProgressJobs').innerHTML = `<h3 style="color:var(--info)">${inProgress}</h3><p>مهمة قيد التنفيذ/انتظار</p>`;
+    document.getElementById('completedJobs').innerHTML = `<h3 style="color:var(--success)">${completed + delivered}</h3><p>مهام مكتملة/مُسلمة</p>`;
+    document.getElementById('approvalPending').innerHTML = `<h3 style="color:var(--danger)">${pendingApproval}</h3><p>طلبات موافقة معلقة</p>`;
+  });
+}
 
-    document.getElementById('loginForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        try {
-            await auth.signInWithEmailAndPassword(email, password);
-        } catch (error) {
-            alert('خطأ في تسجيل الدخول: ' + error.message);
-        }
+/* ========= Technicians List ========= */
+function loadTechniciansList() {
+  usersCollection.where('role', '==', 'technician').onSnapshot(techSnap => {
+    const techData = {};
+    techSnap.forEach(doc => techData[doc.id] = { ...doc.data(), jobsCount: 0 });
+    bookingsCollection.where('status', 'not-in', ['Delivered', 'Canceled']).onSnapshot(bookingSnap => {
+      Object.keys(techData).forEach(id => techData[id].jobsCount = 0);
+      bookingSnap.forEach(doc => {
+        const tid = doc.data().technician_id;
+        if (tid && techData[tid]) techData[tid].jobsCount++;
+      });
+      renderTechniciansList(techData); populateTechnicianSelect(techData);
     });
+  });
+}
+function renderTechniciansList(techData) {
+  const list = document.getElementById('techniciansList');
+  list.innerHTML = '';
+  const sorted = Object.values(techData).sort((a, b) => b.jobsCount - a.jobsCount);
+  if (!sorted.length) { list.innerHTML = '<p style="text-align:center;padding:10px">لا يوجد فنيين مسجلين.</p>'; return; }
+  sorted.forEach(tech => {
+    const caps = tech.capabilities ? tech.capabilities.join(', ') : 'عام';
+    const item = document.createElement('div'); item.className = 'tech-item';
+    const countColor = tech.jobsCount > 3 ? 'var(--danger)' : tech.jobsCount > 0 ? 'var(--secondary)' : '#666';
+    item.innerHTML = `
+      <div class="tech-info">
+        <strong><i class="fas fa-user-wrench"></i> ${tech.name}</strong>
+        <small>التخصصات: ${caps}</small>
+      </div>
+      <span style="font-weight:bold;color:${countColor};font-size:1.1rem;min-width:50px;text-align:left">${tech.jobsCount} <i class="fas fa-tools"></i></span>
+    `;
+    list.appendChild(item);
+  });
+}
+function populateTechnicianSelect(techData) {
+  const select = document.getElementById('technicianSelect');
+  select.innerHTML = '<option value="">-- اختر الفني --</option>';
+  Object.keys(techData).forEach(id => {
+    const tech = techData[id]; const caps = tech.capabilities ? tech.capabilities.join(', ') : 'عام';
+    const option = document.createElement('option'); option.value = id;
+    option.textContent = `${tech.name} (${caps}) - (${tech.jobsCount} مهمة نشطة)`; select.appendChild(option);
+  });
+}
 
-    document.getElementById('logoutButton').addEventListener('click', () => {
-        auth.signOut();
+/* ========= Pending Bookings ========= */
+function fetchPendingBookings() {
+  bookingsCollection.where('status', 'in', ['Received', 'Confirmed']).orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+    const list = document.getElementById('pendingBookingsList');
+    list.innerHTML = '';
+    const unassigned = snapshot.docs.filter(doc => !doc.data().technician_id);
+    if (!unassigned.length) { list.innerHTML = '<p style="text-align:center;padding:10px">لا توجد حجوزات جديدة.</p>'; return; }
+    unassigned.forEach(doc => {
+      const b = doc.data();
+      const div = document.createElement('div'); div.className = 'booking-card'; div.dataset.id = doc.id;
+      div.innerHTML = `<h4>${b.car_plate_data} <span style="float:left;font-size:.8rem;color:#666">${b.date}</span></h4><p><strong>${b.service_type}</strong> | ${b.car_model}</p><p><small><i class="fas fa-user"></i> ${b.customer_name}</small></p>`;
+      div.onclick = () => selectBooking(doc.id, b);
+      list.appendChild(div);
     });
-    
-    // ======== NEW: Statistics Logic ========
-    function fetchStatistics() {
-        bookingsCollection.onSnapshot(snapshot => {
-            const total = snapshot.size;
-            let inProgress = 0;
-            let completed = 0;
-            let delivered = 0;
-            let pendingApproval = 0;
+  });
+}
 
-            snapshot.forEach(doc => {
-                const status = doc.data().status;
-                if (status === 'In_Progress' || status === 'Paused' || status === 'Received' || status === 'Confirmed') {
-                    inProgress++;
-                } else if (status === 'Complete') {
-                    completed++;
-                } else if (status === 'Delivered') {
-                    delivered++;
-                }
-                
-                if (doc.data().approval_pending_manager === true || status === 'Pending_Approval') {
-                    pendingApproval++;
-                }
-            });
-
-            document.getElementById('totalJobs').innerHTML = `<h3>${total}</h3><p>إجمالي الحجوزات</p>`;
-            document.getElementById('inProgressJobs').innerHTML = `<h3 style="color:var(--info)">${inProgress}</h3><p>مهمة قيد التنفيذ/انتظار</p>`;
-            document.getElementById('completedJobs').innerHTML = `<h3 style="color:var(--success)">${completed + delivered}</h3><p>مهام مكتملة/مُسلمة</p>`;
-            document.getElementById('approvalPending').innerHTML = `<h3 style="color:var(--danger)">${pendingApproval}</h3><p>طلبات موافقة معلقة</p>`;
-        });
-    }
-
-    // ======== UPDATED: Technician Jobs List Logic ========
-    
-    function loadTechniciansList() {
-        // 1. Fetch all technicians
-        usersCollection.where('role', '==', 'technician').onSnapshot(techSnapshot => {
-            const techData = {};
-            techSnapshot.forEach(doc => {
-                techData[doc.id] = { ...doc.data(), jobsCount: 0 };
-            });
-
-            // 2. Fetch active bookings (for counts)
-            bookingsCollection.where('status', 'not-in', ['Delivered', 'Canceled']).onSnapshot(bookingSnapshot => {
-                // Reset job counts
-                Object.keys(techData).forEach(id => techData[id].jobsCount = 0);
-                
-                // Tally jobs
-                bookingSnapshot.forEach(doc => {
-                    const techId = doc.data().technician_id;
-                    // Only count if assigned and not delivered/canceled
-                    if (techId && techData[techId] && doc.data().status !== 'Delivered') { 
-                        techData[techId].jobsCount++;
-                    }
-                });
-
-                renderTechniciansList(techData);
-                populateTechnicianSelect(techData);
-            });
-        });
-    }
-
-    function renderTechniciansList(techData) {
-        const list = document.getElementById('techniciansList');
-        list.innerHTML = '';
-        const sortedTechs = Object.values(techData).sort((a, b) => b.jobsCount - a.jobsCount);
-
-        if (sortedTechs.length === 0) {
-            list.innerHTML = '<p style="text-align:center; padding:10px;">لا يوجد فنيين مسجلين.</p>';
-            return;
-        }
-
-        sortedTechs.forEach(tech => {
-            const caps = tech.capabilities ? tech.capabilities.join(', ') : 'عام';
-            const item = document.createElement('div');
-            item.className = 'tech-item';
-            const countColor = tech.jobsCount > 3 ? 'var(--danger)' : tech.jobsCount > 0 ? 'var(--secondary)' : '#666';
-
-            item.innerHTML = `
-                <div class="tech-info">
-                    <strong><i class="fas fa-user-wrench"></i> ${tech.name}</strong>
-                    <small>التخصصات: ${caps}</small>
-                </div>
-                <span style="font-weight: bold; color: ${countColor}; font-size: 1.1rem; min-width: 50px; text-align: left;">
-                    ${tech.jobsCount} <i class="fas fa-tools"></i>
-                </span>
-            `;
-            list.appendChild(item);
-        });
-    }
-
-    // Function to populate the dropdown for assignment
-    function populateTechnicianSelect(techData) {
-        const select = document.getElementById('technicianSelect');
-        select.innerHTML = '<option value="">-- اختر الفني --</option>';
-        
-        Object.keys(techData).forEach(id => {
-            const tech = techData[id];
-            const caps = tech.capabilities ? tech.capabilities.join(', ') : 'عام';
-            const option = document.createElement('option');
-            option.value = id;
-            option.textContent = `${tech.name} (${caps}) - (${tech.jobsCount} مهمة نشطة)`;
-            select.appendChild(option);
-        });
-    }
-
-
-    // ========= 2. Pending Bookings & Assignment (Logic unchanged) =========
-    
-    function fetchPendingBookings() {
-        bookingsCollection
-            .where('status', 'in', ['Received', 'Confirmed']) 
-            .orderBy('createdAt', 'desc')
-            .onSnapshot(snapshot => {
-                const list = document.getElementById('pendingBookingsList');
-                list.innerHTML = '';
-                
-                const unassigned = snapshot.docs.filter(doc => !doc.data().technician_id);
-
-                if (unassigned.length === 0) {
-                    list.innerHTML = '<p style="text-align:center; padding:10px;">لا توجد حجوزات جديدة.</p>';
-                    return;
-                }
-
-                unassigned.forEach(doc => {
-                    const b = doc.data();
-                    const div = document.createElement('div');
-                    div.className = 'booking-card';
-                    div.dataset.id = doc.id;
-                    div.innerHTML = `
-                        <h4>${b.car_plate_data} <span style="float:left; font-size:0.8rem; color:#666">${b.date}</span></h4>
-                        <p><strong>${b.service_type}</strong> | ${b.car_model}</p>
-                        <p><small><i class="fas fa-user"></i> ${b.customer_name}</small></p>
-                    `;
-                    div.onclick = () => selectBooking(doc.id, b);
-                    list.appendChild(div);
-                });
-            });
-    }
-
-    function selectBooking(id, data) {
-        // Highlight selection
-        document.querySelectorAll('.booking-card').forEach(c => c.classList.remove('selected'));
-        document.querySelector(`.booking-card[data-id="${id}"]`).classList.add('selected');
-
-        // Show details
-        const detailsDiv = document.getElementById('selectedBookingDetails');
-        detailsDiv.innerHTML = `
-            <h3 style="color:var(--primary); margin-bottom:10px;">${data.car_plate_data}</h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.9rem;">
-                <div><strong>العميل:</strong> ${data.customer_name}</div>
-                <div><strong>الجوال:</strong> ${data.customer_phone}</div>
-                <div><strong>السيارة:</strong> ${data.car_model}</div>
-                <div><strong>الخدمة:</strong> ${data.service_type}</div>
-                <div><strong>الوقت:</strong> ${data.time}</div>
-                <div><strong>التاريخ:</strong> ${data.date}</div>
-            </div>
-            <p style="margin-top:10px; background:white; padding:5px; border:1px dashed #ccc;">
-                <strong>ملاحظات العميل:</strong> ${data.notes || 'لا يوجد'}
-            </p>
-        `;
-
-        // Show form
-        document.getElementById('bookingIdToAssign').value = id;
-        document.getElementById('assignmentForm').style.display = 'block';
-        
-        // NEW: Fetch and show customer history
-        fetchCustomerHistory(data.customer_phone, id);
-    }
-
-    document.getElementById('assignmentForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const bookingId = document.getElementById('bookingIdToAssign').value;
-        const techSelect = document.getElementById('technicianSelect');
-        const techId = techSelect.value;
-        const techName = techSelect.options[techSelect.selectedIndex].text.split(' (')[0];
-        const cardNum = document.getElementById('workCardNumber').value;
-
-        if(!bookingId || !techId) return;
-
-        try {
-            await bookingsCollection.doc(bookingId).update({
-                technician_id: techId,
-                technician_name: techName,
-                work_card_number: cardNum,
-                status: 'In_Progress', 
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            // Log
-            await activityLogCollection.add({
-                booking_id: bookingId,
-                user_role: 'Manager',
-                type: 'Assignment',
-                message: `تم تعيين الفني ${techName} للمهمة (كرت: ${cardNum})`,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert('تم تعيين المهمة بنجاح!');
-            document.getElementById('assignmentForm').reset();
-            document.getElementById('assignmentForm').style.display = 'none';
-            document.getElementById('selectedBookingDetails').innerHTML = '<p style="text-align:center; padding-top:20px;">اختر حجزاً جديداً.</p>';
-            
-        } catch (err) {
-            alert('خطأ: ' + err.message);
-        }
+/* ========= Assignment ========= */
+let selectedBookingId = null;
+function selectBooking(id, data) {
+  document.querySelectorAll('.booking-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`.booking-card[data-id="${id}"]`).classList.add('selected');
+  const details = document.getElementById('selectedBookingDetails');
+  details.innerHTML = `
+    <h3 style="color:var(--primary);margin-bottom:10px">${b.car_plate_data}</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.9rem">
+      <div><strong>العميل:</strong> ${b.customer_name}</div>
+      <div><strong>الجوال:</strong> ${b.customer_phone}</div>
+      <div><strong>السيارة:</strong> ${b.car_model}</div>
+      <div><strong>الخدمة:</strong> ${b.service_type}</div>
+      <div><strong>الوقت:</strong> ${b.time}</div>
+      <div><strong>التاريخ:</strong> ${b.date}</div>
+    </div>
+    <p style="margin-top:10px;background:white;padding:5px;border:1px dashed #ccc"><strong>ملاحظات العميل:</strong> ${b.notes || 'لا يوجد'}</p>
+  `;
+  document.getElementById('bookingIdToAssign').value = id;
+  document.getElementById('assignmentForm').style.display = 'block';
+  fetchCustomerHistory(b.customer_phone, id);
+}
+document.getElementById('assignmentForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const bookingId = document.getElementById('bookingIdToAssign').value;
+  const techSelect = document.getElementById('technicianSelect');
+  const techId = techSelect.value;
+  const techName = techSelect.options[techSelect.selectedIndex].text.split(' (')[0];
+  const cardNum = document.getElementById('workCardNumber').value;
+  if (!bookingId || !techId) return;
+  try {
+    await bookingsCollection.doc(bookingId).update({
+      technician_id: techId, technician_name: techName, work_card_number: cardNum,
+      status: 'In_Progress', updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    
-    // ======== NEW: Customer History Logic ========
-    function fetchCustomerHistory(phone, currentBookingId) {
-        const historyList = document.getElementById('customerHistoryList');
-        historyList.innerHTML = '<p style="text-align: center; color: var(--info);">جاري تحميل السجل...</p>';
-
-        bookingsCollection
-            .where('customer_phone', '==', phone)
-            .orderBy('createdAt', 'desc')
-            .limit(10) // Limit to last 10 visits for performance
-            .get()
-            .then(snapshot => {
-                historyList.innerHTML = '';
-                const history = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                if (history.length <= 1) { // Will be 1 if it only contains the current booking
-                    historyList.innerHTML = '<p style="text-align: center; color: #666;">لا يوجد سجل زيارات سابقة لهذا العميل.</p>';
-                    return;
-                }
-
-                history.forEach(b => {
-                    if (b.id === currentBookingId) return; // Skip the current booking
-
-                    const statusColor = b.status === 'Delivered' ? 'var(--success)' : b.status === 'Canceled' ? 'var(--danger)' : 'var(--info)';
-                    const item = document.createElement('div');
-                    item.style.padding = '8px';
-                    item.style.borderBottom = '1px dashed #eee';
-                    item.innerHTML = `
-                        <p style="font-weight: 500;">${b.car_plate_data} | ${b.service_type}</p>
-                        <small style="color: #999;">تاريخ: ${b.date} | الحالة: <span style="color: ${statusColor};">${b.status.replace(/_/g, ' ')}</span></small>
-                    `;
-                    historyList.appendChild(item);
-                });
-            })
-            .catch(e => {
-                historyList.innerHTML = '<p style="text-align: center; color: var(--danger);">فشل تحميل سجل العميل.</p>';
-            });
-    }
-    // ===========================================
-
-    // ========= 3. Approvals Logic (Logic unchanged) =========
-    
-    function fetchApprovalRequests() {
-        bookingsCollection
-            .where('approval_pending_manager', '==', true)
-            .onSnapshot(snapshot => {
-                const list = document.getElementById('approvalRequestsList');
-                list.innerHTML = '';
-                
-                if (snapshot.empty) {
-                    list.innerHTML = '<p style="text-align:center; padding:10px; color:#666">لا توجد طلبات معلقة.</p>';
-                    return;
-                }
-
-                snapshot.forEach(doc => {
-                    const b = doc.data();
-                    const div = document.createElement('div');
-                    div.className = 'booking-card alert-approval';
-                    div.innerHTML = `
-                        <h4 style="color:var(--danger)"><i class="fas fa-bell"></i> طلب موافقة</h4>
-                        <p><strong>${b.car_plate_data}</strong> - الفني: ${b.technician_name}</p>
-                        <p>السبب: ${b.manager_approval_request_reason}</p>
-                        <button class="btn btn-danger" style="width:100%; margin-top:10px;" 
-                            onclick="openReview('${doc.id}', '${b.customer_name}', '${b.car_plate_data}', '${b.manager_approval_request_reason}')">
-                            مراجعة الطلب
-                        </button>
-                    `;
-                    list.appendChild(div);
-                });
-            });
-    }
-
-    window.openReview = (id, name, plate, reason) => {
-        document.getElementById('approvalBookingId').value = id;
-        document.getElementById('reviewClientInfo').textContent = `${name} (${plate})`;
-        document.getElementById('reviewReason').textContent = reason;
-        openModal('reviewModal');
-    };
-
-    document.getElementById('reviewForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const id = document.getElementById('approvalBookingId').value;
-        const notes = document.getElementById('managerNotes').value;
-
-        try {
-            await bookingsCollection.doc(id).update({
-                approval_pending_manager: false,
-                is_alert_pending: true, // Show to customer
-                status: 'Pending_Approval', // Customer status
-                manager_approval_notes: notes
-            });
-
-            await activityLogCollection.add({
-                booking_id: id,
-                user_role: 'Manager',
-                type: 'Customer_Alert_Sent',
-                message: `المدير يطلب موافقة العميل: ${notes}`,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert('تم إرسال الطلب للعميل.');
-            closeModal('reviewModal');
-        } catch (err) {
-            alert('Error: ' + err.message);
-        }
+    await activityLogCollection.add({
+      booking_id: bookingId, user_role: 'Manager', type: 'Assignment',
+      message: `تم تعيين الفني ${techName} للمهمة (كرت: ${cardNum})`,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
+    alert('تم تعيين المهمة بنجاح!');
+    e.target.reset(); e.target.style.display = 'none';
+    document.getElementById('selectedBookingDetails').innerHTML = '<p style="text-align:center;padding-top:20px">اختر حجزاً جديداً.</p>';
+  } catch (err) { alert('خطأ: ' + err.message); }
+});
 
+/* ========= Customer History ========= */
+function fetchCustomerHistory(phone, currentBookingId) {
+  const historyList = document.getElementById('customerHistoryList');
+  historyList.innerHTML = '<p style="text-align:center;color:var(--info)">جاري تحميل السجل...</p>';
+  bookingsCollection.where('customer_phone', '==', phone).orderBy('createdAt', 'desc').limit(10).get()
+    .then(snapshot => {
+      historyList.innerHTML = '';
+      const history = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      if (history.length <= 1) { historyList.innerHTML = '<p style="text-align:center;color:#666">لا يوجد سجل زيارات سابقة لهذا العميل.</p>'; return; }
+      history.forEach(b => {
+        if (b.id === currentBookingId) return;
+        const statusColor = b.status === 'Delivered' ? 'var(--success)' : b.status === 'Canceled' ? 'var(--danger)' : 'var(--info)';
+        const item = document.createElement('div'); item.style.padding = '8px'; item.style.borderBottom = '1px dashed #eee';
+        item.innerHTML = `<p style="font-weight:500">${b.car_plate_data} | ${b.service_type}</p><small style="color:#999">تاريخ: ${b.date} | الحالة: <span style="color:${statusColor}">${b.status.replace(/_/g,' ')}</span></small>`;
+        historyList.appendChild(item);
+      });
+    }).catch(e => historyList.innerHTML = '<p style="text-align:center;color:var(--danger)">فشل تحميل سجل العميل.</p>');
+}
+
+/* ========= Approval Requests ========= */
+function fetchApprovalRequests() {
+  bookingsCollection.where('approval_pending_manager', '==', true).onSnapshot(snapshot => {
+    const list = document.getElementById('approvalRequestsList');
+    list.innerHTML = '';
+    if (snapshot.empty) { list.innerHTML = '<p style="text-align:center;padding:10px;color:#666">لا توجد طلبات معلقة.</p>'; return; }
+    snapshot.forEach(doc => {
+      const b = doc.data();
+      const div = document.createElement('div'); div.className = 'booking-card alert-approval';
+      div.innerHTML = `
+        <h4 style="color:var(--danger)"><i class="fas fa-bell"></i> طلب موافقة</h4>
+        <p><strong>${b.car_plate_data}</strong> - الفني: ${b.technician_name}</p>
+        <p>السبب: ${b.manager_approval_request_reason}</p>
+        <button class="btn btn-danger" style="width:100%;margin-top:10px" onclick="openReview('${doc.id}', '${b.customer_name}', '${b.car_plate_data}', '${b.manager_approval_request_reason}')">مراجعة الطلب</button>
+      `;
+      list.appendChild(div);
+    });
+  });
+}
+
+/* ========= Review Modal ========= */
+window.openReview = (id, name, plate, reason) => {
+  document.getElementById('approvalBookingId').value = id;
+  document.getElementById('reviewClientInfo').textContent = `${name} (${plate})`;
+  document.getElementById('reviewReason').textContent = reason;
+  openModal('reviewModal');
+};
+
+document.getElementById('reviewForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = document.getElementById('approvalBookingId').value;
+  const notes = document.getElementById('managerNotes').value;
+  try {
+    await bookingsCollection.doc(id).update({
+      approval_pending_manager: false,
+      is_alert_pending: true,
+      status: 'Pending_Approval',
+      manager_approval_notes: notes
+    });
+    await activityLogCollection.add({
+      booking_id: id, user_role: 'Manager', type: 'Customer_Alert_Sent',
+      message: `المدير يطلب موافقة العميل: ${notes}`,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    alert('تم إرسال الطلب للعميل.'); closeModal('reviewModal');
+  } catch (err) { alert('Error: ' + err.message); }
+});
 </script>
-
 </body>
 </html>
