@@ -12,7 +12,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     
     <style>
-        /* --- Keep your CSS styles here --- */
         :root { --primary: #2c5aa0; --secondary: #f8a41c; --light: #f4f6f9; --dark: #343a40; --success: #28a745; --danger: #dc3545; --info: #17a2b8; --card-bg: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background: var(--light); color: var(--dark); line-height: 1.6; }
@@ -281,7 +280,8 @@
     function fetchAssignedTasks(technicianId) {
         bookingsCollection
             .where('technician_id', '==', technicianId)
-            .where('status', 'not-in', ['Delivered', 'Canceled']) // Show active jobs
+            .where('status', 'not-in', ['Delivered', 'Canceled'])
+            .orderBy('status')  // FIXED: Must order by the same field used in where()
             .orderBy('createdAt', 'asc')
             .onSnapshot(snapshot => {
                 const list = document.getElementById('assignedTasksList');
@@ -311,7 +311,6 @@
                             </div>
                         `;
                     } else if (b.status === 'Pending_Approval') {
-                        // This case should be covered by is_alert_pending but as a fallback
                          alertDiv = `<div class="alert-message" style="background:#fce0e6; color:#a10a24;"><i class="fas fa-hourglass-half"></i> بانتظار موافقة العميل / المدير.</div>`;
                     }
                     
