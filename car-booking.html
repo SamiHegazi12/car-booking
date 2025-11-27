@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
     <style>
         /* ========= نفس الأنماط السابقة (بدون تغيير) ========= */
         :root {
@@ -276,8 +277,9 @@
                 <div class="service-content">
                     <h3>خدمات الميكانيكا العامة</h3>
                     <p>صيانة شاملة للمحركات وأنظمة الفرامل والتعليق وغيرها من أعمال الميكانيكا العامة.</p>
+                    <!-- تم تعديل نص الضمان هنا -->
                     <div class="warranty-badge" style="background:var(--primary); color:#fff;">
-                        <i class="fas fa-medal"></i> ضمان الملحقات والتركيب
+                        <i class="fas fa-medal"></i> ضمان 3 أشهر على الصيانات العامة
                     </div>
                 </div>
             </div>
@@ -405,8 +407,10 @@
             </ul>
         </div>
     </div>
+    <!-- إضافة رابط موقع الشركة -->
     <div class="footer-bottom">
         <p>© 2006 مركز تقني المحركات. جميع الحقوق محفوظة.</p>
+        <p><a href="https://www.enginetechnician.net/" target="_blank" style="color:var(--secondary);text-decoration:none;">زيارة موقعنا: www.enginetechnician.net</a></p>
     </div>
 </footer>
 
@@ -657,9 +661,16 @@
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             
-            await auth.signOut();
-            showToast('تم التسجيل بنجاح. يمكنك الآن تسجيل الدخول.', 'success');
-            switchAuthForm('login');
+            // ==== REMOVED: await auth.signOut(); ====
+            // ==== NEW: keep user logged in after registration ====
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('currentUserId', user.uid);
+            localStorage.setItem('currentUserName', name);
+            localStorage.setItem('userPhone', phone);
+            
+            customerAuthModal.style.display = 'none';
+            initAuthenticationState(true, user.uid, name, phone);
+            showToast(`أهلاً بك يا ${name}! تم التسجيل والدخول بنجاح.`, 'success');
 
         } catch (error) {
             let errorMessage = 'خطأ في التسجيل: ' + error.message;
@@ -668,6 +679,7 @@
         }
     });
 
+    // ██████  دالة تسجيل الدخول مع رسائل تفصيلية  ██████
     loginForm.addEventListener('submit', async e => {
         e.preventDefault();
         const phone = document.getElementById('loginPhone').value;
@@ -685,20 +697,27 @@
                 localStorage.setItem('currentUserId', user.uid);
                 localStorage.setItem('currentUserName', userData.name);
                 localStorage.setItem('userPhone', userData.phone);
-                
+
                 customerAuthModal.style.display = 'none';
                 initAuthenticationState(true, user.uid, userData.name, userData.phone);
                 showToast(`أهلاً بك يا ${userData.name}! تم تسجيل الدخول.`, 'success');
             } else {
                 await auth.signOut();
-                showToast('خطأ: بيانات الحساب مفقودة.', 'error');
+                showToast('بيانات الحساب مفقودة في قاعدة البيانات.', 'error');
             }
 
         } catch (error) {
-            showToast('رقم الجوال أو كلمة السر غير صحيحة.', 'error');
+            // أظهر الرسالة التوضيحية من Firebase
+            let msg = error.message;
+            if (error.code === 'auth/user-not-found') {
+                msg = 'رقم الجوال غير مسجل، يرجى إنشاء حساب جديد.';
+            } else if (error.code === 'auth/wrong-password') {
+                msg = 'كلمة السر خاطئة.';
+            }
+            showToast(msg, 'error');
         }
     });
-    
+
     checkSecurityBtn.addEventListener('click', async () => {
         const phone = recoverPhoneInput.value;
         if (!phone || phone.length < 9) {
@@ -973,7 +992,8 @@
         bookingsCollection
             .where('customer_id', '==', userId)
             .where('status', '!=', 'Delivered')
-            .orderBy('createdAt', 'desc') 
+            .orderBy('status')              // ✅ تصحيح استعلام Firestore
+            .orderBy('createdAt', 'desc')   // ✅ تصحيح استعلام Firestore
             .onSnapshot(snapshot => {
                 trackingCardsContainer.innerHTML = '';
                 pendingAlertCount = 0;
